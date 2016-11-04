@@ -1,0 +1,42 @@
+#pullover{
+    list-style-type: none;
+}
+#pullover>li{
+    
+    width:300px;  color: #5dd86e;
+    background: darkgreen;
+    margin:3px;
+}
+#pullover>li>div{
+    padding:5px;
+}
+#htm{
+  
+    background-color: green;
+    width:60%;
+}
+#cs{
+  
+    background-color: green;
+    width:50%;
+}
+#js{
+  
+    background-color: green;
+    width:40%;
+}
+#jq{
+  
+    background-color: green;
+    width:30%;
+}
+#pm{
+  
+    background-color: green;
+    width:50%;
+}
+#yii{
+  
+    background-color: green;
+    width:20%;
+}

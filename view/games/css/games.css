@@ -1,0 +1,40 @@
+#knui{
+    width:100%;height: 100%;
+    
+}
+#knlink, #sklink{
+    cursor:pointer;
+    text-decoration:none;
+    list-style-type: none;
+    width:200px;
+}
+#sklink:hover, #knlink:hover{
+    background-color: #5dd86e;
+    color:green;
+}
+#knui button{
+    width:163px;
+    border:0px;
+    height:50px;
+    background-color: #5dd86e;
+    text-align: center;
+}
+#knui li {
+    display:inline;
+}
+#knui ul{
+    width:100%;
+}
+#gameblock{
+    width:100px;
+}
+#game{
+    float:right;
+}
+#gameui{
+    width:200px;
+}
+#knui, #snake{
+    display:none;
+}
+#myCanvas{border:1px solid black;}
