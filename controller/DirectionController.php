@@ -43,15 +43,16 @@ if($link==='games')
     <script type="text/javascript" src="view/games/js/snake/snake.js"></script>';
 		
 }
-if(isset($_POST['addComment'])){
-        $sql='INSERT INTO recalls SET name=:name,content=:content,time=NOW()';
-        $s=$pdo->prepare($sql);
-        $s->bindValue(':name',  $_POST['name']);
-        $s->bindValue(':content',$_POST['content']);
-        $s->execute();
-        header('Location: index.php?link=recalls');       
-        exit();
-        }
+if(isset($_POST['addComment']))
+{
+  $sql='INSERT INTO recalls SET name=:name,content=:content,time=NOW()';
+  $s=$pdo->prepare($sql);
+  $s->bindValue(':name',  $_POST['name']);
+  $s->bindValue(':content',$_POST['content']);
+  $s->execute();
+  header('Location: index.php?link=recalls');       
+  exit();
+}
 if(!include 'view/'.$link . '/' . $link . '.php')
 {
     echo "No access to " . $link;

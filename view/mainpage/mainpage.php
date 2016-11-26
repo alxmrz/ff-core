@@ -1,5 +1,5 @@
-
-<img src="image/greenman.png" alt="man" id="man" />
+<link href='/view/mainpage/css/mainpage.css' rel='stylesheet' type='text/css'>
+<img src="/image/greenman.png" alt="man" id="man" />
 <div id="text">
     <p>Меня зовут Мороз Александр Александрович. Мне 19 лет. 
         В данный момент учусь в Государственном Университете Управления на экономиста. 

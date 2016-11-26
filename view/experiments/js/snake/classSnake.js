@@ -1,8 +1,8 @@
 function Snake(x,y){
 	var x=x;
 	var y=y;
-    var direction='Nowhere';
-    var snakeColor='green';
+  var direction='Nowhere';
+  var snakeColor='green';
 	var snakeLength=new Array(new snakeBody(x,y),new snakeBody(x-10,y),new snakeBody(x-20,y));
     this.pushBody=function(){
         snakeLength.push(new snakeBody(snakeLength[snakeLength.length-1].x,snakeLength[snakeLength.length-1].y));
