@@ -1,8 +1,20 @@
 <?php
+namespace controller;
+class mainpageController
+{
 
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
+  function __construct()
+  {
+    //echo 'I have done mainpageController';
+    $this->view = new \core\View();
+    $this->view->render('mainpage');
+  }
+  public function index ()
+  {
+    $this->view->render('mainpage');
+  }
+  public function somePage ()
+  {
+    $this->view->render('');
+  }
+}

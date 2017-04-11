@@ -1,5 +1,5 @@
 <?php
-
+namespace core;
 /**
  * Description of router
  *
@@ -12,11 +12,13 @@ class Router
     {
         $urlParams = explode('/', ($_SERVER['REQUEST_URI']));
         if (!empty($urlParams[1])) {
-            $pageController = "{$urlParams[1]}Controller";
+            $pageController = 'controller\\' . $urlParams[1] . 'Controller';
         } else {
-            $pageController = 'mainpageController';
+            $pageController = 'controller\mainpageController';
         }
+        
         $controller = new $pageController;
+        echo $pageController;exit();
     }
 
 }
