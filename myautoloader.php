@@ -12,7 +12,7 @@ function myAutoloader($class)
     } else {
         $class = str_replace("_", DIRECTORY_SEPARATOR, $class);
     }
-    echo $class . '<br />';
+    //echo $class . '<br />';
     //echo file_get_contents($class . '.php');
     require_once $class . '.php';
    

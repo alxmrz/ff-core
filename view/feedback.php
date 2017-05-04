@@ -1,3 +1,4 @@
+<?php $this->addLocalCss('feedback/css/feedback.css');?>
 <div id="recalls">
 <h1>Отзывы</h1>
 <?php if(isset($recalls)):?>

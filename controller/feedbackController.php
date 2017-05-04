@@ -11,7 +11,6 @@ class feedbackController
 
     function __construct()
     {
-        echo 'I have done feedbackController';
         $this->view = new \core\View();
         $this->view->render('feedback');
     }

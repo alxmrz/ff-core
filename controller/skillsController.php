@@ -9,7 +9,6 @@ class skillsController
 {
   function __construct()
   {
-    echo 'I have done skillsController';
     $this->view = new \core\View();
     $this->view->render('skills');
   }

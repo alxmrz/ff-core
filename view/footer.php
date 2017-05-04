@@ -9,18 +9,6 @@
         </fieldset>
     </div>
 </div>
-<?php if(isset($link)):?>
-<?php foreach(glob("view/{$link}/js/*.js") as $jsName ):?>
-<script type='text/javascript' src="<?=DIRECTORY_SEPARATOR . $jsName?>"></script>
-<?php endforeach;?>
-
-<?php foreach(glob("view/{$link}/js/*/*.js") as $jsName ):?>
-<script type='text/javascript' src="<?=DIRECTORY_SEPARATOR . $jsName?>"></script>
-<?php endforeach;?>
-<?php endif;?>
-<script src="http://code.jquery.com/jquery.js"></script>
-<!--<script src="dependencies/bootstrap/js/bootstrap.min.js"></script>-->
-<script type="text/javascript" src="view/js/main.js"></script>
-<script type="text/javascript" src="view/js/clock.js"></script>
+<?php $this->putGlobalJs();?>
 </body>
 </html>

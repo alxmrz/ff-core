@@ -18,7 +18,7 @@ class Router
         }
         
         $controller = new $pageController;
-        echo $pageController;exit();
+        
     }
 
 }

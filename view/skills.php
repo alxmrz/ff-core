@@ -1,3 +1,4 @@
+<?php $this->addLocalCss('skills/css/skills.css');?>
 <p>Мой уровень владения:</p>
 <ul id="pullover">
     <li>

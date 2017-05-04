@@ -11,7 +11,6 @@ class experimentsController
 
     function __construct()
     {
-        //echo 'I have done experimentsController';
         $this->view = new \core\View();
         $this->view->render('experiments');
     }
