@@ -1,5 +1,4 @@
 <?php
-
 namespace core;
 
 /**
@@ -56,6 +55,12 @@ class View
             echo "<script src='/assets/{$jsFileName}'></script>";
         }
     }
+    /**
+     * Возвращает результат подключения шаблона.
+     * @param string $template
+     * @param mixed $data
+     * @return string
+     */
     protected function formTemplate($template,$data) {
      ob_start();
      require "view/{$template}.php";
@@ -63,6 +68,10 @@ class View
      ob_clean();
      return $content;
     }
+    /**
+     * Заголовок устанавливает в шаблоне перед выводом на экран.
+     * @param string $title Заголовок страницы
+     */
     public function setTitle($title) {
         $this->title = $title;
     }
