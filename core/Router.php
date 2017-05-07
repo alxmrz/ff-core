@@ -1,5 +1,7 @@
 <?php
+
 namespace core;
+
 /**
  * Description of router
  *
@@ -16,9 +18,8 @@ class Router
         } else {
             $pageController = 'controller\mainpageController';
         }
-        
+
         $controller = new $pageController;
-        
     }
 
 }

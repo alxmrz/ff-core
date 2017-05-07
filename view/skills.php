@@ -1,4 +1,7 @@
-<?php $this->addLocalCss('skills/css/skills.css');?>
+<?php
+$this->addLocalCss('skills/css/skills.css');
+$this->setTitle("Умения");
+?>
 <p>Мой уровень владения:</p>
 <ul id="pullover">
     <li>
@@ -18,5 +21,8 @@
     </li>
     <li>
         <div id="yii">Yii2</div>
+    </li>
+    <li>
+        <div id="bitrix">1C-Bitrix</div>
     </li>
 </ul>

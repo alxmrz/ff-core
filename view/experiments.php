@@ -1,4 +1,6 @@
-<?php $this->addLocalCss('experiments/css/experiments.css'); ?>
+<?php $this->addLocalCss('experiments/css/experiments.css'); 
+$this->setTitle("Эксперименты");
+?>
 <div id="game">
     <div id="knui">	
         <div id="level">
@@ -49,4 +51,5 @@
         'experiments/js/snake/classSnakeBody.js',
         'experiments/js/snake/functions.js',
         'experiments/js/snake/snake.js'
-    ]);?>
+    ]);
+    ?>
