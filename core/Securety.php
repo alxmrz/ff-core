@@ -6,17 +6,12 @@ class Securety
 
     public static function filterGetInput()
     {
-        return filter_input(INPUT_GET, $_GET);
+        return filter_input_array(INPUT_GET, FILTER_SANITIZE_SPECIAL_CHARS);
     }
 
     public static function filterPostInput()
     {
-        return filter_input_array(INPUT_POST, $_POST);
-    }
-
-    public static function checkUserInput($get)
-    {
-        return htmlspecialchars(trim($get));
+        return filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS);
     }
 
 }

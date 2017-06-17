@@ -15,8 +15,12 @@ class View
     {
         $this->assets['global_assets'] = require 'config/assets.php';
     }
-
-    public function render($template,$data="")
+    /**
+     * 
+     * @param string $template
+     * @param array $data
+     */
+    public function render($template,$data=[])
     {
         $content = $this->formTemplate($template,$data);
         require 'view/header.php';
@@ -43,12 +47,18 @@ class View
             echo "<script src='/assets/global/js/{$script}'></script>";
         }
     }
-
+    /**
+     * 
+     * @param string $cssFileName
+     */
     public function addLocalCss($cssFileName)
     {
         echo "<link href='/assets/{$cssFileName}' rel='stylesheet' type='text/css' />";
     }
-
+    /**
+     * 
+     * @param array $jsFileNames
+     */
     public function addLocalJs($jsFileNames)
     {
         foreach ($jsFileNames as $jsFileName) {

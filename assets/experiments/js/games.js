@@ -14,3 +14,4 @@ sklink.onclick = function () {
     document.getElementById("knui").style.display = "none";
     document.getElementById("snake").style.display = "block";
 }
+

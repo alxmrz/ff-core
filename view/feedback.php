@@ -15,6 +15,7 @@
                     <p>Имя: <?php echo $recall['from'] . " Дата: " . $recall['date']; ?> </p>
                     <p>Комментарий: <?php echo $recall['comment']; ?></p> 
                 </div>
+                <hr />
             <?php endforeach; ?>
         </div>
     <?php endif; ?>

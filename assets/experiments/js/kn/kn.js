@@ -1,14 +1,25 @@
+/**
+ * Значения свободных ячеек
+ * @type {number}
+ */
 var Cell1 = 0,
-        Cell2 = 0,
-        Cell3 = 0,
-        Cell4 = 0,
-        Cell5 = 0,
-        Cell6 = 0,
-        Cell7 = 0,
-        Cell8 = 0,
-        Cell9 = 0,
-        gameover = false;
-player = "X";
+    Cell2 = 0,
+    Cell3 = 0,
+    Cell4 = 0,
+    Cell5 = 0,
+    Cell6 = 0,
+    Cell7 = 0,
+    Cell8 = 0,
+    Cell9 = 0,
+    gameover = false;
+/**
+ *Начальный игрок
+ * @type {string}
+ */
+var player = "X";
+/**
+ * @return void Пишет в логи значение каждой ячейки в каждом шаге.
+ */
 function inLog() {
     console.log("cell1: " + Cell1);
     console.log("cell2: " + Cell2);
@@ -21,6 +32,11 @@ function inLog() {
     console.log("cell9: " + Cell9);
 
 }
+/**
+ * Основной процесс в этой функции. Меняем значение ячейки
+ * проверяем результат, выйграл ли игрок.
+ * @param obj Текущая ячейка
+ */
 function mainProcess(obj) {
     if (checkCell(obj)) {
         changeVal(obj);
@@ -36,6 +52,10 @@ function mainProcess(obj) {
 
     changePlayer();
 }
+/**
+ * Проверяет, занял ли игрок 3 клетки подряд.
+ * @return void
+ */
 function isGameOver() {
     var check = checkIfWin();
     if (check === true && check !== 'ничья') {
@@ -50,10 +70,18 @@ function isGameOver() {
     }
 
 }
+/**
+ * Меняет значение ячейки в системе
+ * @param obj Текущая ячейка
+ */
 function changeVal(obj) {
     obj.value = player;
     changeCell(obj.id);
 }
+/**
+ * Меняет значение ячейки на экране
+ * @param cell
+ */
 function changeCell(cell) {
     switch (cell) {
         case "cell1":
@@ -85,6 +113,10 @@ function changeCell(cell) {
             break;
     }
 }
+/**
+ * Меняет игрока
+ * return void
+ */
 function changePlayer() {
     if (player === "X") {
         player = "O";
@@ -95,26 +127,36 @@ function changePlayer() {
     }
 
 }
+/**
+ * Проверяет игру на завершенность шагов.
+ * @returns mixed Возвращает true в случае окончания свободных шагов и есть победитель
+ * Возвращает false, если есть доступные шаги
+ * Возвращает "ничья", если шагов свободных нет и победителя тоже
+ */
 function checkIfWin() {
     if ((Cell1 === Cell2 && Cell2 === Cell3 && (Cell3 === player)) ||
-            (Cell4 === Cell5 && Cell5 === Cell6 && (Cell6 === player)) ||
-            (Cell7 === Cell8 && Cell8 === Cell9 && (Cell9 === player)) ||
-            (Cell1 === Cell4 && Cell4 === Cell7 && (Cell7 === player)) ||
-            (Cell2 === Cell5 && Cell5 === Cell8 && (Cell8 === player)) ||
-            (Cell3 === Cell6 && Cell6 === Cell9 && (Cell9 === player)) ||
-            (Cell1 === Cell5 && Cell5 === Cell9 && (Cell9 === player)) ||
-            (Cell3 === Cell5 && Cell5 === Cell7 && (Cell7 === player))) {
+        (Cell4 === Cell5 && Cell5 === Cell6 && (Cell6 === player)) ||
+        (Cell7 === Cell8 && Cell8 === Cell9 && (Cell9 === player)) ||
+        (Cell1 === Cell4 && Cell4 === Cell7 && (Cell7 === player)) ||
+        (Cell2 === Cell5 && Cell5 === Cell8 && (Cell8 === player)) ||
+        (Cell3 === Cell6 && Cell6 === Cell9 && (Cell9 === player)) ||
+        (Cell1 === Cell5 && Cell5 === Cell9 && (Cell9 === player)) ||
+        (Cell3 === Cell5 && Cell5 === Cell7 && (Cell7 === player))) {
 
         return true;
     }
     if (Cell1 !== 0 && Cell2 !== 0 && Cell3 !== 0 &&
-            Cell4 !== 0 && Cell5 !== 0 && Cell6 !== 0 &&
-            Cell7 !== 0 && Cell8 !== 0 && Cell9 !== 0) {
+        Cell4 !== 0 && Cell5 !== 0 && Cell6 !== 0 &&
+        Cell7 !== 0 && Cell8 !== 0 && Cell9 !== 0) {
         var game = 'ничья';
         return game;
     }
     return false;
 }
+/**
+ * Имитация Искуственного интеллекта
+ * @constructor
+ */
 function AI() {
     var diflvl = document.getElementById('lvl').value;
     if (diflvl === "Легко") {
@@ -240,6 +282,11 @@ function AI() {
     }
 
 }
+/**
+ * Ищет ячейки, которые могут завершить игру, т.е. 2 занятые подряд от любого игрока
+ * @returns {*}
+ * @constructor
+ */
 function AI_Way() {
 // Первая горизонтальная строка
     if (Cell1 === Cell2 && Cell2 !== 0 && Cell3 === 0) {
@@ -309,8 +356,13 @@ function AI_Way() {
     }
     ;
 }
+/**
+ * Делает рандомный ход в свободную клетку
+ * Используется при слабом уровне сложности и при не возможности расчитать дальнейший ход
+ * @returns {number}
+ */
 function AI_Random() {
-    for (var x = true; x === true; ) {
+    for (var x = true; x === true;) {
         var aiWay = Math.floor((Math.random() * 9) + 1);
         var obj = document.getElementById("cell" + aiWay);
         if (checkCell(obj) === false) {
@@ -321,6 +373,11 @@ function AI_Random() {
     }
     return aiWay;
 }
+/**
+ * Проверяет, свободна ли ячейка
+ * @param obj Текущая ячейка
+ * @returns {boolean}
+ */
 function checkCell(obj) {
     if (obj.value !== " ")
         return false;

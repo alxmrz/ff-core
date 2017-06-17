@@ -1,15 +1,43 @@
+/**
+ * Класс искуственного интеллекта змейки.
+ * @constructor
+ */
 function AI_snake() {
+    /**
+     * Взята ли змейка под контроль игрока
+     * @type {boolean}
+     */
     var underControll = false;
+    /**
+     * Массив змеек
+     * @type {Array}
+     */
     var snakes = new Array();
-    this.findWay = function (food) {
-
-    }
+    /**
+     * Отправляет змейку под контроль игрока
+     * @param snake
+     * @return void
+     */
     this.getControll = function (snake) {
         this.underControll = true;
     }
+    /**
+     * Устанавливает направление змейки. Вызывается каждый кадр
+     * @param snake Объект змейки
+     * @param food Объект еды
+     */
     this.setSnakeDirection = function (snake, food) {
+
+        /**
+         * @var int SY значение Y "головы" змейки
+         */
         var SY = snake.getSnakeFirstBody().y;
+
+        /**
+         * @var int SX значение X "головы" змейки
+         */
         var SX = snake.getSnakeFirstBody().x;
+
         if (SY < food.y) {
             if (snake.directionWay() === "UP")
             {

@@ -22,7 +22,7 @@ class feedbackController
     protected function actions()
     {
         $post = \core\Securety::filterPostInput();
-        if (isset($post['action'])&&isset($post['name'])&&isset($post['comment'])) {
+        if (isset($post['action'])&&!empty($post['from'])&&!empty($post['comment'])) {
             switch($post['action']) {
                 case 'addComment':
                     $this->addComment();
@@ -32,6 +32,9 @@ class feedbackController
         } 
     }
 
+    /**
+     * @return array Возвращает список комментариев
+     */
     protected function getComments()
     {
 
@@ -39,14 +42,20 @@ class feedbackController
         return $res->fetchAll();
     }
 
+    /**
+     * Добавляет комментарий в базу
+     */
     protected function addComment()
     {
         $post = \core\Securety::filterPostInput();
         $from = $post['from'];
         $comment = $post['comment'];
         $date = "NOW()";
-        $query = "INSERT INTO feedback SET `from`='{$from}',`comment`='{$comment}',`date`={$date}";
-        $res = $this->db->exec($query);
+        $query = "INSERT INTO feedback SET `from`=:sfrom,`comment`=:comment,`date`=NOW()";
+        $res = $this->db->prepare($query);
+        $res->bindValue(':sfrom',$from);
+        $res->bindValue(':comment',$comment);
+        $res->execute();
     }
 
 }

@@ -1,4 +1,6 @@
-<?php $this->addLocalCss('experiments/css/experiments.css'); 
+<?php
+$this->addLocalCss('experiments/css/experiments.css');
+
 $this->setTitle("Эксперименты");
 ?>
 <div id="game">
@@ -36,20 +38,24 @@ $this->setTitle("Эксперименты");
     <ul>
         <li id="knlink">Крестики-нолики</li>
         <li id="sklink">Змейка</li>
-
     </ul>
-    Змейка:<div id="XSY"></div>
-    Еда:<div id="XFY">
+    <div class="hideSnakeAttr">
+        Змейка:<div id="XSY"></div>
+        Еда:<div id="XFY">
     </div>
-    <?php
-    $this->addLocalJs([
-        'experiments/js/games.js',
-        'experiments/js/kn/kn.js',
-        'experiments/js/snake/AI_snake.js',
-        'experiments/js/snake/classFood.js',
-        'experiments/js/snake/classSnake.js',
-        'experiments/js/snake/classSnakeBody.js',
-        'experiments/js/snake/functions.js',
-        'experiments/js/snake/snake.js'
-    ]);
-    ?>
+
+    </div>
+</div>
+
+<?php
+$this->addLocalJs([
+    'experiments/js/games.js',
+    'experiments/js/kn/kn.js',
+    'experiments/js/snake/AI_snake.js',
+    'experiments/js/snake/classFood.js',
+    'experiments/js/snake/classSnake.js',
+    'experiments/js/snake/classSnakeBody.js',
+    'experiments/js/snake/functions.js',
+    'experiments/js/snake/snake.js'
+]);
+?>

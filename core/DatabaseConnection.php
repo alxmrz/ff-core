@@ -4,11 +4,12 @@ namespace core;
 class DatabaseConnection
 {
 
-    protected $dbname = 'webjob';
-    protected $dbuser = 'root';
+    protected $dbname = 'i98535xh_webjob';
+    protected $dbuser = 'i98535xh_webjob';
     protected $dbpassword = 'goblin';
     protected $encoding = 'utf8';
     protected $pdo;
+    private $self;
 
     protected function __construct()
     {
@@ -23,10 +24,11 @@ class DatabaseConnection
         }
     }
     public static function getInstance() {
-        if(!isset($self->pdo)) {
+        if(!isset(self::$self)) {
             return new \core\databaseConnection();
         }
-        return $this->pdo;
+        return self::$self;
+
     }
     public function getPDO() {
         return $this->pdo;

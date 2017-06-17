@@ -5,6 +5,6 @@ class feedbackModel {
      protected $db;
      
      public function __construct() {
-         $this->db = new \core\databaseConnection
+         $this->db = new \core\databaseConnection;
      }
 }

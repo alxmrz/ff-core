@@ -5,10 +5,10 @@ $this->setTitle("Умения");
 <p>Мой уровень владения:</p>
 <ul id="pullover">
     <li>
-        <div id="htm">HTML</div>
+        <div id="html">HTML</div>
     </li>
     <li>
-        <div id="cs">CSS</div>
+        <div id="css">CSS</div>
     </li>
     <li>
         <div id="js">JavaScript</div>
@@ -17,7 +17,10 @@ $this->setTitle("Умения");
         <div id="jq">JQuery</div>
     </li>
     <li>
-        <div id="pm">PHP&MySQL</div>
+        <div id="php">PHP</div>
+    </li>
+    <li>
+        <div id="mysql">MySQL</div>
     </li>
     <li>
         <div id="yii">Yii2</div>
