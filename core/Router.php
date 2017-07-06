@@ -1,11 +1,8 @@
 <?php
 namespace core;
-use PHPUnit\Runner\Exception;
 
 /**
  * Description of router
- *
- * @author Alexandr
  */
 class Router
 {
