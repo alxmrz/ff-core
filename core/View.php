@@ -18,14 +18,13 @@ class View
     /**
      * 
      * @param string $template
-     * @param array $data
+     * @param mixed $data
+     * @return string Возвращает результат генерации шаблона
      */
-    public function render($template,$data=[])
+    public function render($template,$data='')
     {
-        $content = $this->formTemplate($template,$data);
-        require 'view/header.php';
-        echo $content;
-        require 'view/footer.php';
+        return $this->formTemplate($template,$data);
+
     }
 
     /**
@@ -48,12 +47,23 @@ class View
         }
     }
     /**
-     * 
-     * @param string $cssFileName
+     * Добавляет файл стилей на страницу
+     * @param string $cssFileName Путь к файлу CSS относительно директории assets
      */
     public function addLocalCss($cssFileName)
     {
         echo "<link href='/assets/{$cssFileName}' rel='stylesheet' type='text/css' />";
+    }
+
+    /**
+     * Добавляет файл стилей на страницу
+     * Отличие от addLocalCss в том, что файл со стилями
+     * может быть где угодно
+     * @param $cssFileName путь к файлу CSS
+     */
+    public function addSLocalCss($cssFileName)
+    {
+        echo "<link href='{$cssFileName}' rel='stylesheet' type='text/css' />";
     }
     /**
      * 
@@ -71,12 +81,14 @@ class View
      * @param mixed $data
      * @return string
      */
-    protected function formTemplate($template,$data) {
-     ob_start();
-     require "view/{$template}.php";
-     $content = ob_get_contents();
-     ob_clean();
-     return $content;
+    protected function formTemplate($template,$data='')
+    {
+        ob_start();
+        $content = $data;
+        require "view/{$template}.php";
+        $content = ob_get_contents();
+        ob_clean();
+        return $content;
     }
     /**
      * Заголовок устанавливает в шаблоне перед выводом на экран.

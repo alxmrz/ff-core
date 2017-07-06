@@ -14,8 +14,13 @@ class skillsController
         $this->view = new \core\View();
         $this->view->render('skills');
     }
-    protected function actions() {
-        
-    }
 
+    /**
+     * Генерирует страницу
+     */
+    public function generatePage()
+    {
+        $content = $this->view->render('skills');
+        echo $this->view->render('layouts/main',$content);
+    }
 }

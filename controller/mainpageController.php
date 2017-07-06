@@ -1,18 +1,28 @@
 <?php
 namespace controller;
 
-class mainpageController
-{
+use core\Controller;
 
-    function __construct()
+class mainpageController extends Controller
+{
+    /**
+     * Экземпляр класса View
+     * @var \core\View
+     */
+    protected $view;
+
+    public function __construct()
     {
         $this->view = new \core\View();
-        $this->view->render('mainpage');
     }
 
-    public function index()
+    /**
+     * Генерирует всю страницу целиком
+     */
+    public function generatePage()
     {
-        $this->view->render('mainpage');
+        $content = $this->view->render('mainpage');
+        echo $this->view->render('layouts/main',$content);
     }
 
 }

@@ -1,27 +1,36 @@
 <?php
 namespace controller;
 
+use \core\Securety;
+
 class feedbackController
 {
 
     protected $db;
 
-    function __construct()
+    public function __construct($config)
     {
-        $this->db = \core\DatabaseConnection::getInstance()->getPDO();
+        $this->db = \core\DatabaseConnection::getInstance($config)->getPDO();
         $this->view = new \core\View();
         $this->actions();
-        $data = $this->getComments();
-        $this->view->render('feedback', $data);
     }
 
+    /**
+     *  Генерирует страницу с комментариями
+     */
+    public function generatePage()
+    {
+        $data = $this->getComments();
+        $content = $this->view->render('feedback', $data);
+        echo $this->view->render('layouts/main',$content);
+    }
     /**
      * Выполняет инструкции в зависимости от типа действия перед 
      * отображением шаблона
      */
     protected function actions()
     {
-        $post = \core\Securety::filterPostInput();
+        $post = Securety::filterPostInput();
         if (isset($post['action'])&&!empty($post['from'])&&!empty($post['comment'])) {
             switch($post['action']) {
                 case 'addComment':
@@ -47,7 +56,7 @@ class feedbackController
      */
     protected function addComment()
     {
-        $post = \core\Securety::filterPostInput();
+        $post = Securety::filterPostInput();
         $from = $post['from'];
         $comment = $post['comment'];
         $date = "NOW()";
