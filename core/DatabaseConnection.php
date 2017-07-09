@@ -11,7 +11,7 @@ class DatabaseConnection
 {
 
     protected $pdo;
-    private $self;
+    private static $self;
 
     /**
      * DatabaseConnection constructor.
@@ -40,7 +40,7 @@ class DatabaseConnection
      */
     public static function getInstance($config) {
         if(!isset(self::$self)) {
-            return new self($config);
+            self::$self = new self($config);
         }
         return self::$self;
 

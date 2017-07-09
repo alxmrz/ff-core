@@ -1,4 +1,5 @@
-<?php $this->addLocalCss('mainpage/css/mainpage.css'); 
+<?php
+$this->addLocalCss('mainpage/css/mainpage.css');
 $this->setTitle("Главная страница");
 ?>
 <img src="/image/greenman.png" alt="man" id="man" />
@@ -26,6 +27,5 @@ $this->setTitle("Главная страница");
     </p>
     <p> В целом я могу справиться с почти любым видом задач. Главное - адекватные сроки исполнения.
     </p>
-    <!--<p>Если вы хотите посмотреть на структуру этого сайта, то вот ссылка на загрузку ZIP архива  <a href="index.php?download=true">Скачать</a></p>-->
 
 </div>

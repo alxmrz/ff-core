@@ -1,18 +1,21 @@
 <?php
 namespace controller;
 
-use \core\Securety;
+use core\Controller;
+use core\Securety;
+use core\View;
+use model\feedbackModel;
 
-class feedbackController
+
+class feedbackController extends Controller
 {
-
-    protected $db;
+    protected $model;
 
     public function __construct($config)
     {
-        $this->db = \core\DatabaseConnection::getInstance($config)->getPDO();
-        $this->view = new \core\View();
-        $this->actions();
+        $this->model = new feedbackModel($config);
+        $this->view = new View();
+        $this->actions($config);
     }
 
     /**
@@ -20,7 +23,7 @@ class feedbackController
      */
     public function generatePage()
     {
-        $data = $this->getComments();
+        $data = $this->model->getComments();
         $content = $this->view->render('feedback', $data);
         echo $this->view->render('layouts/main',$content);
     }
@@ -34,37 +37,13 @@ class feedbackController
         if (isset($post['action'])&&!empty($post['from'])&&!empty($post['comment'])) {
             switch($post['action']) {
                 case 'addComment':
-                    $this->addComment();
+                    $this->model->addComment();
                     break;                 
             }
             header("Location: /feedback/"); 
         } 
     }
 
-    /**
-     * @return array Возвращает список комментариев
-     */
-    protected function getComments()
-    {
 
-        $res = $this->db->query("SELECT * from feedback");
-        return $res->fetchAll();
-    }
-
-    /**
-     * Добавляет комментарий в базу
-     */
-    protected function addComment()
-    {
-        $post = Securety::filterPostInput();
-        $from = $post['from'];
-        $comment = $post['comment'];
-        $date = "NOW()";
-        $query = "INSERT INTO feedback SET `from`=:sfrom,`comment`=:comment,`date`=NOW()";
-        $res = $this->db->prepare($query);
-        $res->bindValue(':sfrom',$from);
-        $res->bindValue(':comment',$comment);
-        $res->execute();
-    }
 
 }

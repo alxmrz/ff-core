@@ -1,12 +1,14 @@
 <?php
 namespace controller;
 
+use core\Controller;
+
 /**
  * Description of skillsController
  *
  * @author Alexandr
  */
-class skillsController
+class skillsController extends Controller
 {
 
     public function __construct()

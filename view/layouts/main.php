@@ -15,12 +15,13 @@
             <div id="clocks"></div>
             <div id="container">
 
-                <div style="clear:both;"></div>
+
             </div>
 
             <div>
                 <?=$content;?>
             </div>
+            <div style="clear:both;"></div>
 
 
 

@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Глобальные файлы стилей и скриптов
+ * @see core\View::putGlobalCss()
+ */
 return [
     'css' => [
         'class.css',

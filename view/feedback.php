@@ -1,9 +1,10 @@
-<?php $this->addLocalCss('feedback/css/feedback.css'); 
+<?php
+    $this->addLocalCss('feedback/css/feedback.css');
     $this->setTitle("Отзывы");
 ?>
 
 <?php if(isset($error)):?>
-<div><h4><?=$error;?></h4></div>
+    <div><h4><?=$error;?></h4></div>
 <?php endif;?>
 
 <div id="recalls">
