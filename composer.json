@@ -1,7 +1,7 @@
 {
   "name": "alxmrz/uglyframework",
-  "description": "It is my a bit ugly mini-framework. Do not use it.",
-  "homepage": "https://github.com/AlxMrz/PetProject",
+  "description": "It is my a bit ugly pre-mini-framework. Do not use it.",
+  "homepage": "https://github.com/AlxMrz/uglyframework",
   "require": {
     "php": "^5.3.0 || ^7.1"
   }
