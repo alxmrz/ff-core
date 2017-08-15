@@ -7,7 +7,11 @@ function myAutoloader($class)
     } else {
         $class = str_replace("_", DIRECTORY_SEPARATOR, $class);
     }
-    require_once $class . '.php';
+
+    if(file_exists(__DIR__ . '/' . $class . '.php')) {
+        require_once __DIR__ . '/' . $class . '.php';
+    }
+
 }
 
 spl_autoload_register('myAutoloader');

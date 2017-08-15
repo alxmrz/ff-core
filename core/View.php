@@ -13,10 +13,10 @@ class View
 
     public function __construct()
     {
-        $this->assets['global_assets'] = require 'config/assets.php';
+        $this->assets['global_assets'] = require '/config/assets.php';
     }
     /**
-     * 
+     *
      * @param string $template
      * @param mixed $data
      * @return string Возвращает результат генерации шаблона
@@ -66,7 +66,7 @@ class View
         echo "<link href='{$cssFileName}' rel='stylesheet' type='text/css' />";
     }
     /**
-     * 
+     *
      * @param array $jsFileNames
      */
     public function addLocalJs($jsFileNames)
