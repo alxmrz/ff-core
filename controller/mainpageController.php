@@ -9,7 +9,7 @@ class mainpageController extends Controller
      * Экземпляр класса View
      * @var \core\View
      */
-    protected $view;
+    private $view;
 
     public function __construct()
     {

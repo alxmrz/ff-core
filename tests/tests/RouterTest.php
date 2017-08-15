@@ -14,19 +14,18 @@ final class RouterTest extends TestCase
         $_SERVER['REQUEST_URI'] = 'http://job/mainpage/';
         $this->router = new Router(array());
     }
-    public function testRouterInitialization()
+    public function testRouterHaveControllerAndHttpDemultiplexer()
     {
         $this->assertTrue($this->router->getController() instanceof Controller);
         $this->assertTrue($this->router->getHttpDemultiplexer() instanceof HttpDemultiplexer);
     }
-    public function testRouterGeneratesPage()
+    public function testRouterGeneratesPageCorrectly()
     {
       ob_start();
       $this->router->startApplication();
-      $buffer = ob_get_contents();
-      ob_clean();
-      $str = substr('Главная страница',$buffer);
-      $this->assertEqual('Главная страница',$str);
+      $return = ob_get_contents();
+      ob_end_clean();
+      $this->assertContains('Главная страница',$return);
     }
 
 }

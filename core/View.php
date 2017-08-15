@@ -13,7 +13,7 @@ class View
 
     public function __construct()
     {
-        $this->assets['global_assets'] = require '/config/assets.php';
+        $this->assets['global_assets'] = require dirname(__FILE__) . '/../config/assets.php';
     }
     /**
      *
@@ -61,7 +61,7 @@ class View
      * может быть где угодно
      * @param $cssFileName путь к файлу CSS
      */
-    public function addSLocalCss($cssFileName)
+    public function addCssFrom($cssFileName)
     {
         echo "<link href='{$cssFileName}' rel='stylesheet' type='text/css' />";
     }
@@ -85,9 +85,9 @@ class View
     {
         ob_start();
         $content = $data;
-        require "view/{$template}.php";
+        require dirname(__FILE__) . "/../view/{$template}.php";
         $content = ob_get_contents();
-        ob_clean();
+        ob_end_clean();
         return $content;
     }
     /**
@@ -96,6 +96,10 @@ class View
      */
     public function setTitle($title) {
         $this->title = $title;
+    }
+    public function getAssets()
+    {
+      return $this->assets;
     }
 
 }
