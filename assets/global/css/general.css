@@ -34,8 +34,8 @@ select{
 }
 fieldset{
     border-color:#76f69f;
-   /* position:relative;*/
-   
+    /* position:relative;*/
+
     min-height:100%;
     width:950px;
     margin:0px auto 0px auto;
