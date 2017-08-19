@@ -5,32 +5,38 @@ declare(strict_types = 1);
 use core\Router;
 use core\Controller;
 use core\HttpDemultiplexer;
+use core\exceptions\UnavailableRequestException;
 use PHPUnit\Framework\TestCase;
 
 final class RouterTest extends TestCase
 {
 
-  public $router;
+  private $router;
 
   public function setUp()
   {
-    $_SERVER['REQUEST_URI'] = 'http://job/mainpage/';
-    $this->router = new Router(array());
+    
   }
 
   public function testRouterHaveControllerAndHttpDemultiplexer()
   {
+    $_SERVER['REQUEST_URI'] = 'job/mainpage/';
+    $this->router = new Router(array());
     $this->assertTrue($this->router->getController() instanceof Controller);
     $this->assertTrue($this->router->getHttpDemultiplexer() instanceof HttpDemultiplexer);
   }
 
-  public function testRouterGeneratesPageCorrectly()
+  public function testRouterGeneratesMainPageCorrectly()
   {
-    ob_start();
-    $this->router->startApplication();
-    $return = ob_get_contents();
-    ob_end_clean();
-    $this->assertContains('Главная страница', $return);
+    $_SERVER['REQUEST_URI'] = 'job/mainpage/';
+    $this->router = new Router(array());
+    $this->expectOutputRegex('/(Главная страница)/');
+    $this->router->startApplication('');
   }
-
+  public function testThrowingExceptionIfNoAvailableRequestReceived()
+  { 
+    $this->expectException(UnavailableRequestException::class);
+    $_SERVER['REQUEST_URI'] = 'job/unavailablerequest/';
+    $this->router = new Router(array());
+  }
 }
