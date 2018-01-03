@@ -39,17 +39,17 @@ $this->addLocalCss('webeditor/css/webeditor.css');
     <div id='workPanel'>
         <aside>
             <?php if (isset($files)): ?>
-                <ul id='filesList'>
-                    <?php foreach ($files as $file): ?>
-                        <li><?= $file; ?></li>
-                    <?php endforeach; ?>
-                </ul>
+              <ul id='filesList'>
+                  <?php foreach ($files as $file): ?>
+                    <li><?= $file; ?></li>
+                  <?php endforeach; ?>
+              </ul>
             <?php endif; ?>
         </aside>
 
         <textarea cols="90" rows="35" id='codeScreen'>
             <?php if (isset($response)): ?>
-                <?php print_r($response); ?>
+              <?php print_r($response); ?>
             <?php endif; ?>
         </textarea>
 

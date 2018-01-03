@@ -1,37 +1,99 @@
 <?php
+
 namespace core;
 
+use core\HttpDemultiplexer;
+use core\exceptions\UnavailableRequestException;
+
 /**
- * Description of router
+ * Класс Router - основной класс приложения. 
  */
 class Router
 {
-    protected $controller;
-    public function __construct($config)
-    {
-        try {
-            $urlParams = explode('/', ($_SERVER['REQUEST_URI']));
 
-            if (!empty($urlParams[1])) {
-                $pageController = 'controller\\' . $urlParams[1] . 'Controller';
-            } else {
-                $pageController = 'controller\mainpageController';
-            }
+  private $controller;
+  private $httpDemultiplexer;
+  private $pageToRender;
+  private $params;
+  private $requestsExpected = array(
+      'mainpage',
+      'skills',
+      'feedback'
+  );
 
-            $this->controller = new $pageController($config);
+  public function startApplication()
+  {
+    return $this->controller->generatePage();
+  }
 
-        } catch(Exception $e) {
+  public function __construct($config)
+  {
+    $this->httpDemultiplexer = new HttpDemultiplexer;
+    $this->setUrlParams();
+    $this->attachControllerToRouter($this->generateControllerName(), $config);
+  }
 
-            $errorMessage = $e->getMessage();
-            require '/view/error.php';
-            exit();
-        }
-
+  /**
+   * Ищет по URI запрашиваемый запрос
+   */
+  private function setUrlParams()
+  {
+    $server = $this->httpDemultiplexer->getServer();
+    $explodedArray = explode('/', ($server['REQUEST_URI']));
+    $this->pageToRender = $explodedArray[1];
+    if(empty($this->pageToRender)) {
+      $this->pageToRender = 'mainpage';
     }
+  }
 
-    public function startApplication()
-    {
-        return $this->controller->generatePage();
+  private function generateControllerName(): String
+  {
+    if ($this->isRequestExpected()) {
+      $pageController = 'controller\\' . $this->pageToRender . 'Controller';
+    } else {
+      $pageController = 'controller\mainpageController';
     }
+    return $pageController;
+  }
+
+  /**
+   * Проверяет валидность запроса страницы
+   * @return boolen 
+   * @throws UnavailableRequestException если вызванный запрос не существует 
+   */
+  private function isRequestExpected()
+  {
+    if (in_array($this->pageToRender, $this->requestsExpected)) {
+      return true;
+    }
+    throw new UnavailableRequestException("REQUEST IS NOT AVAILIBLE");
+  }
+
+  /**
+   * 
+   * @param String $pageController Название нужного контроллева
+   * @param array $config Глобальная конфигурация
+   * @throws Exception 
+   */
+  private function attachControllerToRouter(String $pageController, array $config)
+  {
+    try {
+      $this->controller = new $pageController($config);
+    } catch (Exception $e) {
+      $errorMessage = $e->getMessage();
+      require '/view/error.php';
+      exit();
+    }
+  }
+
+  public function getHttpDemultiplexer()
+  {
+    return $this->httpDemultiplexer;
+  }
+
+  public function getController()
+  {
+    return $this->controller;
+  }
 
 }

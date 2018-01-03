@@ -1,0 +1,8 @@
+{
+    "name": "alxmrz/frozenframework",
+    "require": {
+        "monolog/monolog": "1.0.*",
+        "phpunit/phpunit": "^6.5",
+        "twig/twig": "^2.0"
+    }
+}

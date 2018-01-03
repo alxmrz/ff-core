@@ -1,4 +1,5 @@
 <?php
+
 namespace controller;
 
 use core\Controller;
@@ -11,18 +12,19 @@ use core\Controller;
 class skillsController extends Controller
 {
 
-    public function __construct()
-    {
-        $this->view = new \core\View();
-        $this->view->render('skills');
-    }
+  public function __construct()
+  {
+    $this->view = new \core\View();
+    $this->view->render('skills');
+  }
 
-    /**
-     * Генерирует страницу
-     */
-    public function generatePage()
-    {
-        $content = $this->view->render('skills');
-        echo $this->view->render('layouts/main',$content);
-    }
+  /**
+   * Генерирует страницу
+   */
+  public function generatePage()
+  {
+    $content = $this->view->render('skills');
+    echo $this->view->render('layouts/main', $content);
+  }
+
 }
