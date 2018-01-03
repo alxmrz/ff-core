@@ -6,7 +6,7 @@ use core\HttpDemultiplexer;
 use core\exceptions\UnavailableRequestException;
 
 /**
- * Description of router
+ * Класс Router - основной класс приложения. 
  */
 class Router
 {
@@ -48,7 +48,7 @@ class Router
 
   private function generateControllerName(): String
   {
-    if ($this->isRequestExist()) {
+    if ($this->isRequestExpected()) {
       $pageController = 'controller\\' . $this->pageToRender . 'Controller';
     } else {
       $pageController = 'controller\mainpageController';
@@ -57,14 +57,10 @@ class Router
   }
 
   /**
-   * Проверяет существование запроса страницы
+   * Проверяет валидность запроса страницы
    * @return boolen 
+   * @throws UnavailableRequestException если вызванный запрос не существует 
    */
-  private function isRequestExist()
-  {
-    return $this->isRequestExpected() && !empty($this->pageToRender);
-  }
-
   private function isRequestExpected()
   {
     if (in_array($this->pageToRender, $this->requestsExpected)) {
