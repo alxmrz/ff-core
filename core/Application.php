@@ -6,11 +6,10 @@ use core\HttpDemultiplexer;
 use core\exceptions\UnavailableRequestException;
 
 /**
- * Класс Router - основной класс приложения. 
+ * Класс Application - основной класс приложения. 
  */
-class Router
+class Application
 {
-
   private $controller;
   private $httpDemultiplexer;
   private $pageToRender;
@@ -21,7 +20,7 @@ class Router
       'feedback'
   );
 
-  public function startApplication()
+  public function run()
   {
     return $this->controller->generatePage();
   }
@@ -30,7 +29,7 @@ class Router
   {
     $this->httpDemultiplexer = new HttpDemultiplexer;
     $this->setUrlParams();
-    $this->attachControllerToRouter($this->generateControllerName(), $config);
+    $this->attachControllerToApplication($this->generateControllerName(), $config);
   }
 
   /**
@@ -75,7 +74,7 @@ class Router
    * @param array $config Глобальная конфигурация
    * @throws Exception 
    */
-  private function attachControllerToRouter(String $pageController, array $config)
+  private function attachControllerToApplication(String $pageController, array $config)
   {
     try {
       $this->controller = new $pageController($config);

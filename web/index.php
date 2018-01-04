@@ -1,7 +1,6 @@
 <?php
+require __DIR__ . '/../myautoloader.php';
 
-require 'myautoloader.php';
+$config = require __DIR__ . '/../config/dbconf.php';
 
-$config = require 'config/dbconf.php';
-
-(new core\Router($config))->startApplication();
+(new core\Application($config))->run();
