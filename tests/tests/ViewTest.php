@@ -33,13 +33,8 @@ final class ViewTest extends TestCase
     $this->assertEquals($this->view->getAssets()['global_assets'], $arrayMustBe);
   }
 
-  public function testViewRenderMainpageTemplate()
-  {
-    $return = $this->view->render('mainpage');
-    $this->assertContains('mainpage', $return);
-  }
 
-  public function testAddingGlobalCss()
+  /*public function testAddingGlobalCss()
   {
     $this->expectOutputRegex('/(<link href=\'\/assets\/global\/css\/)/');
     $this->view->putGlobalCss();
@@ -67,6 +62,6 @@ final class ViewTest extends TestCase
   {
     $this->expectOutputRegex('/<link href=\'/');
     $this->view->addCssFrom('');
-  }
+  }*/
 
 }

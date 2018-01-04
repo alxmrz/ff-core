@@ -1,25 +1,26 @@
-<?php
-$this->addLocalCss('feedback/css/feedback.css');
-$this->setTitle("Отзывы");
-?>
+{{localCss|raw}}
 
-<?php if (isset($error)): ?>
-  <div><h4><?= $error; ?></h4></div>
-<?php endif; ?>
+{% if error|length > 0 %}
+  <div><h4>{{error}}</h4></div>
+{% endif %}
 
 <div id="recalls">
     <h1>Отзывы</h1>
-    <?php if (isset($data)): ?>
+    {% if recalls|length > 0 %}
       <div class="recalls">
-          <?php foreach ($data as $recall): ?>
+        
+          {% for recall in recalls %}
+              
             <div class="recall">
-                <p>Имя: <?php echo $recall['from'] . " Дата: " . $recall['date']; ?> </p>
-                <p>Комментарий: <?php echo $recall['comment']; ?></p> 
+                <p>Имя1: {{recall.from|e}} Дата: {{recall.date|e}} </p>
+                <p>Комментарий: {{recall.comment|e}}</p> 
             </div>
             <hr />
-          <?php endforeach; ?>
+            
+          {% endfor %}
+          
       </div>
-    <?php endif; ?>
+    {% endif %}
 </div>
 
 <h1>Ваш отзыв</h1>

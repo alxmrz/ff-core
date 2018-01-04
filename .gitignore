@@ -2,6 +2,7 @@
 *~
 files
 log
+cache
 nbproject
 vendor
 .idea

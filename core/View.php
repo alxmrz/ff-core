@@ -2,11 +2,14 @@
 
 namespace core;
 
+use Twig\Loader\FilesystemLoader;
+use Twig\Environment;
+
 /**
  * Description of View
  *
  * @author Alexandr
- */
+ */;
 class View
 {
 
@@ -22,31 +25,43 @@ class View
    *
    * @param string $template
    * @param mixed $data
-   * @return string Возвращает результат генерации шаблона
+   * @return  string Возвращает результат генерации шаблона
    */
-  public function render($template, $data = '')
+  public function render($template, $data = [])
   {
-    return $this->formTemplate($template, $data);
+    
+    $loader = new \Twig_Loader_Filesystem('../view/');
+    $twig = new \Twig_Environment($loader, array(
+        'cache' => 'cache/twig/',
+        'debug' => true
+    ));
+    $template = $twig->load($template.'.twig');
+
+    return  $template->render($data);
   }
 
   /**
    * Добавляет глобальные css файлы для сайта в тегах <header></header>
    */
-  public function putGlobalCss()
+  public function getGlobalCss()
   {
+    $return = '';
     foreach ($this->assets['global_assets']['css'] as $style) {
-      echo "<link href='/assets/global/css/{$style}' rel='stylesheet' type='text/css' />";
+      $return .= "<link href='/assets/global/css/{$style}' rel='stylesheet' type='text/css' />";
     }
+    return $return;
   }
 
   /**
    * Добавляет глобальные js файлы в конце страницы
    */
-  public function putGlobalJs()
+  public function getGlobalJs()
   {
+    $return = '';
     foreach ($this->assets['global_assets']['js'] as $script) {
-      echo "<script src='/assets/global/js/{$script}'></script>";
+      $return .= "<script src='/assets/global/js/{$script}'></script>";
     }
+    return $return;
   }
 
   /**
@@ -55,7 +70,7 @@ class View
    */
   public function addLocalCss($cssFileName)
   {
-    echo "<link href='/assets/{$cssFileName}' rel='stylesheet' type='text/css' />";
+    return "<link href='/assets/{$cssFileName}' rel='stylesheet' type='text/css' />";
   }
 
   /**
@@ -66,21 +81,23 @@ class View
    */
   public function addCssFrom($cssFileName)
   {
-    echo "<link href='{$cssFileName}' rel='stylesheet' type='text/css' />";
+    return "<link href='{$cssFileName}' rel='stylesheet' type='text/css' />";
   }
 
   public function addLocalJs($jsFileNames)
   {
+    $return = '';
     foreach ($jsFileNames as $jsFileName) {
-      echo "<script src='/assets/{$jsFileName}'></script>";
+      $return .= "<script src='/assets/{$jsFileName}'></script>";
     }
+    return $return;
   }
 
   /**
    * Возвращает результат подключения шаблона.
    * @param string $template
    * @param mixed $data
-   * @return string
+   * @return  string
    */
   private function formTemplate($template, $data = '')
   {
@@ -89,7 +106,7 @@ class View
     require dirname(__FILE__) . "/../view/{$template}.php";
     $content = ob_get_contents();
     ob_end_clean();
-    return $content;
+    return  $content;
   }
 
   /**
@@ -103,7 +120,11 @@ class View
 
   public function getAssets()
   {
-    return $this->assets;
+    return  $this->assets;
+  }
+  public function getTitle()
+  {
+    return  $this->title;
   }
 
 }
