@@ -31,7 +31,7 @@ class View
     
     $loader = new \Twig_Loader_Filesystem('../view/');
     $twig = new \Twig_Environment($loader, array(
-        'cache' => 'cache/twig/',
+        'cache' => '../cache/twig/',
         'debug' => true
     ));
     $template = $twig->load($template.'.twig');

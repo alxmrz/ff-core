@@ -4,6 +4,9 @@ namespace core;
 
 use core\HttpDemultiplexer;
 use core\exceptions\UnavailableRequestException;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+use Monolog\Handler\FirePHPHandler;
 
 /**
  * Класс Application - основной класс приложения. 
@@ -30,12 +33,18 @@ class Application
   public function __construct(array $config = [])
   {
     try {
+      $this->registerLogger();
+      
       $this->httpDemultiplexer = new HttpDemultiplexer;
       $this->setUrlParams();
+      $this->logger->info('Registered request', array('request' => $this->httpDemultiplexer->getServer()['REQUEST_URI'], 'ip' => $_SERVER['REMOTE_ADDR']));
       $this->registerController($config);
+      
     } catch (UnavailableRequestException $unex) {
-      $this->showErrorPage($unex , '404 Страница не найдена');
+      $this->logger->info('Not available request', array('request' => $this->httpDemultiplexer->getServer()['REQUEST_URI'], 'ip' => $_SERVER['REMOTE_ADDR']));
+      $this->showErrorPage($unex, '404 Страница не найдена');
     } catch (\Exception $ex) {
+      $this->logger->info('Unexpected exception', array('message' => $ex->getMessage(), 'ip' => $_SERVER['REMOTE_ADDR']));
       $this->showErrorPage(ex);
     }
   }
@@ -82,6 +91,16 @@ class Application
     $pageController = 'controller\\' . $this->pageToRender . 'Controller';
 
     $this->controller = new $pageController($config);
+  }
+
+  private function registerLogger()
+  {
+    $logger = new Logger('Request_logger');
+
+    $logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/my_app.log', Logger::DEBUG));
+    $logger->pushHandler(new FirePHPHandler());
+    
+    $this->logger = $logger;
   }
 
   public function getHttpDemultiplexer(): HttpDemultiplexer
