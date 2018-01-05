@@ -33,35 +33,33 @@ final class ViewTest extends TestCase
     $this->assertEquals($this->view->getAssets()['global_assets'], $arrayMustBe);
   }
 
-
-  /*public function testAddingGlobalCss()
+  public function testAddingGlobalCss()
   {
-    $this->expectOutputRegex('/(<link href=\'\/assets\/global\/css\/)/');
-    $this->view->putGlobalCss();
+    $this->assertContains("<link href='/assets/global/css/", $this->view->getGlobalCss());
   }
 
   public function testAddingGlobalJs()
   {
-    $this->expectOutputRegex('/<script src=\'\/assets\/global\/js\//');
-    $this->view->putGlobalJs();
+    $this->assertContains("<script src='/assets/global/js/", $this->view->getGlobalJs());
   }
 
   public function testAddingLocalCss()
   {
-    $this->expectOutputRegex('/<link href=\'\/assets\//');
-    $this->view->addLocalCss('');
+    $this->assertContains("<link href='/assets/mainpage/css/", $this->view->addLocalCss('mainpage/css/'));
   }
 
   public function testAddingLocalJs()
   {
-    $this->expectOutputRegex('/<script src=\'\/assets\//');
-    $this->view->addLocalJs(array(''));
+    $this->assertContains("<script src='/assets/mainpage/js/", $this->view->addLocalJs('mainpage/js/'));
   }
 
   public function testAddingCssFromAPath()
   {
-    $this->expectOutputRegex('/<link href=\'/');
-    $this->view->addCssFrom('');
-  }*/
+    $this->assertContains("<link href='/path/to/css/", $this->view->addCssFrom('/path/to/css/'));
+  }
+  public function testRenderingCurrectPage()
+  {
+    $this->assertContains("greenman", $this->view->render('mainpage'));
+  }
 
 }

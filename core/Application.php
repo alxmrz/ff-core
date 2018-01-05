@@ -10,9 +10,11 @@ use core\exceptions\UnavailableRequestException;
  */
 class Application
 {
+
   private $controller;
   private $httpDemultiplexer;
   private $pageToRender;
+  private $runResult = 1;
   private $params;
   private $requestsExpected = array(
       'mainpage',
@@ -22,37 +24,43 @@ class Application
 
   public function run()
   {
-    return $this->controller->generatePage();
+    return $this->runResult === 1 ? $this->controller->generatePage() : '';
   }
 
-  public function __construct($config)
+  public function __construct(array $config = [])
   {
-    $this->httpDemultiplexer = new HttpDemultiplexer;
-    $this->setUrlParams();
-    $this->attachControllerToApplication($this->generateControllerName(), $config);
+    try {
+      $this->httpDemultiplexer = new HttpDemultiplexer;
+      $this->setUrlParams();
+      $this->registerController($config);
+    } catch (UnavailableRequestException $unex) {
+      $this->showErrorPage($unex , '404 Страница не найдена');
+    } catch (\Exception $ex) {
+      $this->showErrorPage(ex);
+    }
+  }
+
+  private function showErrorPage(\Exception $ex, string $additionInfo = '')
+  {
+    $this->runResult = 0;
+    $additionInfo = $additionInfo;
+    $errorMessage = $ex->getMessage();
+    require '../view/error.php';
   }
 
   /**
    * Ищет по URI запрашиваемый запрос
    */
-  private function setUrlParams()
+  private function setUrlParams(): void
   {
     $server = $this->httpDemultiplexer->getServer();
     $explodedArray = explode('/', ($server['REQUEST_URI']));
     $this->pageToRender = $explodedArray[1];
-    if(empty($this->pageToRender)) {
+    if (empty($this->pageToRender)) {
       $this->pageToRender = 'mainpage';
     }
-  }
 
-  private function generateControllerName(): String
-  {
-    if ($this->isRequestExpected()) {
-      $pageController = 'controller\\' . $this->pageToRender . 'Controller';
-    } else {
-      $pageController = 'controller\mainpageController';
-    }
-    return $pageController;
+    $this->isRequestExpected();
   }
 
   /**
@@ -60,39 +68,35 @@ class Application
    * @return boolen 
    * @throws UnavailableRequestException если вызванный запрос не существует 
    */
-  private function isRequestExpected()
+  private function isRequestExpected(): bool
   {
     if (in_array($this->pageToRender, $this->requestsExpected)) {
       return true;
     }
-    throw new UnavailableRequestException("REQUEST IS NOT AVAILIBLE");
+    throw new UnavailableRequestException("REQUEST {$this->pageToRender} IS NOT AVAILIBLE");
   }
 
-  /**
-   * 
-   * @param String $pageController Название нужного контроллева
-   * @param array $config Глобальная конфигурация
-   * @throws Exception 
-   */
-  private function attachControllerToApplication(String $pageController, array $config)
+  private function registerController(array $config = []): void
   {
-    try {
-      $this->controller = new $pageController($config);
-    } catch (Exception $e) {
-      $errorMessage = $e->getMessage();
-      require '/view/error.php';
-      exit();
-    }
+
+    $pageController = 'controller\\' . $this->pageToRender . 'Controller';
+
+    $this->controller = new $pageController($config);
   }
 
-  public function getHttpDemultiplexer()
+  public function getHttpDemultiplexer(): HttpDemultiplexer
   {
     return $this->httpDemultiplexer;
   }
 
-  public function getController()
+  public function getController(): \core\Controller
   {
     return $this->controller;
+  }
+
+  public function getPageToRender(): string
+  {
+    return $this->pageToRender;
   }
 
 }

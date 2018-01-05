@@ -2,17 +2,16 @@
 
 namespace core;
 
-use Twig\Loader\FilesystemLoader;
-use Twig\Environment;
-
 /**
  * Description of View
  *
  * @author Alexandr
- */;
+ */
 class View
 {
-
+  /**
+   * @var string
+   */
   protected $title;
   protected $assets;
 
@@ -68,7 +67,7 @@ class View
    * Добавляет файл стилей на страницу
    * @param string $cssFileName Путь к файлу CSS относительно директории assets
    */
-  public function addLocalCss($cssFileName)
+  public function addLocalCss($cssFileName = '')
   {
     return "<link href='/assets/{$cssFileName}' rel='stylesheet' type='text/css' />";
   }
@@ -84,29 +83,9 @@ class View
     return "<link href='{$cssFileName}' rel='stylesheet' type='text/css' />";
   }
 
-  public function addLocalJs($jsFileNames)
+  public function addLocalJs(string $jsFileName)
   {
-    $return = '';
-    foreach ($jsFileNames as $jsFileName) {
-      $return .= "<script src='/assets/{$jsFileName}'></script>";
-    }
-    return $return;
-  }
-
-  /**
-   * Возвращает результат подключения шаблона.
-   * @param string $template
-   * @param mixed $data
-   * @return  string
-   */
-  private function formTemplate($template, $data = '')
-  {
-    ob_start();
-    $content = $data;
-    require dirname(__FILE__) . "/../view/{$template}.php";
-    $content = ob_get_contents();
-    ob_end_clean();
-    return  $content;
+    return "<script src='/assets/{$jsFileName}'></script>";
   }
 
   /**
