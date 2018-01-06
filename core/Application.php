@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @author Alexandr Moroz <alexandr.moroz97@mail.com>
+ */
 namespace core;
 
 use core\HttpDemultiplexer;
@@ -13,23 +15,48 @@ use Monolog\Handler\FirePHPHandler;
  */
 class Application
 {
-
+  /**
+   * Контроллер приложения на основе запроса
+   * @var \core\Controller 
+   */
   private $controller;
+  /**
+   * Класс, возвращающий данные http запроса (GET, POST, SERVER)
+   * @var \core\HttpDemultiplexer
+   */
   private $httpDemultiplexer;
+  /**
+   * Наименование страницы (шаблона), который нужно отобразить
+   * @var string 
+   */
   private $pageToRender;
+  /**
+   * Флаг, показывающий, успешно ли запущено приложение
+   * @var int 
+   */
   private $runResult = 1;
-  private $params;
+  
+  /**
+   * Массив доступных запросов, которые можно отобразить, иначе 404 ошибка
+   * @var array 
+   */
   private $requestsExpected = array(
       'mainpage',
       'skills',
       'feedback'
   );
-
+  /**
+   * Основной публичный метод приложения. Точка входа.
+   * @return int флаг успешности запуска приложения
+   */
   public function run()
   {
-    return $this->runResult === 1 ? $this->controller->generatePage() : '';
+    return $this->runResult === 1 ? $this->controller->generatePage() : $this->runResult;
   }
 
+  /**
+   * @param array $config Конфигурация приложения
+   */
   public function __construct(array $config = [])
   {
     try {
@@ -48,7 +75,11 @@ class Application
       $this->showErrorPage(ex);
     }
   }
-
+  /**
+   * Метод отображает шаблон об ошибке, в случае необработанного исключения
+   * @param \Exception $ex исключение, выбрашенное приложением.
+   * @param string $additionInfo Информация для посетителя об ошибке
+   */
   private function showErrorPage(\Exception $ex, string $additionInfo = '')
   {
     $this->runResult = 0;
@@ -59,6 +90,7 @@ class Application
 
   /**
    * Ищет по URI запрашиваемый запрос
+   * @return void
    */
   private function setUrlParams(): void
   {
@@ -84,7 +116,11 @@ class Application
     }
     throw new UnavailableRequestException("REQUEST {$this->pageToRender} IS NOT AVAILIBLE");
   }
-
+  /**
+   * Регистрирует контроллер приложения на основе запроса.
+   * @param array $config конфиг приложения
+   * @return void
+   */
   private function registerController(array $config = []): void
   {
 
@@ -92,8 +128,11 @@ class Application
 
     $this->controller = new $pageController($config);
   }
-
-  private function registerLogger()
+  /**
+   * Регистрирует логгер (сейчас monolog)
+   * @return void
+   */
+  private function registerLogger(): void
   {
     $logger = new Logger('Request_logger');
 
@@ -102,17 +141,26 @@ class Application
     
     $this->logger = $logger;
   }
-
+  /**
+   * 
+   * @return HttpDemultiplexer
+   */
   public function getHttpDemultiplexer(): HttpDemultiplexer
   {
     return $this->httpDemultiplexer;
   }
-
+  /**
+   * 
+   * @return \core\Controller
+   */
   public function getController(): \core\Controller
   {
     return $this->controller;
   }
-
+  /**
+   * 
+   * @return string
+   */
   public function getPageToRender(): string
   {
     return $this->pageToRender;

@@ -5,26 +5,33 @@ namespace core;
 /**
  * Description of View
  *
- * @author Alexandr
+ * @author Alexandr Moroz
  */
 class View
 {
   /**
+   * Заголовок страницы
    * @var string
    */
   protected $title;
+  /**
+   * Массив зависимостей
+   * @var array 
+   */
   protected $assets;
-
+  /**
+   * Конструктор класса View
+   */
   public function __construct()
   {
     $this->assets['global_assets'] = require dirname(__FILE__) . '/../config/assets.php';
   }
 
   /**
-   *
+   * Возвращает результат генерации шаблона
    * @param string $template
    * @param mixed $data
-   * @return  string Возвращает результат генерации шаблона
+   * @return  string 
    */
   public function render($template, $data = [])
   {
@@ -41,6 +48,7 @@ class View
 
   /**
    * Добавляет глобальные css файлы для сайта в тегах <header></header>
+   * @return string
    */
   public function getGlobalCss()
   {
@@ -53,6 +61,7 @@ class View
 
   /**
    * Добавляет глобальные js файлы в конце страницы
+   * @return string
    */
   public function getGlobalJs()
   {
@@ -82,7 +91,11 @@ class View
   {
     return "<link href='{$cssFileName}' rel='stylesheet' type='text/css' />";
   }
-
+  /**
+   * Подключает отдельный js файл
+   * @param string $jsFileName название подключаемого js файла
+   * @return string
+   */
   public function addLocalJs(string $jsFileName)
   {
     return "<script src='/assets/{$jsFileName}'></script>";
@@ -96,11 +109,18 @@ class View
   {
     $this->title = $title;
   }
-
+  /**
+   * Возвращает массив медиа-зависимостей
+   * @return array
+   */
   public function getAssets()
   {
     return  $this->assets;
   }
+  /**
+   * Возвращает название заголовка страницы
+   * @return string
+   */
   public function getTitle()
   {
     return  $this->title;
