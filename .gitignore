@@ -1,7 +1,8 @@
 *.[oa]
 *~
 files
-logs
+log
+cache
 nbproject
 vendor
 .idea

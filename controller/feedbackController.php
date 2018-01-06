@@ -24,9 +24,18 @@ class feedbackController extends Controller
    */
   public function generatePage()
   {
+    $this->view->setTitle('Отзывы');
     $data = $this->model->getComments();
-    $content = $this->view->render('feedback', $data);
-    echo $this->view->render('layouts/main', $content);
+    
+    $mainData = [
+        'contentTemplate' => 'feedback.twig',
+        'recalls' => $data,
+        'localCss'=> $this->view->addLocalCss('feedback/css/feedback.css'),
+        'title' => $this->view->getTitle(),
+        'globalCss' => $this->view->getGlobalCss(),
+        'globalJs' => $this->view->getGlobalJs()
+    ];
+    echo $this->view->render('layouts/main', $mainData);
   }
 
   /**

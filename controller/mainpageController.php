@@ -23,8 +23,16 @@ class mainpageController extends Controller
    */
   public function generatePage()
   {
-    $content = $this->view->render('mainpage');
-    echo $this->view->render('layouts/main', $content);
+    $this->view->setTitle('Главная страница');
+
+    $mainData = [
+        'contentTemplate' => 'mainpage.twig',
+        'title' => $this->view->getTitle(),
+        'globalCss' => $this->view->getGlobalCss(),
+        'globalJs' => $this->view->getGlobalJs(),
+        'localCss' => $this->view->addLocalCss('mainpage/css/mainpage.css'),  
+    ];
+    echo $this->view->render('layouts/main', $mainData);
   }
 
 }

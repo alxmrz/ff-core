@@ -6,7 +6,7 @@ abstract class Controller
 {
 
   /**
-   * @return mixed Выводит результирующую страницу на экран
+   * Выводит результирующую страницу на экран
    */
   public abstract function generatePage();
 }

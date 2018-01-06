@@ -1,0 +1,32 @@
+{{localCss|raw}}
+
+{% if error|length > 0 %}
+  <div><h4>{{error}}</h4></div>
+{% endif %}
+
+<div id="recalls">
+    <h1>Отзывы</h1>
+    {% if recalls|length > 0 %}
+      <div class="recalls">
+        
+          {% for recall in recalls %}
+              
+            <div class="recall">
+                <p>Имя1: {{recall.from|e}} Дата: {{recall.date|e}} </p>
+                <p>Комментарий: {{recall.comment|e}}</p> 
+            </div>
+            <hr />
+            
+          {% endfor %}
+          
+      </div>
+    {% endif %}
+</div>
+
+<h1>Ваш отзыв</h1>
+<form action="index.php" method="post">
+    <input type="text" class="text" placeholder="Ваше имя" required="required" name="from" /><br />
+    <textarea name="comment" class="text" placeholder="Ваш отзыв" cols="30" required="required" rows="10"></textarea> <br />
+    <input type="hidden" name="action" value="addComment" />
+    <input type="submit" class="button" name="addComment" value="Добавить комментарий" />
+</form>

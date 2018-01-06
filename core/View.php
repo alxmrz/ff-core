@@ -5,57 +5,80 @@ namespace core;
 /**
  * Description of View
  *
- * @author Alexandr
+ * @author Alexandr Moroz
  */
 class View
 {
-
+  /**
+   * Заголовок страницы
+   * @var string
+   */
   protected $title;
+  /**
+   * Массив зависимостей
+   * @var array 
+   */
   protected $assets;
-
+  /**
+   * Конструктор класса View
+   */
   public function __construct()
   {
     $this->assets['global_assets'] = require dirname(__FILE__) . '/../config/assets.php';
   }
 
   /**
-   *
+   * Возвращает результат генерации шаблона
    * @param string $template
    * @param mixed $data
-   * @return string Возвращает результат генерации шаблона
+   * @return  string 
    */
-  public function render($template, $data = '')
+  public function render($template, $data = [])
   {
-    return $this->formTemplate($template, $data);
+    
+    $loader = new \Twig_Loader_Filesystem('../view/');
+    $twig = new \Twig_Environment($loader, array(
+        'cache' => '../cache/twig/',
+        'debug' => true
+    ));
+    $template = $twig->load($template.'.twig');
+
+    return  $template->render($data);
   }
 
   /**
    * Добавляет глобальные css файлы для сайта в тегах <header></header>
+   * @return string
    */
-  public function putGlobalCss()
+  public function getGlobalCss()
   {
+    $return = '';
     foreach ($this->assets['global_assets']['css'] as $style) {
-      echo "<link href='/assets/global/css/{$style}' rel='stylesheet' type='text/css' />";
+      $return .= "<link href='/assets/global/css/{$style}' rel='stylesheet' type='text/css' />";
     }
+    return $return;
   }
 
   /**
    * Добавляет глобальные js файлы в конце страницы
+   * @return string
    */
-  public function putGlobalJs()
+  public function getGlobalJs()
   {
+    $return = '';
     foreach ($this->assets['global_assets']['js'] as $script) {
-      echo "<script src='/assets/global/js/{$script}'></script>";
+      $return .= "<script src='/assets/global/js/{$script}'></script>";
     }
+    return $return;
   }
 
   /**
    * Добавляет файл стилей на страницу
    * @param string $cssFileName Путь к файлу CSS относительно директории assets
    */
-  public function addLocalCss($cssFileName)
+  public function addLocalCss($cssFileName = '')
   {
-    echo "<link href='/assets/{$cssFileName}' rel='stylesheet' type='text/css' />";
+    return "<link href='/assets/{$cssFileName}' rel='stylesheet' type='text/css' />";
   }
 
   /**
@@ -66,30 +89,16 @@ class View
    */
   public function addCssFrom($cssFileName)
   {
-    echo "<link href='{$cssFileName}' rel='stylesheet' type='text/css' />";
+    return "<link href='{$cssFileName}' rel='stylesheet' type='text/css' />";
   }
-
-  public function addLocalJs($jsFileNames)
-  {
-    foreach ($jsFileNames as $jsFileName) {
-      echo "<script src='/assets/{$jsFileName}'></script>";
-    }
-  }
-
   /**
-   * Возвращает результат подключения шаблона.
-   * @param string $template
-   * @param mixed $data
+   * Подключает отдельный js файл
+   * @param string $jsFileName название подключаемого js файла
    * @return string
    */
-  private function formTemplate($template, $data = '')
+  public function addLocalJs(string $jsFileName)
   {
-    ob_start();
-    $content = $data;
-    require dirname(__FILE__) . "/../view/{$template}.php";
-    $content = ob_get_contents();
-    ob_end_clean();
-    return $content;
+    return "<script src='/assets/{$jsFileName}'></script>";
   }
 
   /**
@@ -100,10 +109,21 @@ class View
   {
     $this->title = $title;
   }
-
+  /**
+   * Возвращает массив медиа-зависимостей
+   * @return array
+   */
   public function getAssets()
   {
-    return $this->assets;
+    return  $this->assets;
+  }
+  /**
+   * Возвращает название заголовка страницы
+   * @return string
+   */
+  public function getTitle()
+  {
+    return  $this->title;
   }
 
 }

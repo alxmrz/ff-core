@@ -23,8 +23,16 @@ class skillsController extends Controller
    */
   public function generatePage()
   {
-    $content = $this->view->render('skills');
-    echo $this->view->render('layouts/main', $content);
+    $this->view->setTitle('Умения');
+
+    $mainData = [
+        'contentTemplate' => 'skills.twig',
+        'title' => $this->view->getTitle(),
+        'globalCss' => $this->view->getGlobalCss(),
+        'globalJs' => $this->view->getGlobalJs(),
+        'localCss' => $this->view->addLocalCss('skills/css/skills.css'),  
+    ];
+    echo $this->view->render('layouts/main', $mainData);
   }
 
 }
