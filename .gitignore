@@ -5,6 +5,7 @@ log
 cache
 nbproject
 vendor
+web/docs
 .idea
 /Errors.log
 *.log
