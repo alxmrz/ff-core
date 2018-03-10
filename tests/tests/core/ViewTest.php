@@ -59,7 +59,7 @@ final class ViewTest extends TestCase
   }
   public function testRenderingCurrectPage()
   {
-    $this->assertContains("greenman", $this->view->render('mainpage'));
+    $this->assertContains("snowflake", $this->view->render('mainpage'));
   }
 
 }

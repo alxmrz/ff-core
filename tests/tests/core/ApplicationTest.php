@@ -29,18 +29,12 @@ final class ApplicationTest extends TestCase
   {
     $this->application = new Application();
     $this->assertEquals('mainpage', $this->application->getPageToRender());
-    $_SERVER['REQUEST_URI'] = 'job/skills/';
-    $this->application = new Application();
-    $this->assertEquals('skills', $this->application->getPageToRender());
   }
   
   public function testApplicationGeneratesRightController(): void
   {
     $this->application = new Application();
     $this->assertInstanceOf(\controller\mainpageController::class, $this->application->getController());
-    $_SERVER['REQUEST_URI'] = 'job/skills/';
-    $this->application = new Application();
-    $this->assertInstanceOf(\controller\skillsController::class, $this->application->getController());
   }
   
   public function testApplicationShowsErrorPageIfException(): void 

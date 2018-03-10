@@ -1,10 +1,14 @@
 <?php
 /**
+ * Copyright (c) 2018. Bla bla bla it is a licension bla bla bla it is protected from illegal copy bla bla bla use free only
+ */
+
+/**
  * @author Alexandr Moroz <alexandr.moroz97@mail.com>
  */
 namespace core;
 
-use core\HttpDemultiplexer;
+
 use core\exceptions\UnavailableRequestException;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
@@ -13,7 +17,7 @@ use Monolog\Handler\FirePHPHandler;
 /**
  * Класс Application - основной класс приложения. 
  */
-class Application
+class Application implements BaseApplication
 {
   /**
    * Контроллер приложения на основе запроса
@@ -59,21 +63,7 @@ class Application
    */
   public function __construct(array $config = [])
   {
-    try {
-      $this->registerLogger();
-      
-      $this->httpDemultiplexer = new HttpDemultiplexer;
-      $this->setUrlParams();
-      $this->logger->info('Registered request', array('request' => $this->httpDemultiplexer->getServer()['REQUEST_URI'], 'ip' => $_SERVER['REMOTE_ADDR']));
-      $this->registerController($config);
-      
-    } catch (UnavailableRequestException $unex) {
-      $this->logger->info('Not available request', array('request' => $this->httpDemultiplexer->getServer()['REQUEST_URI'], 'ip' => $_SERVER['REMOTE_ADDR']));
-      $this->showErrorPage($unex, '404 Страница не найдена');
-    } catch (\Exception $ex) {
-      $this->logger->info('Unexpected exception', array('message' => $ex->getMessage(), 'ip' => $_SERVER['REMOTE_ADDR']));
-      $this->showErrorPage(ex);
-    }
+      $this->init($config);
   }
   /**
    * Метод отображает шаблон об ошибке, в случае необработанного исключения
@@ -92,7 +82,7 @@ class Application
    * Ищет по URI запрашиваемый запрос
    * @return void
    */
-  private function setUrlParams(): void
+  private function setUrlParams()
   {
     $server = $this->httpDemultiplexer->getServer();
     $explodedArray = explode('/', ($server['REQUEST_URI']));
@@ -121,7 +111,7 @@ class Application
    * @param array $config конфиг приложения
    * @return void
    */
-  private function registerController(array $config = []): void
+  private function registerController(array $config = [])
   {
 
     $pageController = 'controller\\' . $this->pageToRender . 'Controller';
@@ -132,7 +122,7 @@ class Application
    * Регистрирует логгер (сейчас monolog)
    * @return void
    */
-  private function registerLogger(): void
+  private function registerLogger()
   {
     $logger = new Logger('Request_logger');
 
@@ -165,5 +155,27 @@ class Application
   {
     return $this->pageToRender;
   }
+
+    /**
+     * @param array $config
+     */
+    private function init(array $config)
+    {
+        try {
+            $this->registerLogger();
+
+            $this->httpDemultiplexer = new HttpDemultiplexer;
+            $this->setUrlParams();
+            $this->logger->info('Registered request', array('request' => $this->httpDemultiplexer->getServer()['REQUEST_URI'], 'ip' => isset($_SERVER['REMOTE_ADDR'])?? ''));
+            $this->registerController($config);
+
+        } catch (UnavailableRequestException $unex) {
+            $this->logger->info('Not available request', array('request' => $this->httpDemultiplexer->getServer()['REQUEST_URI'], 'ip' => isset($_SERVER['REMOTE_ADDR'])?? ''));
+            $this->showErrorPage($unex, '404 Страница не найдена');
+        } catch (\Exception $ex) {
+            $this->logger->info('Unexpected exception', array('message' => $ex->getMessage(), 'ip' => isset($_SERVER['REMOTE_ADDR'])?? ''));
+            $this->showErrorPage(ex);
+        }
+    }
 
 }
