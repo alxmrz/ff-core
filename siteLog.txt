@@ -1,5 +1,0 @@
-**********************Ошибка при попытке подключения к таблице recalls!*******************
-Time of error: 2016-11-06 08:38:34
- Error: [SQLSTATE[42S02]: Base table or view not found: 1146 Table 'webjob.recalls' doesn't exist]
- IN C:\xampp\htdocs\websites\job\controller\DirectionController.php
- ON LINE8
