@@ -1,43 +1,25 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>{{ title }}</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        {{ globalCss|raw }}
-    </head>
+<head>
+    <title>{{ title }}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico?v=2">
+</head>
 
-    <body>
-      
-        <div id="mainblock">
-            <div id="mainContainer">
-                <fieldset id="mainfield">
-                    <legend>Alexandr Moroz</legend>
-                    <div id="clocks"></div>
-                    <div id="container">
+<body>
+
+<div id="mainblock">
+    <div id="mainContainer">
 
 
-                    </div>
-
-                    <div>
-                        {{ include(contentTemplate) }}
-                    </div>
-                    <div style="clear:both;"></div>
-                              
-
-                      
-                    <ul id="menu">
-                        <li><a href="/mainpage/" >Информация</a></li>
-                        <li><a href="/skills/">Навыки</a></li>
-                        <li><a href="/feedback/" >Отзывы</a></li>
-                    </ul>
-                    
-                     
-                    
-                </fieldset>
-                    
-            </div>
+        <div>
+            {{ include(contentTemplate) }}
         </div>
-        {{ globalJs|raw }}   
-    </body>
+        <div style="clear:both;"></div>
+
+    </div>
+</div>
+
+</body>
 </html>

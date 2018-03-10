@@ -13,4 +13,4 @@
 //ini_set('include_path', ini_get('include_path'));
 
 // put your code here
-require_once '../myautoloader.php';
+require __DIR__ . '/../../vendor/autoload.php';

@@ -27,12 +27,15 @@ class View
     $this->assets['global_assets'] = require dirname(__FILE__) . '/../config/assets.php';
   }
 
-  /**
-   * Возвращает результат генерации шаблона
-   * @param string $template
-   * @param mixed $data
-   * @return  string 
-   */
+    /**
+     * Возвращает результат генерации шаблона
+     * @param string $template
+     * @param mixed $data
+     * @return  string
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
+     */
   public function render($template, $data = [])
   {
     
