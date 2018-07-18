@@ -4,7 +4,7 @@ namespace controller;
 
 use core\Controller;
 
-class mainpageController extends Controller
+class MainpageController extends Controller
 {
 
   /**
