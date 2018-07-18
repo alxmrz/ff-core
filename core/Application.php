@@ -1,13 +1,8 @@
 <?php
 /**
- * Copyright (c) 2018. Bla bla bla it is a licension bla bla bla it is protected from illegal copy bla bla bla use free only
- */
-
-/**
  * @author Alexandr Moroz <alexandr.moroz97@mail.com>
  */
 namespace core;
-
 
 use core\exceptions\UnavailableRequestException;
 use Monolog\Logger;

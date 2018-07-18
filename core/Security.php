@@ -4,7 +4,7 @@ namespace core;
 /**
  * Класс для фильтрации данных
  */
-class Securety
+class Security
 {
   /**
    * Возвращает отфильтрованные данные $_GET
