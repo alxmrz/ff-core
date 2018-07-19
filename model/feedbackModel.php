@@ -4,7 +4,7 @@ namespace model;
 
 use core\Model;
 use core\DatabaseConnection;
-use core\Securety;
+use core\Security;
 
 class feedbackModel extends Model
 {
@@ -31,7 +31,7 @@ class feedbackModel extends Model
    */
   public function addComment()
   {
-    $post = Securety::filterPostInput();
+    $post = Security::filterPostInput();
     $from = $post['from'];
     $comment = $post['comment'];
     $date = "NOW()";

@@ -2,7 +2,7 @@
 
 namespace core;
 
-use core\Securety;
+use core\Security;
 
 /**
  * Класс, возвращающий обработанные данные GET, POST, SERVER
@@ -32,8 +32,8 @@ class HttpDemultiplexer
    */
   public function __construct()
   {
-    $this->get = Securety::filterGetInput();
-    $this->post = Securety::filterPostInput();
+    $this->get = Security::filterGetInput();
+    $this->post = Security::filterPostInput();
     $this->server = $_SERVER;
   }
   

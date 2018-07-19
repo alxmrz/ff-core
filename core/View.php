@@ -2,58 +2,46 @@
 
 namespace core;
 
-/**
- * Description of View
- *
- * @author Alexandr Moroz
- */
 class View
 {
   /**
-   * Заголовок страницы
    * @var string
    */
   protected $title;
+  
   /**
-   * Массив зависимостей
    * @var array 
    */
   protected $assets;
-  /**
-   * Конструктор класса View
-   */
+  
   public function __construct()
   {
     $this->assets['global_assets'] = require dirname(__FILE__) . '/../config/assets.php';
   }
 
     /**
-     * Возвращает результат генерации шаблона
+     * Render template and return result string
      * @param string $template
      * @param mixed $data
      * @return  string
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
      */
-  public function render($template, $data = [])
+  public function render($template, $data = []): string
   {
-    
     $loader = new \Twig_Loader_Filesystem('../view/');
     $twig = new \Twig_Environment($loader, array(
         'cache' => '../cache/twig/',
         'debug' => true
     ));
-    $template = $twig->load($template.'.twig');
+    $loadedTemplate = $twig->load($template.'.twig');
 
-    return  $template->render($data);
+    return  $loadedTemplate->render($data);
   }
 
   /**
-   * Добавляет глобальные css файлы для сайта в тегах <header></header>
+   * Add global css in tags <header></header>
    * @return string
    */
-  public function getGlobalCss()
+  public function getGlobalCss(): string
   {
     $return = '';
     foreach ($this->assets['global_assets']['css'] as $style) {
@@ -63,10 +51,10 @@ class View
   }
 
   /**
-   * Добавляет глобальные js файлы в конце страницы
+   * Add global JS before tag </body>
    * @return string
    */
-  public function getGlobalJs()
+  public function getGlobalJs(): string
   {
     $return = '';
     foreach ($this->assets['global_assets']['js'] as $script) {
@@ -76,52 +64,51 @@ class View
   }
 
   /**
-   * Добавляет файл стилей на страницу
-   * @param string $cssFileName Путь к файлу CSS относительно директории assets
+   * Add css to page where method executed
+   * @param string $cssFileName
    */
-  public function addLocalCss($cssFileName = '')
+  public function addLocalCss($cssFileName = ''): string
   {
     return "<link href='/assets/{$cssFileName}' rel='stylesheet' type='text/css' />";
   }
 
   /**
-   * Добавляет файл стилей на страницу
-   * Отличие от addLocalCss в том, что файл со стилями
-   * может быть где угодно
+   * The same as addLocalCss but $cssFilename may be in other locations
    * @param $cssFileName путь к файлу CSS
    */
-  public function addCssFrom($cssFileName)
+  public function addCssFrom($cssFileName): string
   {
     return "<link href='{$cssFileName}' rel='stylesheet' type='text/css' />";
   }
+  
   /**
-   * Подключает отдельный js файл
-   * @param string $jsFileName название подключаемого js файла
+   * Add js from assets
+   * @param string $jsFileName
    * @return string
    */
-  public function addLocalJs(string $jsFileName)
+  
+  public function addLocalJs(string $jsFileName): string
   {
     return "<script src='/assets/{$jsFileName}'></script>";
   }
 
   /**
-   * Заголовок устанавливает в шаблоне перед выводом на экран.
-   * @param string $title Заголовок страницы
+   * @param string $title
    */
-  public function setTitle($title)
+  public function setTitle($title): void
   {
     $this->title = $title;
   }
+  
   /**
-   * Возвращает массив медиа-зависимостей
    * @return array
    */
-  public function getAssets()
+  public function getAssets(): array
   {
     return  $this->assets;
   }
+  
   /**
-   * Возвращает название заголовка страницы
    * @return string
    */
   public function getTitle()

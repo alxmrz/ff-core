@@ -1,15 +1,10 @@
 <?php
 namespace core;
 
-
-/**
- * Класс Application - основной класс приложения.
- */
 interface BaseApplication
 {
     /**
-     * Основной публичный метод приложения. Точка входа.
-     * @return int флаг успешности запуска приложения
+     * @return int
      */
     public function run();
 
@@ -20,13 +15,11 @@ interface BaseApplication
     public function getHttpDemultiplexer(): HttpDemultiplexer;
 
     /**
-     *
-     * @return \core\Controller
+     * @return Controller
      */
-    public function getController(): \core\Controller;
+    public function getController(): Controller;
 
     /**
-     *
      * @return string
      */
     public function getPageToRender(): string;

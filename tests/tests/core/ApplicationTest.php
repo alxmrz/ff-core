@@ -15,28 +15,28 @@ final class ApplicationTest extends TestCase
 
   public function setUp(): void
   {
-    $_SERVER['REQUEST_URI'] = 'job/mainpage/';
+    $_SERVER['REQUEST_URI'] = '/mainpage/';
   }
 
   public function testApplicationHasControllerAndHttpDemultiplexerAfterConstuct(): void
   {
     $this->application = new Application();
-    $this->assertTrue($this->application->getController() instanceof Controller);
+    $this->assertTrue($this->application->router->getController() === 'MainpageController');
     $this->assertTrue($this->application->getHttpDemultiplexer() instanceof HttpDemultiplexer);
   }
   
   public function testApplicationAnalizesRequestUriCorrectly(): void
   {
     $this->application = new Application();
-    $this->assertEquals('mainpage', $this->application->getPageToRender());
+    $this->assertEquals('MainpageController', $this->application->router->getController());
   }
   
   public function testApplicationGeneratesRightController(): void
   {
     $this->application = new Application();
-    $this->assertInstanceOf(\controller\mainpageController::class, $this->application->getController());
+    $this->assertInstanceOf(\controller\MainpageController::class, $this->application->getController());
   }
-  
+ 
   public function testApplicationShowsErrorPageIfException(): void 
   {
     $this->expectOutputRegex('/(Ошибка!)/');
@@ -46,7 +46,7 @@ final class ApplicationTest extends TestCase
   
   public function testApplicationGeneratesMainPageCorrectly(): void
   {
-    $_SERVER['REQUEST_URI'] = 'job/mainpage/';
+    $_SERVER['REQUEST_URI'] = '/mainpage/';
     $this->application = new Application();
     $this->expectOutputRegex('/(Главная страница)/');
     $this->application->run();
