@@ -3,17 +3,11 @@
 namespace core;
 use core\exceptions\UnavailableRequestException;
 
-/**
- * Description of Router
- *
- * @author alexandr
- */
 class Router
 {
 
 
   /**
-   * Массив доступных запросов, которые можно отобразить, иначе 404 ошибка
    * @var array 
    */
   private $requestsExpected = array(
@@ -55,9 +49,8 @@ class Router
   }
 
   /**
-   * Проверяет валидность запроса страницы
    * @return boolen 
-   * @throws UnavailableRequestException если вызванный запрос не существует 
+   * @throws UnavailableRequestException
    */
   private function isRequestExpected($controllerPart): bool
   {

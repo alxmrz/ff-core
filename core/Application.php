@@ -1,9 +1,5 @@
 <?php
 
-/**
- * @author Alexandr Moroz <alexandr.moroz97@mail.com>
- */
-
 namespace core;
 
 use core\exceptions\UnavailableRequestException;
@@ -11,146 +7,129 @@ use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\FirePHPHandler;
 
-/**
- * Класс Application - основной класс приложения. 
- */
 class Application implements BaseApplication
 {
+    /*
+     * @var \core\Controller 
+     */
 
-  /**
-   * Контроллер приложения на основе запроса
-   * @var \core\Controller 
-   */
-  private $controller;
+    private $controller;
 
-  /**
-   * Класс, возвращающий данные http запроса (GET, POST, SERVER)
-   * @var \core\HttpDemultiplexer
-   */
-  private $httpDemultiplexer;
+    /**
+     * @var \core\HttpDemultiplexer
+     */
+    private $httpDemultiplexer;
 
-  /**
-   * Наименование страницы (шаблона), который нужно отобразить
-   * @var string 
-   */
-  private $pageToRender;
+    /**
+     * @var int 
+     */
+    private $isApplicationRunnig = 1;
 
-  /**
-   * Флаг, показывающий, успешно ли запущено приложение
-   * @var int 
-   */
-  private $runResult = 1;
-  /**
-   *
-   * @var core\Router
-   */
-  public $router;
+    /**
+     * @var core\Router
+     */
+    public $router;
 
-  /**
-   * Основной публичный метод приложения. Точка входа.
-   * @return int флаг успешности запуска приложения
-   */
-  public function run()
-  {
-    return $this->runResult === 1 ? $this->controller->generatePage() : $this->runResult;
-  }
-
-  /**
-   * @param array $config Конфигурация приложения
-   */
-  public function __construct(array $config = [])
-  {
-    $this->init($config);
-  }
-
-  /**
-   * Метод отображает шаблон об ошибке, в случае необработанного исключения
-   * @param \Exception $ex исключение, выбрашенное приложением.
-   * @param string $additionInfo Информация для посетителя об ошибке
-   */
-  private function showErrorPage(\Exception $ex, string $additionInfo = '')
-  {
-    $this->runResult = 0;
-    $additionInfo = $additionInfo;
-    $errorMessage = $ex->getMessage();
-    require '../view/error.php';
-  }
-
-  /**
-   * Регистрирует контроллер приложения на основе запроса.
-   * @param array $config конфиг приложения
-   * @return void
-   */
-  private function registerController(array $config = [])
-  { 
-    $server = $this->httpDemultiplexer->getServer();
-    $this->router->parseUri($server['REQUEST_URI']);
-    $pageController = 'controller\\' . $this->router->getController();
-
-    $this->controller = new $pageController($config);
-  }
-
-  /**
-   * Регистрирует логгер (сейчас monolog)
-   * @return void
-   */
-  private function registerLogger()
-  {
-    $logger = new Logger('Request_logger');
-
-    $logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/my_app.log', Logger::DEBUG));
-    $logger->pushHandler(new FirePHPHandler());
-
-    $this->logger = $logger;
-  }
-
-  /**
-   * @param array $config
-   */
-  private function init(array $config)
-  {
-    try {
-      $this->router = new Router();
-      $this->httpDemultiplexer = new HttpDemultiplexer;
-      $this->registerLogger();
-      
-      $this->logger->info('Registered request', array('request' => $this->httpDemultiplexer->getServer()['REQUEST_URI'], 'ip' => isset($_SERVER['REMOTE_ADDR']) ?? ''));
-      
-      $this->registerController($config);
-    } catch (UnavailableRequestException $unex) {
-      $this->logger->info('Not available request', array('request' => $this->httpDemultiplexer->getServer()['REQUEST_URI'], 'ip' => isset($_SERVER['REMOTE_ADDR']) ?? ''));
-      $this->showErrorPage($unex, '404 Страница не найдена');
-    } catch (\Exception $ex) {
-      $this->logger->info('Unexpected exception', array('message' => $ex->getMessage(), 'ip' => isset($_SERVER['REMOTE_ADDR']) ?? ''));
-      $this->showErrorPage($ex);
+    /**
+     * @return int
+     */
+    public function run()
+    {
+        return $this->isApplicationRunnig === 1 ? $this->controller->generatePage() : $this->isApplicationRunnig;
     }
-  }
 
-  /**
-   * 
-   * @return HttpDemultiplexer
-   */
-  public function getHttpDemultiplexer(): HttpDemultiplexer
-  {
-    return $this->httpDemultiplexer;
-  }
+    /**
+     * @param array $config
+     */
+    public function __construct(array $config = [])
+    {
+        $this->init($config);
+    }
 
-  /**
-   * 
-   * @return \core\Controller
-   */
-  public function getController(): \core\Controller
-  {
-    return $this->controller;
-  }
+    /**
+     * @param \Exception $ex
+     * @param string $additionInfo
+     */
+    private function showErrorPage(\Exception $ex, string $additionInfo = '')
+    {
+        $this->isApplicationRunnig = 0;
+        $additionInfo = $additionInfo;
+        $errorMessage = $ex->getMessage();
+        require '../view/error.php';
+    }
 
-  /**
-   * 
-   * @return string
-   */
-  public function getPageToRender(): string
-  {
-    return $this->pageToRender;
-  }
+    /**
+     * @param array $config
+     * @return void
+     */
+    private function registerController(array $config = [])
+    {
+        $server = $this->httpDemultiplexer->getServer();
+        $this->router->parseUri($server['REQUEST_URI']);
+        $pageController = 'controller\\' . $this->router->getController();
+
+        $this->controller = new $pageController($config);
+    }
+
+    /**
+     * @return void
+     */
+    private function registerLogger()
+    {
+        $logger = new Logger('Request_logger');
+
+        $logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/my_app.log', Logger::DEBUG));
+        $logger->pushHandler(new FirePHPHandler());
+
+        $this->logger = $logger;
+    }
+
+    /**
+     * @param array $config
+     */
+    private function init(array $config)
+    {
+        $this->router = new Router();
+        $this->httpDemultiplexer = new HttpDemultiplexer;
+            
+        $server = $this->httpDemultiplexer->getServer();
+        $requestUri = $server['REQUEST_URI'];
+        $remoteAddr = isset($server['REMOTE_ADDR']) ?? '';
+        try {
+            $this->registerLogger();
+            $this->logger->info('Registered request', array('request' => $requestUri, 'ip' => $remoteAddr));
+            $this->registerController($config);
+        } catch (UnavailableRequestException $unex) {
+            $this->logger->info('Not available request', array('request' => $requestUri, 'ip' => $remoteAddr));
+            $this->showErrorPage($unex, '404 Страница не найдена');
+        } catch (\Exception $ex) {
+            $this->logger->info('Unexpected exception', array('message' => $ex->getMessage(), 'ip' => $remoteAddr));
+            $this->showErrorPage($ex);
+        }
+    }
+
+    /**
+     * @return HttpDemultiplexer
+     */
+    public function getHttpDemultiplexer(): HttpDemultiplexer
+    {
+        return $this->httpDemultiplexer;
+    }
+
+    /**
+     * @return \core\Controller
+     */
+    public function getController(): \core\Controller
+    {
+        return $this->controller;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPageToRender(): string
+    {
+        return $this->pageToRender;
+    }
 
 }
