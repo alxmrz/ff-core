@@ -32,9 +32,8 @@ class View
         'cache' => '../cache/twig/',
         'debug' => true
     ));
-    $loadedTemplate = $twig->load($template.'.twig');
-
-    return  $loadedTemplate->render($data);
+    $twigEngine = new TwigEngine('../view', $loader, $twig);
+    return  $twigEngine->render($template, $data);
   }
 
   /**
