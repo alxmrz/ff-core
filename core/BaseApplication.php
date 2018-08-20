@@ -1,5 +1,8 @@
 <?php
+
 namespace core;
+
+use core\request\Request;
 
 interface BaseApplication
 {
@@ -10,17 +13,12 @@ interface BaseApplication
 
     /**
      *
-     * @return HttpDemultiplexer
+     * @return Request
      */
-    public function getHttpDemultiplexer(): HttpDemultiplexer;
+    public function getRequest(): Request;
 
     /**
      * @return Controller
      */
     public function getController(): Controller;
-
-    /**
-     * @return string
-     */
-    public function getPageToRender(): string;
 }

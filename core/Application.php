@@ -3,39 +3,45 @@
 namespace core;
 
 use core\exceptions\UnavailableRequestException;
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
-use Monolog\Handler\FirePHPHandler;
+use core\logger\MonologLogger;
+use core\request\Request;
+use core\router\Router;
+use Psr\Log\LoggerInterface;
 
 class Application implements BaseApplication
 {
     /*
-     * @var \core\Controller 
+     * @var \core\Controller
      */
-
     private $controller;
 
     /**
-     * @var \core\HttpDemultiplexer
+     * @var Request
      */
-    private $httpDemultiplexer;
+    private $request;
 
     /**
-     * @var int 
+     * @var int
      */
-    private $isApplicationRunnig = 1;
+    private $status = 1;
 
     /**
-     * @var core\Router
+     * @var Router
      */
     public $router;
+
+    /**
+     * @var LoggerInterface
+     */
+    public $logger;
 
     /**
      * @return int
      */
     public function run()
     {
-        return $this->isApplicationRunnig === 1 ? $this->controller->generatePage() : $this->isApplicationRunnig;
+        $action = $this->router->getAction();
+        return $this->status === 1 ? $this->controller->$action() : $this->status;
     }
 
     /**
@@ -47,56 +53,17 @@ class Application implements BaseApplication
     }
 
     /**
-     * @param \Exception $ex
-     * @param string $additionInfo
-     */
-    private function showErrorPage(\Exception $ex, string $additionInfo = '')
-    {
-        $this->isApplicationRunnig = 0;
-        $additionInfo = $additionInfo;
-        $errorMessage = $ex->getMessage();
-        require '../view/error.php';
-    }
-
-    /**
-     * @param array $config
-     * @return void
-     */
-    private function registerController(array $config = [])
-    {
-        $server = $this->httpDemultiplexer->getServer();
-        $this->router->parseUri($server['REQUEST_URI']);
-        $pageController = 'controller\\' . $this->router->getController();
-
-        $this->controller = new $pageController($config);
-    }
-
-    /**
-     * @return void
-     */
-    private function registerLogger()
-    {
-        $logger = new Logger('Request_logger');
-
-        $logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/my_app.log', Logger::DEBUG));
-        $logger->pushHandler(new FirePHPHandler());
-
-        $this->logger = $logger;
-    }
-
-    /**
      * @param array $config
      */
     private function init(array $config)
     {
         $this->router = new Router();
-        $this->httpDemultiplexer = new HttpDemultiplexer;
-            
-        $server = $this->httpDemultiplexer->getServer();
+        $this->request = new Request;
+        $this->logger = new MonologLogger();
+        $server = $this->request->server();
         $requestUri = $server['REQUEST_URI'];
         $remoteAddr = isset($server['REMOTE_ADDR']) ?? '';
         try {
-            $this->registerLogger();
             $this->logger->info('Registered request', array('request' => $requestUri, 'ip' => $remoteAddr));
             $this->registerController($config);
         } catch (UnavailableRequestException $unex) {
@@ -109,11 +76,36 @@ class Application implements BaseApplication
     }
 
     /**
-     * @return HttpDemultiplexer
+     * @param \Exception $ex
+     * @param string $additionInfo
      */
-    public function getHttpDemultiplexer(): HttpDemultiplexer
+    private function showErrorPage(\Exception $ex, string $additionInfo = '')
     {
-        return $this->httpDemultiplexer;
+        $this->status = 0;
+        $additionInfo = $additionInfo;
+        $errorMessage = $ex->getMessage();
+        require '../view/error.php';
+    }
+
+    /**
+     * @param array $config
+     * @return void
+     */
+    private function registerController(array $config = [])
+    {
+        $server = $this->request->server();
+        $this->router->parseUri($server['REQUEST_URI']);
+        $pageController = 'controller\\' . $this->router->getController();
+
+        $this->controller = new $pageController($config);
+    }
+
+    /**
+     * @return Request
+     */
+    public function getRequest(): Request
+    {
+        return $this->request;
     }
 
     /**
@@ -123,13 +115,4 @@ class Application implements BaseApplication
     {
         return $this->controller;
     }
-
-    /**
-     * @return string
-     */
-    public function getPageToRender(): string
-    {
-        return $this->pageToRender;
-    }
-
 }
