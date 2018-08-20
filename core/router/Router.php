@@ -27,7 +27,6 @@ class Router
     }
 
     /**
-     * Ищет по URI запрашиваемый запрос
      * @return void
      */
     private function setUrlParams($uri)
@@ -51,10 +50,11 @@ class Router
     }
 
     /**
-     * @return boolen
+     * @param string $controllerPart
+     * @return bool
      * @throws UnavailableRequestException
      */
-    private function isRequestExpected($controllerPart): bool
+    private function isRequestExpected(string $controllerPart): bool
     {
         if (in_array($controllerPart, $this->requestsExpected)) {
             return true;
@@ -62,11 +62,17 @@ class Router
         throw new UnavailableRequestException("REQUEST {$this->controller} IS NOT AVAILIBLE");
     }
 
+    /**
+     * @return string
+     */
     public function getController(): string
     {
         return $this->controller;
     }
 
+    /**
+     * @return string
+     */
     public function getAction(): string
     {
         return $this->action;

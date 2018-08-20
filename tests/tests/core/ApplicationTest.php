@@ -48,7 +48,7 @@ final class ApplicationTest extends TestCase
   {
     $_SERVER['REQUEST_URI'] = '/mainpage/';
     $this->application = new Application();
-    $this->expectOutputRegex('/(Главная страница)/');
+    $this->expectOutputRegex('/(Main page)/');
     $this->application->run();
   }
 

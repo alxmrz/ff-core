@@ -11,9 +11,8 @@ use Psr\Log\LoggerInterface;
 class Application implements BaseApplication
 {
     /*
-     * @var \core\Controller 
+     * @var \core\Controller
      */
-
     private $controller;
 
     /**
@@ -116,13 +115,4 @@ class Application implements BaseApplication
     {
         return $this->controller;
     }
-
-    /**
-     * @return string
-     */
-    public function getPageToRender(): string
-    {
-        return $this->pageToRender;
-    }
-
 }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Глобальные файлы стилей и скриптов
+ * Global stylesheet and js scripts
  * @see core\View::putGlobalCss()
  */
 return [

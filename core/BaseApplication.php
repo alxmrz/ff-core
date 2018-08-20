@@ -21,9 +21,4 @@ interface BaseApplication
      * @return Controller
      */
     public function getController(): Controller;
-
-    /**
-     * @return string
-     */
-    public function getPageToRender(): string;
 }

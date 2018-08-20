@@ -3,8 +3,6 @@
 namespace core;
 
 /**
- * Класс подключения к базе данных.
- * Реализует паттерн singleton(одиночка)
  * Class DatabaseConnection
  * @package core
  */
@@ -16,7 +14,7 @@ class DatabaseConnection
 
     /**
      * DatabaseConnection constructor.
-     * @param $config array Настройки подключения к базе данных
+     * @param $config array
      */
     protected function __construct($config)
     {

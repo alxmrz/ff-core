@@ -9,7 +9,7 @@ class MainpageController extends Controller
 
     public function actionIndex()
     {
-        $this->view->setTitle('Главная страница');
+        $this->view->setTitle('Main page');
 
         $mainData = [
             'contentTemplate' => 'mainpage.twig',
