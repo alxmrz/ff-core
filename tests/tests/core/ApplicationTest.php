@@ -22,7 +22,7 @@ final class ApplicationTest extends TestCase
   {
     $this->application = new Application();
     $this->assertTrue($this->application->router->getController() === 'MainpageController');
-    $this->assertTrue($this->application->getHttpDemultiplexer() instanceof Request);
+    $this->assertTrue($this->application->getRequest() instanceof Request);
   }
   
   public function testApplicationAnalizesRequestUriCorrectly(): void

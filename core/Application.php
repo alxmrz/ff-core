@@ -3,11 +3,10 @@
 namespace core;
 
 use core\exceptions\UnavailableRequestException;
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
-use Monolog\Handler\FirePHPHandler;
+use core\logger\MonologLogger;
 use core\request\Request;
 use core\router\Router;
+use Psr\Log\LoggerInterface;
 
 class Application implements BaseApplication
 {
@@ -20,12 +19,12 @@ class Application implements BaseApplication
     /**
      * @var Request
      */
-    private $httpDemultiplexer;
+    private $request;
 
     /**
      * @var int 
      */
-    private $isApplicationRunnig = 1;
+    private $status = 1;
 
     /**
      * @var Router
@@ -33,11 +32,15 @@ class Application implements BaseApplication
     public $router;
 
     /**
+     * @var LoggerInterface
+     */
+    public $logger;
+    /**
      * @return int
      */
     public function run()
     {
-        return $this->isApplicationRunnig === 1 ? $this->controller->generatePage() : $this->isApplicationRunnig;
+        return $this->status === 1 ? $this->controller->generatePage() : $this->status;
     }
 
     /**
@@ -49,56 +52,17 @@ class Application implements BaseApplication
     }
 
     /**
-     * @param \Exception $ex
-     * @param string $additionInfo
-     */
-    private function showErrorPage(\Exception $ex, string $additionInfo = '')
-    {
-        $this->isApplicationRunnig = 0;
-        $additionInfo = $additionInfo;
-        $errorMessage = $ex->getMessage();
-        require '../view/error.php';
-    }
-
-    /**
-     * @param array $config
-     * @return void
-     */
-    private function registerController(array $config = [])
-    {
-        $server = $this->httpDemultiplexer->server();
-        $this->router->parseUri($server['REQUEST_URI']);
-        $pageController = 'controller\\' . $this->router->getController();
-
-        $this->controller = new $pageController($config);
-    }
-
-    /**
-     * @return void
-     */
-    private function registerLogger()
-    {
-        $logger = new Logger('Request_logger');
-
-        $logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/my_app.log', Logger::DEBUG));
-        $logger->pushHandler(new FirePHPHandler());
-
-        $this->logger = $logger;
-    }
-
-    /**
      * @param array $config
      */
     private function init(array $config)
     {
-        $this->router = new Router();
-        $this->httpDemultiplexer = new Request;
-            
-        $server = $this->httpDemultiplexer->server();
+        $this->router  = new Router();
+        $this->request = new Request;
+        $this->logger  = new MonologLogger();
+        $server = $this->request->server();
         $requestUri = $server['REQUEST_URI'];
         $remoteAddr = isset($server['REMOTE_ADDR']) ?? '';
         try {
-            $this->registerLogger();
             $this->logger->info('Registered request', array('request' => $requestUri, 'ip' => $remoteAddr));
             $this->registerController($config);
         } catch (UnavailableRequestException $unex) {
@@ -111,11 +75,36 @@ class Application implements BaseApplication
     }
 
     /**
+     * @param \Exception $ex
+     * @param string $additionInfo
+     */
+    private function showErrorPage(\Exception $ex, string $additionInfo = '')
+    {
+        $this->status = 0;
+        $additionInfo = $additionInfo;
+        $errorMessage = $ex->getMessage();
+        require '../view/error.php';
+    }
+
+    /**
+     * @param array $config
+     * @return void
+     */
+    private function registerController(array $config = [])
+    {
+        $server = $this->request->server();
+        $this->router->parseUri($server['REQUEST_URI']);
+        $pageController = 'controller\\' . $this->router->getController();
+
+        $this->controller = new $pageController($config);
+    }
+
+    /**
      * @return Request
      */
-    public function getHttpDemultiplexer(): Request
+    public function getRequest(): Request
     {
-        return $this->httpDemultiplexer;
+        return $this->request;
     }
 
     /**

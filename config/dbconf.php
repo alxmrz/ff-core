@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'dbname' => 'webjob',
-    'dbuser' => 'root',
-    'dbpassword' => 'goblin',
+    'dbname' => '',
+    'dbuser' => '',
+    'dbpassword' => '',
     'dbencoding' => 'utf8'
 ];

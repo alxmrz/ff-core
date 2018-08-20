@@ -14,7 +14,7 @@ interface BaseApplication
      *
      * @return Request
      */
-    public function getHttpDemultiplexer(): Request;
+    public function getRequest(): Request;
 
     /**
      * @return Controller
