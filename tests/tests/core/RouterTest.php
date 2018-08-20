@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-use core\Router;
+use core\router\Router;
 use core\Controller;
-use core\HttpDemultiplexer;
+use core\request\Request;
 use PHPUnit\Framework\TestCase;
 
 final class RouterTest extends TestCase

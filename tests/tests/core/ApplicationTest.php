@@ -4,8 +4,8 @@ declare(strict_types = 1);
 
 use core\Application;
 use core\Controller;
-use core\HttpDemultiplexer;
 use core\exceptions\UnavailableRequestException;
+use core\request\Request;
 use PHPUnit\Framework\TestCase;
 
 final class ApplicationTest extends TestCase
@@ -22,7 +22,7 @@ final class ApplicationTest extends TestCase
   {
     $this->application = new Application();
     $this->assertTrue($this->application->router->getController() === 'MainpageController');
-    $this->assertTrue($this->application->getHttpDemultiplexer() instanceof HttpDemultiplexer);
+    $this->assertTrue($this->application->getHttpDemultiplexer() instanceof Request);
   }
   
   public function testApplicationAnalizesRequestUriCorrectly(): void

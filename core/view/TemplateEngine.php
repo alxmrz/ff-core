@@ -1,5 +1,5 @@
 <?php
-namespace core;
+namespace core\view;
 
 use core\exceptions\FileDoesNotExist;
 

@@ -15,7 +15,7 @@ class MainpageController extends Controller
 
   public function __construct()
   {
-    $this->view = new \core\View();
+    $this->view = new \core\view\View();
   }
 
   /**

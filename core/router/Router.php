@@ -1,6 +1,6 @@
 <?php
 
-namespace core;
+namespace core\router;
 use core\exceptions\UnavailableRequestException;
 
 class Router

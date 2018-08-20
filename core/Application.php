@@ -6,6 +6,8 @@ use core\exceptions\UnavailableRequestException;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\FirePHPHandler;
+use core\request\Request;
+use core\router\Router;
 
 class Application implements BaseApplication
 {
@@ -16,7 +18,7 @@ class Application implements BaseApplication
     private $controller;
 
     /**
-     * @var \core\HttpDemultiplexer
+     * @var Request
      */
     private $httpDemultiplexer;
 
@@ -26,7 +28,7 @@ class Application implements BaseApplication
     private $isApplicationRunnig = 1;
 
     /**
-     * @var core\Router
+     * @var Router
      */
     public $router;
 
@@ -64,7 +66,7 @@ class Application implements BaseApplication
      */
     private function registerController(array $config = [])
     {
-        $server = $this->httpDemultiplexer->getServer();
+        $server = $this->httpDemultiplexer->server();
         $this->router->parseUri($server['REQUEST_URI']);
         $pageController = 'controller\\' . $this->router->getController();
 
@@ -90,9 +92,9 @@ class Application implements BaseApplication
     private function init(array $config)
     {
         $this->router = new Router();
-        $this->httpDemultiplexer = new HttpDemultiplexer;
+        $this->httpDemultiplexer = new Request;
             
-        $server = $this->httpDemultiplexer->getServer();
+        $server = $this->httpDemultiplexer->server();
         $requestUri = $server['REQUEST_URI'];
         $remoteAddr = isset($server['REMOTE_ADDR']) ?? '';
         try {
@@ -109,9 +111,9 @@ class Application implements BaseApplication
     }
 
     /**
-     * @return HttpDemultiplexer
+     * @return Request
      */
-    public function getHttpDemultiplexer(): HttpDemultiplexer
+    public function getHttpDemultiplexer(): Request
     {
         return $this->httpDemultiplexer;
     }

@@ -8,8 +8,7 @@
 
 namespace tests\tests\core;
 
-use \core\TemplateEngine;
-use \core\TwigEngine;
+use \core\view\TwigEngine;
 use PHPUnit\Framework\TestCase;
 
 class TwigEngineTest extends TestCase

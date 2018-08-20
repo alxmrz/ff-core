@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-use core\View;
+use core\view\View;
 use PHPUnit\Framework\TestCase;
 
 final class ViewTest extends TestCase

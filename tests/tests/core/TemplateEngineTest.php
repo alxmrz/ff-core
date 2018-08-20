@@ -8,7 +8,7 @@
 
 namespace tests\tests\core;
 
-use core\TemplateEngine;
+use core\view\TemplateEngine;
 use PHPUnit\Framework\TestCase;
 
 class TemplateEngineTest extends TestCase

@@ -1,13 +1,13 @@
 <?php
 
-namespace core;
+namespace core\request;
 
 use core\Security;
 
 /**
  * Класс, возвращающий обработанные данные GET, POST, SERVER
  */
-class HttpDemultiplexer
+class Request implements RequestInterface
 {
   /**
    * Массив $_GET
@@ -41,7 +41,7 @@ class HttpDemultiplexer
    * Возвращает массив $_GET
    * @return array
    */
-  public function getGet()
+  public function get()
   {
     return $this->get;
   }
@@ -50,7 +50,7 @@ class HttpDemultiplexer
    * Возвращает массив $_POST
    * @return array
    */
-  public function getPost()
+  public function post()
   {
     return $this->post;
   }
@@ -59,7 +59,7 @@ class HttpDemultiplexer
    * Возвращает массив $_SERVER
    * @return array
    */
-  public function getServer()
+  public function server()
   {
     return $this->server;
   }
