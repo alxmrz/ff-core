@@ -16,4 +16,3 @@ return [
         'main.js'
     ]
 ];
-

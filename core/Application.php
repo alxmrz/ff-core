@@ -22,7 +22,7 @@ class Application implements BaseApplication
     private $request;
 
     /**
-     * @var int 
+     * @var int
      */
     private $status = 1;
 
@@ -35,12 +35,14 @@ class Application implements BaseApplication
      * @var LoggerInterface
      */
     public $logger;
+
     /**
      * @return int
      */
     public function run()
     {
-        return $this->status === 1 ? $this->controller->generatePage() : $this->status;
+        $action = $this->router->getAction();
+        return $this->status === 1 ? $this->controller->$action() : $this->status;
     }
 
     /**
@@ -56,9 +58,9 @@ class Application implements BaseApplication
      */
     private function init(array $config)
     {
-        $this->router  = new Router();
+        $this->router = new Router();
         $this->request = new Request;
-        $this->logger  = new MonologLogger();
+        $this->logger = new MonologLogger();
         $server = $this->request->server();
         $requestUri = $server['REQUEST_URI'];
         $remoteAddr = isset($server['REMOTE_ADDR']) ?? '';

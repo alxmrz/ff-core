@@ -1,4 +1,5 @@
 <?php
+
 namespace core\view;
 
 use core\exceptions\FileDoesNotExist;
@@ -41,8 +42,8 @@ class TwigEngine implements TemplateInterface
     public function render(string $templatePath, array $data = [])
     {
         $this->throwExceptionIfTemplateDoesNotExist($templatePath);
-        $loadedTemplate = $this->twigEnvironment->load($templatePath.'.twig');
-        return  $loadedTemplate->render($data);
+        $loadedTemplate = $this->twigEnvironment->load($templatePath . '.twig');
+        return $loadedTemplate->render($data);
     }
 
     /**
@@ -51,7 +52,7 @@ class TwigEngine implements TemplateInterface
      */
     private function throwExceptionIfTemplateDoesNotExist(string $pathToTemplate)
     {
-        if(!file_exists($this->templatesPath . DIRECTORY_SEPARATOR .$pathToTemplate . '.twig')) {
+        if (!file_exists($this->templatesPath . DIRECTORY_SEPARATOR . $pathToTemplate . '.twig')) {
             throw new FileDoesNotExist("File {$pathToTemplate}.twig does not exist");
         }
     }

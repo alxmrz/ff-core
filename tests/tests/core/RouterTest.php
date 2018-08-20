@@ -23,7 +23,7 @@ final class RouterTest extends TestCase
     $uri = "/mainpage/getList";
     $expectedData = [
       'controller' => 'MainpageController',
-      'action' => 'getListAction',
+      'action' => 'actionGetList',
     ];
     $this->router->parseUri($uri);
     $this->assertEquals($expectedData['controller'], $this->router->getController());

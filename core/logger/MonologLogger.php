@@ -19,7 +19,7 @@ class MonologLogger implements LoggerInterface
      * @var Logger
      */
     private $logger;
-    
+
     public function __construct()
     {
         $logger = new Logger('Request_logger');
@@ -70,5 +70,7 @@ class MonologLogger implements LoggerInterface
         $this->logger->notice($message, $context = []);
     }
 
-    public function log($level, $message, array $context = []){}
+    public function log($level, $message, array $context = [])
+    {
+    }
 }

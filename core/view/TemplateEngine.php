@@ -1,4 +1,5 @@
 <?php
+
 namespace core\view;
 
 use core\exceptions\FileDoesNotExist;
@@ -43,7 +44,7 @@ class TemplateEngine implements TemplateInterface
      */
     private function throwExceptionIfTemplateDoesNotExist(string $pathToTemplate)
     {
-        if(!file_exists($pathToTemplate)) {
+        if (!file_exists($pathToTemplate)) {
             throw new FileDoesNotExist("File {$pathToTemplate}.php does not exist");
         }
     }
@@ -56,7 +57,7 @@ class TemplateEngine implements TemplateInterface
     private function renderTemplate(string $pathToTemplate, array $data = [])
     {
         ob_start();
-        foreach($data as $key => $value) {
+        foreach ($data as $key => $value) {
             $$key = $value;
         }
         require_once $pathToTemplate;
