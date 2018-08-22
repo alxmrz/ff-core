@@ -2,10 +2,12 @@
 
 namespace core;
 
+use core\container\PHPDIContainer;
 use core\exceptions\UnavailableRequestException;
 use core\logger\MonologLogger;
 use core\request\Request;
 use core\router\Router;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
 class Application implements BaseApplication
@@ -36,6 +38,15 @@ class Application implements BaseApplication
     public $logger;
 
     /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
+     * @var array
+     */
+    private $config;
+    /**
      * @return int
      */
     public function run()
@@ -45,27 +56,28 @@ class Application implements BaseApplication
     }
 
     /**
+     * @param ContainerInterface $container
      * @param array $config
      */
-    public function __construct(array $config = [])
+    public function __construct(ContainerInterface $container, array $config = [])
     {
-        $this->init($config);
+        $this->container = $container;
+        $this->config = $config;
+        $this->init();
     }
 
-    /**
-     * @param array $config
-     */
-    private function init(array $config)
+    private function init()
     {
-        $this->router = new Router();
-        $this->request = new Request;
-        $this->logger = new MonologLogger();
+        $this->router  = $this->container->get(Router::class);
+        $this->request = $this->container->get(Request::class);
+        $this->logger  = $this->container->get(MonologLogger::class);
+
         $server = $this->request->server();
         $requestUri = $server['REQUEST_URI'];
         $remoteAddr = isset($server['REMOTE_ADDR']) ?? '';
         try {
             $this->logger->info('Registered request', array('request' => $requestUri, 'ip' => $remoteAddr));
-            $this->registerController($config);
+            $this->registerController();
         } catch (UnavailableRequestException $unex) {
             $this->logger->info('Not available request', array('request' => $requestUri, 'ip' => $remoteAddr));
             $this->showErrorPage($unex, '404 Страница не найдена');
@@ -82,22 +94,17 @@ class Application implements BaseApplication
     private function showErrorPage(\Exception $ex, string $additionInfo = '')
     {
         $this->status = 0;
-        $additionInfo = $additionInfo;
         $errorMessage = $ex->getMessage();
         require '../view/error.php';
     }
 
-    /**
-     * @param array $config
-     * @return void
-     */
-    private function registerController(array $config = [])
+    private function registerController(): void
     {
         $server = $this->request->server();
         $this->router->parseUri($server['REQUEST_URI']);
         $pageController = 'controller\\' . $this->router->getController();
 
-        $this->controller = new $pageController($config);
+        $this->controller = new $pageController($this->config);
     }
 
     /**
