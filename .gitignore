@@ -3,9 +3,9 @@
 files
 log
 cache
-nbproject
+nbproject/
 vendor
 web/docs
-.idea
+.idea/
 /Errors.log
 *.log

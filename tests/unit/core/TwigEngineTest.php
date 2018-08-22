@@ -1,30 +1,19 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alexandr
- * Date: 19.08.18
- * Time: 14:13
- */
-
-namespace tests\tests\core;
-
 use \core\view\TwigEngine;
-use PHPUnit\Framework\TestCase;
 
-class TwigEngineTest extends TestCase
+class TwigEngineTest extends CustomTestCase
 {
+    /**
+     * @var TwigEngine
+     */
     private $twigEngine;
 
-    const templatesPath = __DIR__ . '/../../templates/twig';
 
     public function setUp()
-    {;
-        $loader = new \Twig_Loader_Filesystem(self::templatesPath);
-        $twig = new \Twig_Environment($loader, array(
-            'cache' => '../cache/twig/',
-            'debug' => true
-        ));
-        $this->twigEngine = new TwigEngine(self::templatesPath, $loader, $twig);
+    {
+        parent::setUp();
+        $this->twigEngine = $this->nativeContainer->get(TwigEngine::class);
+        $this->twigEngine->setTemplatePath(TEMPLATE_PATH);
     }
     public function testRenderReturnsContent()
     {

@@ -63,4 +63,9 @@ class TemplateEngine implements TemplateInterface
         require_once $pathToTemplate;
         return ob_get_clean();
     }
+
+    public function setTemplatePath(string $templatesPath)
+    {
+        $this->templatesPath = $templatesPath;
+    }
 }

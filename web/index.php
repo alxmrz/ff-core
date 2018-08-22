@@ -1,6 +1,12 @@
 <?php
+
+use core\container\PHPDIContainer;
+
 require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../config/params.php';
 
-$config = require __DIR__ . '/../config/dbconf.php';
+$config = require __DIR__ . '/../config/config.php';
+$definitions = require __DIR__ . '/../config/definitions.php';
+$container = new PHPDIContainer($definitions);
 
-(new core\Application($config))->run();
+(new core\Application($container, $config))->run();

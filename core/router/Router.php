@@ -1,5 +1,4 @@
 <?php
-
 namespace core\router;
 
 use core\exceptions\UnavailableRequestException;
@@ -27,7 +26,8 @@ class Router
     }
 
     /**
-     * @return void
+     * @param $uri
+     * @throws UnavailableRequestException
      */
     private function setUrlParams($uri)
     {
@@ -77,6 +77,4 @@ class Router
     {
         return $this->action;
     }
-
-
 }

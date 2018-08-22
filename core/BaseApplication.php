@@ -3,22 +3,34 @@
 namespace core;
 
 use core\request\Request;
+use Psr\Container\ContainerInterface;
 
-interface BaseApplication
+abstract class BaseApplication
 {
+    /**
+     * @var ContainerInterface
+     */
+    protected $container;
+
+    /**
+     * @var array
+     */
+    protected $config;
+
+    public function __construct(ContainerInterface $container, array $config = [])
+    {
+        $this->container = $container;
+        $this->config = $config;
+    }
+
     /**
      * @return int
      */
-    public function run();
+    abstract public function run();
 
     /**
      *
      * @return Request
      */
-    public function getRequest(): Request;
-
-    /**
-     * @return Controller
-     */
-    public function getController(): Controller;
+    abstract public function getRequest(): Request;
 }

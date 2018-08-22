@@ -14,7 +14,9 @@ class TwigEngine implements TemplateInterface
      * @var string
      */
     private $templatesPath;
-    private $twigLoaderFileSystem;
+    /**
+     * @var \Twig_Environment
+     */
     private $twigEnvironment;
 
 
@@ -24,12 +26,10 @@ class TwigEngine implements TemplateInterface
      */
     public function __construct(
         string $templatesPath,
-        \Twig_Loader_Filesystem $tlf,
         \Twig_Environment $te
     )
     {
         $this->templatesPath = $templatesPath;
-        $this->twigLoaderFileSystem = $tlf;
         $this->twigEnvironment = $te;
     }
 
@@ -52,8 +52,14 @@ class TwigEngine implements TemplateInterface
      */
     private function throwExceptionIfTemplateDoesNotExist(string $pathToTemplate)
     {
-        if (!file_exists($this->templatesPath . DIRECTORY_SEPARATOR . $pathToTemplate . '.twig')) {
-            throw new FileDoesNotExist("File {$pathToTemplate}.twig does not exist");
+        $fullPath = $this->templatesPath . DIRECTORY_SEPARATOR . $pathToTemplate . '.twig';
+        if (!file_exists($fullPath)) {
+            throw new FileDoesNotExist("File {$fullPath} does not exist");
         }
+    }
+
+    public function setTemplatePath(string $templatesPath)
+    {
+        $this->templatesPath = $templatesPath;
     }
 }

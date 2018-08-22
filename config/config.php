@@ -4,5 +4,5 @@ return [
     'dbname' => '',
     'dbuser' => '',
     'dbpassword' => '',
-    'dbencoding' => 'utf8'
+    'dbencoding' => 'utf8',
 ];
