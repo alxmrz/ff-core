@@ -52,8 +52,9 @@ class TwigEngine implements TemplateInterface
      */
     private function throwExceptionIfTemplateDoesNotExist(string $pathToTemplate)
     {
-        if (!file_exists($this->templatesPath . DIRECTORY_SEPARATOR . $pathToTemplate . '.twig')) {
-            throw new FileDoesNotExist("File {$pathToTemplate}.twig does not exist");
+        $fullPath = $this->templatesPath . DIRECTORY_SEPARATOR . $pathToTemplate . '.twig';
+        if (!file_exists($fullPath)) {
+            throw new FileDoesNotExist("File {$fullPath} does not exist");
         }
     }
 

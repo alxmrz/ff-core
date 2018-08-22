@@ -9,8 +9,6 @@
 namespace core\logger;
 
 use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
-use Monolog\Handler\FirePHPHandler;
 use Psr\Log\LoggerInterface;
 
 class MonologLogger implements LoggerInterface
@@ -20,13 +18,8 @@ class MonologLogger implements LoggerInterface
      */
     private $logger;
 
-    public function __construct()
+    public function __construct(Logger $logger)
     {
-        $logger = new Logger('Request_logger');
-
-        $logger->pushHandler(new StreamHandler(__DIR__ . '/../../logs/my_app.log', Logger::DEBUG));
-        $logger->pushHandler(new FirePHPHandler());
-
         $this->logger = $logger;
     }
 

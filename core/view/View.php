@@ -73,7 +73,7 @@ class View
 
     /**
      * The same as addLocalCss but $cssFilename may be in other locations
-     * @param $cssFileName путь к файлу CSS
+     * @param $cssFileName
      */
     public function addCssFrom($cssFileName): string
     {
