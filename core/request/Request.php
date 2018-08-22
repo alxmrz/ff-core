@@ -59,8 +59,11 @@ class Request implements RequestInterface
      * Возвращает массив $_SERVER
      * @return array
      */
-    public function server()
+    public function server(string $param = null)
     {
+        if ($param !== null) {
+            return $this->server[$param] ?? '';
+        }
         return $this->server;
     }
 

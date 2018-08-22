@@ -4,5 +4,6 @@ return [
     'dbname' => '',
     'dbuser' => '',
     'dbpassword' => '',
-    'dbencoding' => 'utf8'
+    'dbencoding' => 'utf8',
+    'templatesPath' => __DIR__ . '/../view/'
 ];

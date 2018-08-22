@@ -2,23 +2,25 @@
 
 namespace tests\tests\core;
 
+use core\container\PHPDIContainer;
 use \core\view\TwigEngine;
 use PHPUnit\Framework\TestCase;
 
 class TwigEngineTest extends TestCase
 {
+    /**
+     * @var TwigEngine
+     */
     private $twigEngine;
 
-    const templatesPath = __DIR__ . '/../../templates/twig';
+    const TEMPLATES_PATH = __DIR__ . '/../../templates/';
 
     public function setUp()
-    {;
-        $loader = new \Twig_Loader_Filesystem(self::templatesPath);
-        $twig = new \Twig_Environment($loader, array(
-            'cache' => '../cache/twig/',
-            'debug' => true
-        ));
-        $this->twigEngine = new TwigEngine(self::templatesPath, $loader, $twig);
+    {
+        $definitions = require __DIR__ . '/../../../config/definitions.php';
+        $container = new PHPDIContainer($definitions);
+        $this->twigEngine = $container->get(TwigEngine::class);
+        $this->twigEngine->setTemplatePath(self::TEMPLATES_PATH);
     }
     public function testRenderReturnsContent()
     {

@@ -14,8 +14,14 @@ class View
      */
     protected $assets;
 
-    public function __construct()
+    /**
+     * @var TemplateInterface
+     */
+    protected $templateEngine;
+
+    public function __construct(TemplateInterface $templateEngine)
     {
+        $this->templateEngine = $templateEngine;
         $this->assets['global_assets'] = require dirname(__FILE__) . '/../../config/assets.php';
     }
 
@@ -27,13 +33,7 @@ class View
      */
     public function render(string $template, array $data = []): string
     {
-        $loader = new \Twig_Loader_Filesystem('../view/');
-        $twig = new \Twig_Environment($loader, array(
-            'cache' => '../cache/twig/',
-            'debug' => true
-        ));
-        $twigEngine = new TwigEngine('../view', $loader, $twig);
-        return $twigEngine->render($template, $data);
+        return $this->templateEngine->render($template, $data);
     }
 
     /**

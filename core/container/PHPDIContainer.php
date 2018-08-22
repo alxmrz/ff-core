@@ -10,6 +10,7 @@ namespace core\container;
 
 
 use DI\Container;
+use DI\ContainerBuilder;
 use Psr\Container\ContainerInterface;
 
 class PHPDIContainer implements ContainerInterface
@@ -19,9 +20,11 @@ class PHPDIContainer implements ContainerInterface
      */
     private $container;
 
-    public function __construct($container = null)
+    public function __construct($definitions)
     {
-        $this->container = new Container();
+        $builder = new ContainerBuilder();
+        $builder->addDefinitions($definitions);
+        $this->container = $builder->build();
     }
 
     /**
