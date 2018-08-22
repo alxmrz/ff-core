@@ -1,23 +1,18 @@
 <?php
-
 declare(strict_types=1);
 
 use core\Application;
-use core\container\PHPDIContainer;
-use PHPUnit\Framework\TestCase;
 
-final class ApplicationTest extends TestCase
+final class ApplicationTest extends CustomTestCase
 {
 
     private $application;
-    private $container;
 
-    public function setUp(): void
+    public function setUp()
     {
+        parent::setUp();
         $_SERVER['REQUEST_URI'] = '/mainpage/';
-        $definitions = require __DIR__ . '/../../../config/definitions.php';
-        $this->container = new PHPDIContainer($definitions);
-        $this->application = new Application($this->container);
+        $this->application = new Application($this->nativeContainer);
     }
 
     /**
@@ -27,7 +22,7 @@ final class ApplicationTest extends TestCase
     {
         $this->expectOutputRegex('/(Ошибка!)/');
         $_SERVER['REQUEST_URI'] = 'job/unavailablerequest/';
-        $this->application = new Application($this->container);
+        $this->application = (new Application($this->nativeContainer))->run();
     }
 
     /**
@@ -36,7 +31,7 @@ final class ApplicationTest extends TestCase
     public function _testApplicationGeneratesMainPageCorrectly(): void
     {
         $_SERVER['REQUEST_URI'] = '/mainpage/';
-        $this->application = new Application($this->container);
+        $this->application = new Application($this->nativeContainer);
         $this->expectOutputRegex('/(Main page)/');
         $this->application->run();
     }

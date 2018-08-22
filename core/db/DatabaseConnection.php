@@ -31,7 +31,6 @@ class DatabaseConnection
     }
 
     /**
-     * Возвращает экземпляр класса DatabaseConnection
      * @param $config
      * @return databaseConnection
      */
@@ -44,7 +43,6 @@ class DatabaseConnection
     }
 
     /**
-     * Возвращает экземпляр PDO
      * @return \PDO
      */
     public function getPDO()

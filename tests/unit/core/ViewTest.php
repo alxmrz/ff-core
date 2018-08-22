@@ -1,22 +1,18 @@
 <?php
-
 declare(strict_types=1);
 
-use core\container\PHPDIContainer;
 use core\view\View;
-use PHPUnit\Framework\TestCase;
 
-final class ViewTest extends TestCase
+final class ViewTest extends CustomTestCase
 {
 
     public $view;
 
     public function setUp()
     {
+        parent::setUp();
         $_SERVER['REQUEST_URI'] = 'http://job/mainpage/';
-        $definitions = require __DIR__ . '/../../../config/definitions.php';
-        $container = new PHPDIContainer($definitions);
-        $this->view = $container->get(View::class);
+        $this->view = $this->nativeContainer->get(View::class);
     }
 
     public function testViewInitialization()

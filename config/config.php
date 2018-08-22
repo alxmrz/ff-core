@@ -5,5 +5,4 @@ return [
     'dbuser' => '',
     'dbpassword' => '',
     'dbencoding' => 'utf8',
-    'templatesPath' => __DIR__ . '/../view/'
 ];

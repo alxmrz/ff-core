@@ -6,7 +6,6 @@ use core\exceptions\UnavailableRequestException;
 use core\logger\MonologLogger;
 use core\request\Request;
 use core\router\Router;
-use phpDocumentor\Reflection\Types\Array_;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -60,12 +59,14 @@ class Application extends BaseApplication
         $context = ['request' => $requestUri, 'ip' => $remoteAddr];
         try {
             $this->registerController();
-        } catch (UnavailableRequestException $unex) {
+        } catch (UnavailableRequestException $e) {
             $this->logger->error('Not available request', $context);
-            $this->showErrorPage($unex, '404 Page not found');
-        } catch (\Exception $ex) {
-            $this->logger->error($ex->getMessage(), $context);
-            $this->showErrorPage($ex);
+            $this->showErrorPage($e, '404 Page not found');
+            exit();
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage(), $context);
+            $this->showErrorPage($e);
+            exit();
         }
         $action = $this->router->getAction();
 
@@ -73,14 +74,14 @@ class Application extends BaseApplication
     }
 
     /**
-     * @param \Exception $ex
+     * @param \Exception $x
      * @param string $additionInfo
      */
-    private function showErrorPage(\Exception $ex, string $additionInfo = '')
+    private function showErrorPage(\Exception $e, string $additionInfo = '')
     {
         $this->status = false;
-        $errorMessage = $ex->getMessage();
-        require '../view/error.php';
+        $errorMessage = $e->getMessage();
+        require __DIR__ . '/../view/error.php';
     }
 
     private function registerController(): void

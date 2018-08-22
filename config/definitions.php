@@ -39,5 +39,4 @@ return [
         $logger->pushHandler(new FirePHPHandler());
         return $logger;
     }
-
 ];

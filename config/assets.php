@@ -1,8 +1,9 @@
 <?php
+use core\view\View;
 
 /**
  * Global stylesheet and js scripts
- * @see core\View::putGlobalCss()
+ * @see View::putGlobalCss()
  */
 return [
     'css' => [

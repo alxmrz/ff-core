@@ -1,22 +1,16 @@
 <?php
-
 namespace core\request;
 
 use core\Security;
 
-/**
- * Класс, возвращающий обработанные данные GET, POST, SERVER
- */
 class Request implements RequestInterface
 {
     /**
-     * Массив $_GET
      * @var array
      */
     private $get;
 
     /**
-     * Массив $_POST
      * @var array
      */
     private $post;
@@ -27,9 +21,6 @@ class Request implements RequestInterface
      */
     private $server;
 
-    /**
-     * Конструктор HttpDemultiplexer
-     */
     public function __construct()
     {
         $this->get = Security::filterGetInput();
@@ -47,7 +38,6 @@ class Request implements RequestInterface
     }
 
     /**
-     * Возвращает массив $_POST
      * @return array
      */
     public function post()
@@ -56,8 +46,8 @@ class Request implements RequestInterface
     }
 
     /**
-     * Возвращает массив $_SERVER
-     * @return array
+     * @param string|null $param
+     * @return array|mixed|string
      */
     public function server(string $param = null)
     {
