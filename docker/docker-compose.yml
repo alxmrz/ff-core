@@ -1,0 +1,21 @@
+version: "3.1"
+services:
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ../application:/application
+      - ./nginx/:/etc/nginx/conf.d/
+      - ./nginx/logs:/var/log/nginx
+    ports:
+      - "80:80"
+    links:
+      - php
+
+  php:
+    build:
+      context: ./php/
+      dockerfile: Dockerfile
+    volumes:
+      - ../application:/application
+      - ./php/php-ini-overrides.ini:/etc/php/7.4/fpm/conf.d/99-overrides.ini
+      - ./php/xdebug.ini:/etc/php/7.4/fpm/conf.d/20-xdebug.ini

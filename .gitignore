@@ -1,11 +1,3 @@
-*.[oa]
-*~
-files
-log
-cache
-nbproject/
-vendor
-web/docs
 .idea/
-/Errors.log
-*.log
+docker/nginx/logs
+docker/nginx/frozencms.local.conf
