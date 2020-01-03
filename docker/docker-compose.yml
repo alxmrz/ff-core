@@ -17,5 +17,5 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ../application:/application
-      - ./php/php-ini-overrides.ini:/etc/php/7.4/fpm/conf.d/99-overrides.ini
-      - ./php/xdebug.ini:/etc/php/7.4/fpm/conf.d/20-xdebug.ini
+      - ./php/php-ini-overrides.ini:/etc/php/7.3/fpm/conf.d/99-overrides.ini
+      - ./php/xdebug.ini:/etc/php/7.3/fpm/conf.d/20-xdebug.ini

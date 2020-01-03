@@ -13,7 +13,7 @@ return [
         return new Twig_Environment(
             $loader,
             [
-                'cache' => '../cache/twig/',
+                'cache' => __DIR__ . '/../runtime/cache/twig/',
                 'debug' => true
             ]
         );
