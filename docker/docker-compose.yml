@@ -19,3 +19,14 @@ services:
       - ../application:/application
       - ./php/php-ini-overrides.ini:/etc/php/7.3/fpm/conf.d/99-overrides.ini
       - ./php/xdebug.ini:/etc/php/7.3/fpm/conf.d/20-xdebug.ini
+  db:
+    image: mysql:latest
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: gobliN123
+      MYSQL_DATABASE: mysite_wp
+      MYSQL_USER: mysite_user
+      MYSQL_PASSWORD: mypass
+    ports:
+    - "3306:3306"

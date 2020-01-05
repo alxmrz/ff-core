@@ -24,6 +24,7 @@ class DatabaseConnection
             $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
             $this->pdo->exec("SET NAMES {$config['dbencoding']}");
         } catch (PDOException $ex) {
+            //TODO: remake the way of displaying error
             $error = "Database error!";
             include '/view/error.php';
             exit();
