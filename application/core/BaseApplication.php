@@ -27,10 +27,4 @@ abstract class BaseApplication
      * @return int
      */
     abstract public function run();
-
-    /**
-     *
-     * @return Request
-     */
-    abstract public function getRequest(): Request;
 }

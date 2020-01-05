@@ -1,0 +1,9 @@
+0) Console scripts
+    Alternative console app type for cms.
+    Must contain controllers
+    Usage: ./console migration run, where migration is referred to MigrationController::class and run to actionRun()
+1) Migration's tool
+    A console script to create and run sql queries
+    Usage: ./app migration/create, migration run, migration down
+2) Menu in db
+3) Lorem-impsum main page
