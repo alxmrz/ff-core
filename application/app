@@ -1,3 +1,4 @@
+#!/usr/local/bin/php
 <?php
 
 use core\container\PHPDIContainer;
