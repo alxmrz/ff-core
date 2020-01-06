@@ -30,11 +30,22 @@ class MigrationControllerTest extends CustomTestCase
         $this->assertStringMatchesFormat('class m%d_create_migration_table', $migrationController->migrationFileContent);
     }
 
+    public function testRun_ExecuteEveryMigrationAndItsUpMethod()
+    {
+        $migrationController = $this->createMigrationController();
+        $migrationController->migrationMock = $this->getMockBuilder(stdClass::class)->setMethods(['safeUp'])->getMock();
+
+        $migrationController->migrationMock->expects($this->once())->method('safeUp');
+
+        $migrationController->actionRun();
+    }
+
     protected function createMigrationController()
     {
         return new class() extends MigrationController {
             public $migrationName;
             public $migrationFileContent;
+            public $migrationMock;
 
             public function createMigrationFile(string $fileName, $content)
             {
@@ -45,6 +56,16 @@ class MigrationControllerTest extends CustomTestCase
             public function getTemplateContent()
             {
                 return 'class MigrationClassTemplate';
+            }
+
+            public function getMigrationClass($class)
+            {
+                return $this->migrationMock;
+            }
+
+            public function getMigrations()
+            {
+                return ['filename.php'];
             }
         };
     }
