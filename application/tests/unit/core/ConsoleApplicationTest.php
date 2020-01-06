@@ -79,6 +79,8 @@ final class ConsoleApplicationTest extends CustomTestCase
      */
     protected function createConsoleApplication(array $args = [])
     {
+        $args = array_merge(['scriptname'], $args);
+
         $consoleApplication = new class($args) extends ConsoleApplication {
             public $controllerMock;
 

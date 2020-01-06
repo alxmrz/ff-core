@@ -17,13 +17,13 @@ class ConsoleApplication
 
     public function run(): int
     {
-        if (empty($this->argv)) {
+        if (empty($this->argv[1])) {
             return ExitCode::ERROR;
         }
 
         $this->registerCurrentController();
-        $this->currentControllerAction = 'action' . ucfirst($this->argv[1] ?? 'index');
-        $this->currentControllerActionArgument = $this->argv[2] ?? '';
+        $this->currentControllerAction = 'action' . ucfirst($this->argv[2] ?? 'index');
+        $this->currentControllerActionArgument = $this->argv[3] ?? '';
 
         $this->createCurrentController()->{$this->currentControllerAction}($this->currentControllerActionArgument);
 
@@ -36,7 +36,7 @@ class ConsoleApplication
     protected function registerCurrentController(): void
     {
         $controllerUniqueName = '';
-        $controllerParts = explode('-', $this->argv[0]);
+        $controllerParts = explode('-', $this->argv[1]);
         foreach ($controllerParts as $controllerPart) {
             $controllerUniqueName .= ucfirst($controllerPart);
         }
