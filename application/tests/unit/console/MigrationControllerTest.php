@@ -30,7 +30,7 @@ class MigrationControllerTest extends CustomTestCase
         $this->assertStringMatchesFormat('class m%d_create_migration_table', $migrationController->migrationFileContent);
     }
 
-    public function testRun_ExecuteEveryMigrationAndItsUpMethod()
+    public function testRun_ExecuteEveryMigrationAndItsSafeUpMethod()
     {
         $migrationController = $this->createMigrationController();
         $migrationController->migrationMock = $this->getMockBuilder(stdClass::class)->setMethods(['safeUp'])->getMock();
@@ -38,6 +38,16 @@ class MigrationControllerTest extends CustomTestCase
         $migrationController->migrationMock->expects($this->once())->method('safeUp');
 
         $migrationController->actionRun();
+    }
+
+    public function testRun_ExecuteEveryMigrationAndItsSafeDownMethod()
+    {
+        $migrationController = $this->createMigrationController();
+        $migrationController->migrationMock = $this->getMockBuilder(stdClass::class)->setMethods(['safeDown'])->getMock();
+
+        $migrationController->migrationMock->expects($this->once())->method('safeDown');
+
+        $migrationController->actionDown();
     }
 
     protected function createMigrationController()

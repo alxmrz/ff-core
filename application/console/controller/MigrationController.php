@@ -5,7 +5,6 @@ namespace console\controller;
 
 
 use core\ConsoleController;
-use core\container\PHPDIContainer;
 use core\exceptions\MigrationNameNotProvidedException;
 
 class MigrationController extends ConsoleController
@@ -37,6 +36,23 @@ class MigrationController extends ConsoleController
             $className = 'console\migrations\\' . str_replace('.php', '', $file);
 
             $this->getMigrationClass($className)->safeUp();
+        }
+    }
+
+    public function actionDown()
+    {
+        $files = $this->getMigrations();
+        if (!$files) {
+            throw new \Exception('Migrations not found');
+        }
+
+        foreach (array_reverse($files) as $file) {
+            if (in_array($file, ['.', '..'])) {
+                continue;
+            }
+            $className = 'console\migrations\\' . str_replace('.php', '', $file);
+
+            $this->getMigrationClass($className)->safeDown();
         }
     }
 
