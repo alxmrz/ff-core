@@ -22,7 +22,6 @@ services:
   db:
     image: mysql:latest
     command: --default-authentication-plugin=mysql_native_password
-    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: gobliN123
       MYSQL_DATABASE: mysite_wp

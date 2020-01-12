@@ -1,6 +1,6 @@
 <?php
 
-namespace core;
+namespace core\db;
 
 /**
  * Class DatabaseConnection
@@ -13,14 +13,12 @@ class DatabaseConnection
     private static $self;
 
     /**
-     * DatabaseConnection constructor.
      * @param $config array
      */
-    protected function __construct($config)
+    public function __construct($config)
     {
-
         try {
-            $this->pdo = new \PDO("mysql:host=localhost;dbname={$config['dbname']}", $config['dbuser'], $config['dbpassword']);
+            $this->pdo = new \PDO("mysql:host={$config['dbhost']};dbname={$config['dbname']}", $config['dbuser'], $config['dbpassword']);
             $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
             $this->pdo->exec("SET NAMES {$config['dbencoding']}");
         } catch (PDOException $ex) {
@@ -31,24 +29,8 @@ class DatabaseConnection
         }
     }
 
-    /**
-     * @param $config
-     * @return databaseConnection
-     */
-    public static function getInstance($config)
+    public function exec($sql)
     {
-        if (!isset(self::$self)) {
-            self::$self = new self($config);
-        }
-        return self::$self;
+        $this->pdo->exec($sql);
     }
-
-    /**
-     * @return \PDO
-     */
-    public function getPDO()
-    {
-        return $this->pdo;
-    }
-
 }

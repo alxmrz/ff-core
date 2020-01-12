@@ -1,6 +1,7 @@
 <?php
 //declare(strict_types=1);
 
+use core\db\DatabaseConnection;
 use core\ExitCode;
 use core\ConsoleApplication;
 use core\ConsoleController;
@@ -73,26 +74,46 @@ final class ConsoleApplicationTest extends CustomTestCase
         $consoleApplication->run();
     }
 
+    public function testRun_PDOInstancePassedToControllerClass()
+    {
+        $consoleApplication = $this->createConsoleApplication(['test', 'testaction', 'testargument'], ['dbhost' => 'testhost']);
+        $consoleApplication->controllerMock = $this->getMockBuilder(ConsoleController::class)
+            ->setMethods(['actionTestaction'])
+            ->getMock();
+
+        $consoleApplication->run();
+        $this->assertInstanceOf(DatabaseConnection::class, $consoleApplication->controllerMock->getDb());
+    }
+
     /**
      * @param array $args
+     * @param array $config
      * @return ConsoleApplication|__anonymous@2504
      */
-    protected function createConsoleApplication(array $args = [])
+    protected function createConsoleApplication(array $args = [], array $config = [])
     {
         $args = array_merge(['scriptname'], $args);
 
-        $consoleApplication = new class($args) extends ConsoleApplication {
+        $consoleApplication = new class($args, $config) extends ConsoleApplication {
             public $controllerMock;
+            public $db;
 
             public function createCurrentController(): ConsoleController
             {
                 return $this->controllerMock;
+            }
+
+            public function createDatabaseConnection()
+            {
+                return $this->db;
             }
         };
 
         $consoleApplication->controllerMock = $this->getMockBuilder(ConsoleController::class)
             ->setMethods([$consoleApplication->getCurrentControllerAction()])
             ->getMock();
+
+        $consoleApplication->db = $this->createMock(DatabaseConnection::class);
 
         return $consoleApplication;
     }

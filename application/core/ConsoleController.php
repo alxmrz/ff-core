@@ -4,7 +4,7 @@
 namespace core;
 
 
-abstract class ConsoleController
+abstract class ConsoleController extends BaseController
 {
 
 }

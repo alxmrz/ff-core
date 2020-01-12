@@ -3,16 +3,22 @@
 
 namespace core;
 
+use core\db\DatabaseConnection;
+
 class ConsoleApplication
 {
     protected $argv = [];
+    protected $config = [];
+    /** @var DatabaseConnection $db */
+    protected $db;
     protected $currentControllerName = '';
     protected $currentControllerAction = 'actionIndex';
     protected $currentControllerActionArgument = '';
 
-    public function __construct(array $argv = [])
+    public function __construct(array $argv, array $config)
     {
         $this->argv = $argv;
+        $this->config = $config;
     }
 
     public function run(): int
@@ -21,11 +27,16 @@ class ConsoleApplication
             return ExitCode::ERROR;
         }
 
+        $this->createDatabaseConnection();
+
         $this->registerCurrentController();
         $this->currentControllerAction = 'action' . ucfirst($this->argv[2] ?? 'index');
         $this->currentControllerActionArgument = $this->argv[3] ?? '';
 
-        $this->createCurrentController()->{$this->currentControllerAction}($this->currentControllerActionArgument);
+        $controller = $this->createCurrentController();
+        $controller->setDb($this->db);
+
+        $controller->{$this->currentControllerAction}($this->currentControllerActionArgument);
 
         return ExitCode::SUCCESS;
     }
@@ -67,6 +78,14 @@ class ConsoleApplication
 
     protected function createCurrentController(): ConsoleController
     {
-        return new $this->currentControllerName();
+        /** @var ConsoleController $currentController */
+        $currentController = new $this->currentControllerName();
+
+        return $currentController;
+    }
+
+    protected function createDatabaseConnection()
+    {
+        $this->db = new DatabaseConnection($this->config);
     }
 }

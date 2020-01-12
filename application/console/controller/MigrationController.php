@@ -5,6 +5,7 @@ namespace console\controller;
 
 
 use core\ConsoleController;
+use core\db\DatabaseConnection;
 use core\exceptions\MigrationNameNotProvidedException;
 
 class MigrationController extends ConsoleController
@@ -63,7 +64,7 @@ class MigrationController extends ConsoleController
 
     protected function getMigrationClass($className)
     {
-        return new $className;
+        return new $className($this->getDb());
     }
 
     protected function getTemplateContent()

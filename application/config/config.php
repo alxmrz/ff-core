@@ -1,8 +1,9 @@
 <?php
 
 return [
-    'dbname' => '',
-    'dbuser' => '',
-    'dbpassword' => '',
+    'dbhost' => 'db',
+    'dbname' => 'fcms',
+    'dbuser' => 'root',
+    'dbpassword' => 'gobliN123',
     'dbencoding' => 'utf8',
 ];

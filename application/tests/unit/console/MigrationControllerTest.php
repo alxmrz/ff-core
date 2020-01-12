@@ -2,11 +2,12 @@
 
 
 use console\controller\MigrationController;
+use core\db\DatabaseConnection;
 use core\exceptions\MigrationNameNotProvidedException;
 
 class MigrationControllerTest extends CustomTestCase
 {
-    public function testCreate_WhenActionIsCalledThenMigrationFileIsCreated()
+    public function testActionCreate_WhenActionIsCalledThenMigrationFileIsCreated()
     {
         $migrationController = $this->createMigrationController();
         $migrationController->actionCreate('fileName');
@@ -14,7 +15,7 @@ class MigrationControllerTest extends CustomTestCase
         $this->assertStringMatchesFormat('m%d_fileName.php', $migrationController->migrationName);
     }
 
-    public function testCreate_WhenMigrationNameIsNotSetOrEmptyThenThrowException()
+    public function testActionCreate_WhenMigrationNameIsNotSetOrEmptyThenThrowException()
     {
         $migrationController = $this->createMigrationController();
         $this->expectException(MigrationNameNotProvidedException::class);
@@ -22,7 +23,7 @@ class MigrationControllerTest extends CustomTestCase
         $migrationController->actionCreate('');
     }
 
-    public function testCreate_WhenMethodCalledThenCreateMigrationFileTemplateWillBeUsed()
+    public function testActionCreate_WhenMethodCalledThenCreateMigrationFileTemplateWillBeUsed()
     {
         $migrationController = $this->createMigrationController();
         $migrationController->actionCreate('create_migration_table');
@@ -30,7 +31,7 @@ class MigrationControllerTest extends CustomTestCase
         $this->assertStringMatchesFormat('class m%d_create_migration_table', $migrationController->migrationFileContent);
     }
 
-    public function testRun_ExecuteEveryMigrationAndItsSafeUpMethod()
+    public function testActionRun_ExecuteEveryMigrationAndItsSafeUpMethod()
     {
         $migrationController = $this->createMigrationController();
         $migrationController->migrationMock = $this->getMockBuilder(stdClass::class)->setMethods(['safeUp'])->getMock();
@@ -40,7 +41,7 @@ class MigrationControllerTest extends CustomTestCase
         $migrationController->actionRun();
     }
 
-    public function testRun_ExecuteEveryMigrationAndItsSafeDownMethod()
+    public function testActionDown_ExecuteEveryMigrationAndItsSafeDownMethod()
     {
         $migrationController = $this->createMigrationController();
         $migrationController->migrationMock = $this->getMockBuilder(stdClass::class)->setMethods(['safeDown'])->getMock();
@@ -49,6 +50,18 @@ class MigrationControllerTest extends CustomTestCase
 
         $migrationController->actionDown();
     }
+
+    /* Do i really need the test?
+     * public function testRun_DatabaseConnectionPassedWhileCreationOfMigrationClass()
+    {
+        $migrationController = $this->createMigrationController();
+        $migrationController->migrationMock = $this->getMockBuilder(stdClass::class)->setMethods(['safeUp'])->getMock();
+        $migrationController->setDb($this->createMock(DatabaseConnection::class));
+
+        $migrationController->actionRun();
+
+
+    }*/
 
     protected function createMigrationController()
     {
