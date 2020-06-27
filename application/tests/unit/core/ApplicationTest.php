@@ -15,6 +15,11 @@ final class ApplicationTest extends CustomTestCase
         $this->application = new Application($this->nativeContainer);
     }
 
+    public function testMock()
+    {
+        $this->assertTrue(1 === 1);
+    }
+
     /**
      * TODO: need to fix the test
      */

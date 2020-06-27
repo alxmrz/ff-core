@@ -4,7 +4,7 @@ namespace core;
 
 use \core\view\View;
 
-abstract class Controller
+abstract class Controller extends BaseController
 {
     /**
      * @var View
