@@ -34,8 +34,12 @@ return [
 
     Logger::class => function (ContainerInterface $c) {
         $logger = new Logger('Request_logger');
+        $logFile = __DIR__ . '/../runtime/logs/my_app.log';
+        if (!file_exists($logFile)) {
+            file_put_contents($logFile, '');
+        }
 
-        $logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/my_app.log', Logger::DEBUG));
+        $logger->pushHandler(new StreamHandler($logFile, Logger::DEBUG));
         $logger->pushHandler(new FirePHPHandler());
         return $logger;
     }

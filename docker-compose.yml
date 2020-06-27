@@ -3,9 +3,9 @@ services:
   nginx:
     image: nginx:alpine
     volumes:
-      - ../application:/application
-      - ./nginx/:/etc/nginx/conf.d/
-      - ./nginx/logs:/var/log/nginx
+      - ./application:/application
+      - ./docker/nginx/:/etc/nginx/conf.d/
+      - ./docker/nginx/logs:/var/log/nginx
     ports:
       - "80:80"
     links:
@@ -13,12 +13,12 @@ services:
 
   php:
     build:
-      context: ./php/
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./docker/php/Dockerfile
     volumes:
-      - ../application:/application
-      - ./php/php-ini-overrides.ini:/etc/php/7.3/fpm/conf.d/99-overrides.ini
-      - ./php/xdebug.ini:/etc/php/7.3/fpm/conf.d/20-xdebug.ini
+      - ./application:/application
+      - ./docker/php/php_ini_overrides.ini:/usr/local/etc/php/conf.d/99-overrides.ini
+      - ./docker/php/xdebug.ini:/usr/local/etc/php/conf.d/20-xdebug.ini
   db:
     image: mysql:latest
     command: --default-authentication-plugin=mysql_native_password

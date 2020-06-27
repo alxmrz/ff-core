@@ -1,10 +1,7 @@
-FROM php:7.3-fpm
+FROM php:7.4-fpm
 
 #xdebug install
 RUN pecl install xdebug
-
-#xdebug conf
-COPY xdebug.ini /etc/php/7.4/fpm/conf.d/20-xdebug.ini
 
 RUN apt-get update && \
     apt-get -y install \
