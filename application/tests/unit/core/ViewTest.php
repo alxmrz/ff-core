@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use core\view\View;
+use tests\unit\CustomTestCase;
 
 final class ViewTest extends CustomTestCase
 {

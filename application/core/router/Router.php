@@ -12,6 +12,7 @@ class Router
      */
     private $requestsExpected = array(
         'MainpageController',
+        'AuthController'
     );
     private $controller;
 
@@ -42,7 +43,16 @@ class Router
         if (empty($explodedArray[2])) {
             $this->action = 'actionIndex';
         } else {
-            $actionPart = ucfirst($explodedArray[2]);
+            if (strstr($explodedArray[2], '-')) {
+                $actionParts = explode('-', $explodedArray[2]);
+                foreach($actionParts as &$actionPart) {
+                    $actionPart = ucfirst($actionPart);
+                }
+                $actionPart = implode($actionParts);
+            } else {
+                $actionPart = ucfirst($explodedArray[2]);
+            }
+
             $this->action = "action{$actionPart}";
         }
 

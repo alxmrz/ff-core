@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use core\router\Router;
+use tests\unit\CustomTestCase;
 
 final class RouterTest extends CustomTestCase
 {

@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+namespace tests\unit;
 
 use core\container\PHPDIContainer;
 use Psr\Container\ContainerInterface;

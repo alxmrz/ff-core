@@ -11,10 +11,7 @@ use Psr\Log\LoggerInterface;
 
 class Application extends BaseApplication
 {
-    /*
-     * @var \core\Controller
-     */
-    private $controller;
+    private Controller $controller;
 
     /**
      * @var Request
@@ -91,6 +88,7 @@ class Application extends BaseApplication
         $pageController = 'controller\\' . $this->router->getController();
 
         $this->controller = $this->container->get($pageController);
+        $this->controller->setRouter($this->router);
     }
 
     /**

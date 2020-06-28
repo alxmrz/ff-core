@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use core\Application;
+use tests\unit\CustomTestCase;
 
 final class ApplicationTest extends CustomTestCase
 {

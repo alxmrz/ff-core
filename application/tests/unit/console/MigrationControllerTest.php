@@ -4,6 +4,7 @@
 use console\controller\MigrationController;
 use core\db\DatabaseConnection;
 use core\exceptions\MigrationNameNotProvidedException;
+use tests\unit\CustomTestCase;
 
 class MigrationControllerTest extends CustomTestCase
 {

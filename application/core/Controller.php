@@ -2,6 +2,7 @@
 
 namespace core;
 
+use core\router\Router;
 use \core\view\View;
 
 abstract class Controller extends BaseController
@@ -9,11 +10,28 @@ abstract class Controller extends BaseController
     /**
      * @var View
      */
-    protected $view;
+    protected View $view;
+    protected Router $router;
 
     public function __construct(View $view)
     {
         $this->view = $view;
+    }
+
+    /**
+     * @return Router
+     */
+    public function getRouter(): Router
+    {
+        return $this->router;
+    }
+
+    /**
+     * @param Router $router
+     */
+    public function setRouter(Router $router): void
+    {
+        $this->router = $router;
     }
 
     /**
