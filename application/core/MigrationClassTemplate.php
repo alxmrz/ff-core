@@ -3,18 +3,10 @@
 
 namespace console\migrations;
 
+use core\Migration;
 
-use core\db\DatabaseConnection;
-
-class MigrationClassTemplate
+class MigrationClassTemplate extends Migration
 {
-    protected $db;
-
-    public function __construct(DatabaseConnection $db)
-    {
-        $this->db = $db;
-    }
-
     public function safeUp()
     {
 

@@ -3,6 +3,7 @@
 namespace core;
 
 use core\db\DatabaseConnection;
+use \PDO;
 
 abstract class BaseController
 {
@@ -11,7 +12,7 @@ abstract class BaseController
     /**
      * @return mixed
      */
-    public function getDb()
+    public function getDb(): DatabaseConnection
     {
         return $this->db;
     }

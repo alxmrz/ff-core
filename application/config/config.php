@@ -3,7 +3,7 @@
 return [
     'dbhost' => 'db',
     'dbname' => 'fcms',
-    'dbuser' => 'root',
-    'dbpassword' => 'gobliN123',
+    'dbuser' => 'qwerty',
+    'dbpassword' => 'secret',
     'dbencoding' => 'utf8',
 ];

@@ -23,9 +23,9 @@ services:
     image: mysql:latest
     command: --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_ROOT_PASSWORD: gobliN123
-      MYSQL_DATABASE: mysite_wp
-      MYSQL_USER: mysite_user
-      MYSQL_PASSWORD: mypass
+      MYSQL_ROOT_PASSWORD: root_secret
+      MYSQL_DATABASE: fcms
+      MYSQL_USER: qwerty
+      MYSQL_PASSWORD: secret
     ports:
     - "3306:3306"

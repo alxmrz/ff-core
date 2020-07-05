@@ -33,4 +33,16 @@ class DatabaseConnection
     {
         $this->pdo->exec($sql);
     }
+
+    /**
+     * @param string $tableName
+     * @param $columnName
+     * @return array
+     */
+    public function queryColumn(string $tableName, $columnName): array
+    {
+        $statement = $this->pdo->prepare("SELECT {$columnName} FROM {$tableName}");
+        $statement->execute();
+        return $statement->fetchAll(\PDO::FETCH_COLUMN, $columnName);
+    }
 }
