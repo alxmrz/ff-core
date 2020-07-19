@@ -6,7 +6,7 @@ use core\container\PHPDIContainer;
 use Psr\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 
-class CustomTestCase extends TestCase
+class CommonTestCase extends TestCase
 {
     /**
      * @var ContainerInterface

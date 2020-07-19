@@ -5,9 +5,9 @@ use core\db\DatabaseConnection;
 use core\ExitCode;
 use core\ConsoleApplication;
 use core\ConsoleController;
-use tests\unit\CustomTestCase;
+use tests\unit\CommonTestCase;
 
-final class ConsoleApplicationTest extends CustomTestCase
+final class ConsoleApplicationTest extends CommonTestCase
 {
     public function testRun_WhenArgsNotPassedThenZeroCodeReturned()
     {

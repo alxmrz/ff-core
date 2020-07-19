@@ -4,111 +4,42 @@
 namespace console\controller;
 
 
+use console\services\migration\CreateService;
+use console\services\migration\DownService;
+use console\services\migration\UpService;
 use core\ConsoleController;
-use core\db\DatabaseConnection;
-use core\exceptions\MigrationNameNotProvidedException;
+use core\libraries\DateTime;
+use core\libraries\FileManager;
 
 class MigrationController extends ConsoleController
 {
     public function actionCreate(string $migrationName)
     {
-        if (empty($migrationName))  {
-            throw new MigrationNameNotProvidedException('Exception name not provided!');
+        try {
+            $createService = new CreateService(new DateTime(), new FileManager());
+            $createService->create($migrationName);
+        } catch (\Throwable $e) {
+            echo $e->getMessage();
         }
-
-        $migrationClassName = 'm' . time() . '_' . $migrationName;
-        $templateContent = $this->getTemplateContent();
-        $replacedContent = str_replace('MigrationClassTemplate', $migrationClassName, $templateContent);
-        $migrationFileName = $migrationClassName . '.php';
-        $this->createMigrationFile($migrationFileName, $replacedContent);
     }
 
-    public function actionRun()
+    public function actionUp()
     {
-        $files = $this->getMigrations();
-        if (!$files) {
-            throw new \Exception('Migrations not found');
-        }
-
-        $this->createMigrationTable();
-        $files = array_diff($files, ['.', '..']);
-        $files = $this->removeEvaluated($files);
-        if (empty($files)) {
-            throw new \Exception('No new migrations found');
-        }
-        foreach ($files as $file) {
-            if (in_array($file, ['.', '..'])) {
-                continue;
-            }
-            $className = 'console\migrations\\' . str_replace('.php', '', $file);
-
-            $this->getMigrationClass($className)->safeUp();
-            $this->addCompletedMigration($file);
+        try {
+            $upService = new UpService($this->getDb());
+            $upService->up();
+        } catch (\Throwable $e) {
+            echo $e->getMessage();
         }
     }
 
     public function actionDown()
     {
-        $files = $this->getMigrations();
-        if (!$files) {
-            throw new \Exception('Migrations not found');
-        }
-
-        foreach (array_reverse($files) as $file) {
-            if (in_array($file, ['.', '..'])) {
-                continue;
-            }
-            $className = 'console\migrations\\' . str_replace('.php', '', $file);
-
-            $this->getMigrationClass($className)->safeDown();
+        try {
+            $downService = new DownService($this->getDb());
+            $downService->down();
+        } catch (\Throwable $e) {
+            echo $e->getMessage();
         }
     }
-
-    protected function getMigrations()
-    {
-        return scandir(__DIR__ . '/../migrations/');
-    }
-
-    protected function getMigrationClass($className)
-    {
-        return new $className($this->getDb());
-    }
-
-    protected function getTemplateContent()
-    {
-        return file_get_contents(__DIR__ . '/../../core/MigrationClassTemplate.php');
-    }
-
-    protected function createMigrationFile(string $fileName, $fileContent)
-    {
-        //TODO: test the condition
-        if (!is_dir(__DIR__ . '/../migrations/')) {
-            mkdir(__DIR__ . '/../migrations/');
-        }
-
-        file_put_contents(__DIR__ . '/../migrations/' . $fileName, $fileContent);
-    }
-
-    private function createMigrationTable()
-    {
-        $this->getDb()->exec('CREATE TABLE IF NOT EXISTS migration(
-     id INT AUTO_INCREMENT PRIMARY KEY,
-     name VARCHAR (255) NOT NULL UNIQUE ,
-     time INT(4) UNSIGNED)');
-    }
-
-    private function addCompletedMigration(string $file)
-    {
-        $now = time();
-        $this->getDb()->exec("INSERT INTO migration(name, time) values ('{$file}', '{$now}')");
-    }
-
-    private function removeEvaluated(array $files)
-    {
-        $migrations = $this->getDb()->queryColumn('migration', 'name');
-
-        return array_diff($files, $migrations);
-    }
-
-
 }

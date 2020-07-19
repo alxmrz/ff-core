@@ -10,9 +10,9 @@ namespace tests\tests\core;
 
 use core\view\TemplateEngine;
 use PHPUnit\Framework\TestCase;
-use tests\unit\CustomTestCase;
+use tests\unit\CommonTestCase;
 
-class TemplateEngineTest extends CustomTestCase
+class TemplateEngineTest extends CommonTestCase
 {
     private $templateEngine;
 

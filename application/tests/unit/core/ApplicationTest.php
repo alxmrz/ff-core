@@ -2,9 +2,9 @@
 declare(strict_types=1);
 
 use core\Application;
-use tests\unit\CustomTestCase;
+use tests\unit\CommonTestCase;
 
-final class ApplicationTest extends CustomTestCase
+final class ApplicationTest extends CommonTestCase
 {
 
     private $application;

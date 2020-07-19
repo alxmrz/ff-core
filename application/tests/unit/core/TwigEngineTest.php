@@ -1,8 +1,8 @@
 <?php
 use \core\view\TwigEngine;
-use tests\unit\CustomTestCase;
+use tests\unit\CommonTestCase;
 
-class TwigEngineTest extends CustomTestCase
+class TwigEngineTest extends CommonTestCase
 {
     /**
      * @var TwigEngine

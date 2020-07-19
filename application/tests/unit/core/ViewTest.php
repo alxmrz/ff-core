@@ -2,9 +2,9 @@
 declare(strict_types=1);
 
 use core\view\View;
-use tests\unit\CustomTestCase;
+use tests\unit\CommonTestCase;
 
-final class ViewTest extends CustomTestCase
+final class ViewTest extends CommonTestCase
 {
 
     public $view;
