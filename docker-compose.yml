@@ -1,0 +1,31 @@
+version: "3.1"
+services:
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./application:/application
+      - ./docker/nginx/:/etc/nginx/conf.d/
+      - ./docker/nginx/logs:/var/log/nginx
+    ports:
+      - "80:80"
+    links:
+      - php
+
+  php:
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+    volumes:
+      - ./application:/application
+      - ./docker/php/php_ini_overrides.ini:/usr/local/etc/php/conf.d/99-overrides.ini
+      - ./docker/php/xdebug.ini:/usr/local/etc/php/conf.d/20-xdebug.ini
+  db:
+    image: mysql:latest
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: root_secret
+      MYSQL_DATABASE: fcms
+      MYSQL_USER: qwerty
+      MYSQL_PASSWORD: secret
+    ports:
+    - "3306:3306"

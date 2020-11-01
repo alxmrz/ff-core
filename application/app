@@ -1,0 +1,9 @@
+#!/usr/local/bin/php
+<?php
+
+use core\container\PHPDIContainer;
+
+require __DIR__ . '/vendor/autoload.php';
+$config = require __DIR__ . '/config/config.php';
+
+echo (new core\ConsoleApplication($argv, $config))->run();
