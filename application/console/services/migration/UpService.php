@@ -41,7 +41,7 @@ class UpService
      * @return string
      * @throws TableNotCreated|MigrationApplymentNotFixed
      */
-    public function up(): string
+    public function up()
     {
         if (!$this->migrationRepository->createTable()) {
             throw new TableNotCreated('Unable to create Migration table');
@@ -87,15 +87,21 @@ class UpService
     /**
      * @param $file
      * @throws MigrationApplymentNotFixed
+     * @throws \Exception
      */
     private function applyMigration($file): void
     {
-        $className = 'console\migrations\\' . str_replace('.php', '', $file);
+        $migrationName = str_replace('.php', '', $file);
+        $className = 'console\migrations\\' . $migrationName;
 
-        $this->migrationFactory->createByClassName($className, $this->db)->safeUp();
+        try {
+            $this->migrationFactory->createByClassName($className, $this->db)->safeUp();
+        } catch (\Throwable $e) {
+            throw new \Exception("Migration up error for file {$file}: {$e->getMessage()}");
+        }
 
         $migration = new Migration();
-        $migration->name = $file;
+        $migration->name = $migrationName;
         $migration->time = $this->now->getTimestamp();
 
         if (!$this->migrationRepository->save($migration)) {

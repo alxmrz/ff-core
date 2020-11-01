@@ -21,7 +21,7 @@ class m1593940976_create_user_table extends Migration
 
     public function safeDown()
     {
-        $sql = "DROP table menu;";
+        $sql = "DROP table user;";
 
         $this->exec($sql);
     }

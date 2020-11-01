@@ -26,15 +26,17 @@ class DownService
             if (in_array($file, ['.', '..'])) {
                 continue;
             }
-            $className = 'console\migrations\\' . str_replace('.php', '', $file);
+            $migrationName = str_replace('.php', '', $file);
+            $className = 'console\migrations\\' . $migrationName;
 
             $this->getMigrationClass($className)->safeDown();
+            $this->db->exec("delete from migration where name='{$migrationName}'");
         }
     }
 
     protected function getMigrations()
     {
-        return scandir(__DIR__ . '/../migrations/');
+        return scandir(__DIR__ . '/../../migrations/');
     }
 
     protected function getMigrationClass($className)

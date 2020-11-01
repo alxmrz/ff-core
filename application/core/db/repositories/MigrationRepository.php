@@ -44,7 +44,7 @@ class MigrationRepository
      */
     public function save(Migration $migration): bool
     {
-        $sql = "INSERT INTO migration(name, time) values ('{$migration->name}', '{$migration->time}'";
+        $sql = "INSERT INTO migration(name, time) values ('{$migration->name}', '{$migration->time}')";
 
         return $this->db->exec($sql) === false ? false : true;
     }
