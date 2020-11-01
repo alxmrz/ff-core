@@ -17,7 +17,7 @@ class MigrationController extends ConsoleController
     {
         try {
             $createService = new CreateService(new DateTime(), new FileManager());
-            $createService->create($migrationName);
+            return $createService->create($migrationName);
         } catch (\Throwable $e) {
             echo $e->getMessage();
         }

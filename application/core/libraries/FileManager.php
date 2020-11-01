@@ -39,4 +39,13 @@ class FileManager
 
         return true;
     }
+
+    public function scanDir(string $dirPath): array
+    {
+        if (!is_dir($dirPath)) {
+            throw new UnavailablePath("Path not found: $dirPath");
+        }
+
+        return scandir($dirPath);
+    }
 }

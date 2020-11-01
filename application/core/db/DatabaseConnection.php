@@ -31,7 +31,7 @@ class DatabaseConnection
 
     public function exec($sql)
     {
-        $this->pdo->exec($sql);
+        return $this->pdo->exec($sql);
     }
 
     /**

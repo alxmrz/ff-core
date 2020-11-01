@@ -25,9 +25,10 @@ class CreateServiceTest extends CommonTestCase
         $this->fileManager
             ->expects($this->once())
             ->method('createFile')
-            ->withAnyParameters();
+            ->withAnyParameters()
+            ->willReturn(true);
 
-        $createService->create('new_migration');
+        $this->assertTrue($createService->create('new_migration'));
     }
 
     public function testCreate_WhenMigrationNameNotProvidedThenException()
@@ -41,7 +42,6 @@ class CreateServiceTest extends CommonTestCase
     protected function makeCreateService(): CreateService
     {
         $this->now = new DateTime('2020-01-01 00:00:00');
-
         $this->fileManager = $this->createMock(FileManager::class);
 
         return new CreateService($this->now, $this->fileManager);

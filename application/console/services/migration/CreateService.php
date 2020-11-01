@@ -26,11 +26,12 @@ class CreateService
      * Creates migration file with the specified name
      *
      * @param string $migrationName
+     * @return bool
      * @throws MigrationNameNotProvidedException
      * @throws UnavailablePath
      * @throws FileNotCreated
      */
-    public function create(string $migrationName): void
+    public function create(string $migrationName): bool
     {
         if (empty($migrationName)) {
             throw new MigrationNameNotProvidedException('Exception name not provided!');
@@ -41,7 +42,7 @@ class CreateService
 
         $replacedContent = $this->getCurrentMigrationTemplateContent($migrationClassName);
 
-        $this->fileManager->createFile(__DIR__ . "/../../migrations/$migrationFileName", $replacedContent);
+        return $this->fileManager->createFile(__DIR__ . "/../../migrations/$migrationFileName", $replacedContent);
     }
 
     /**
@@ -55,9 +56,9 @@ class CreateService
 
     /**
      * @param string $migrationClassName
-     * @return string|string[]
+     * @return string
      */
-    public function getCurrentMigrationTemplateContent(string $migrationClassName)
+    public function getCurrentMigrationTemplateContent(string $migrationClassName): string
     {
         $templateContent = $this->fileManager->getContent($this->migrationTemplatePath);
 
