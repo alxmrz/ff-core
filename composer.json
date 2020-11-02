@@ -1,0 +1,19 @@
+{
+  "name": "frozenframework/ff-core",
+  "require": {
+    "monolog/monolog": "1.0.*",
+    "phpunit/phpunit": "^6.5",
+    "twig/twig": "^2.0",
+    "psr/log": "^1.0",
+    "squizlabs/php_codesniffer": "*",
+    "psr/container": "^1.0",
+    "php-di/php-di": "^6.0",
+    "ext-pdo": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "FF\\": "./src/FF"
+    }
+  },
+  "minimum-stability": "dev"
+}
