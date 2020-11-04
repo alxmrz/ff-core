@@ -1,5 +1,5 @@
 {
-  "name": "frozenframework/ff-core",
+  "name": "ff/ff-core",
   "require": {
     "monolog/monolog": "1.0.*",
     "phpunit/phpunit": "^6.5",
