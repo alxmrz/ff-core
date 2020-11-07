@@ -19,10 +19,10 @@ class View
      */
     protected $templateEngine;
 
-    public function __construct(TemplateInterface $templateEngine)
+    public function __construct(TemplateInterface $templateEngine, $globalAssets = [])
     {
         $this->templateEngine = $templateEngine;
-        $this->assets['global_assets'] = require __DIR__ . '/../config/assets.php';
+        $this->assets['global_assets'] = $globalAssets;
     }
 
     /**
@@ -43,7 +43,7 @@ class View
     public function getGlobalCss(): string
     {
         $return = '';
-        foreach ($this->assets['global_assets']['css'] as $style) {
+        foreach ($this->assets['global_assets']['css']??[] as $style) {
             $return .= "<link href='/assets/global/css/{$style}' rel='stylesheet' type='text/css' />";
         }
         return $return;
@@ -56,7 +56,7 @@ class View
     public function getGlobalJs(): string
     {
         $return = '';
-        foreach ($this->assets['global_assets']['js'] as $script) {
+        foreach ($this->assets['global_assets']['js']??[] as $script) {
             $return .= "<script src='/assets/global/js/{$script}'></script>";
         }
         return $return;

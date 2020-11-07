@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use FF\view\TemplateInterface;
 use FF\view\View;
 use FF\tests\unit\CommonTestCase;
 
@@ -12,13 +13,7 @@ final class ViewTest extends CommonTestCase
     public function setUp()
     {
         parent::setUp();
-        $_SERVER['REQUEST_URI'] = 'http://job/mainpage/';
-        $this->view = $this->nativeContainer->get(View::class);
-    }
-
-    public function testViewInitialization()
-    {
-        $arrayMustBe = [
+        $config = [
             'css' => [
                 'class.css',
                 'general.css',
@@ -30,7 +25,8 @@ final class ViewTest extends CommonTestCase
                 'main.js'
             ]
         ];
-        $this->assertEquals($this->view->getAssets()['global_assets'], $arrayMustBe);
+        $_SERVER['REQUEST_URI'] = 'http://job/mainpage/';
+        $this->view = new View($this->createMock(TemplateInterface::class), $config);
     }
 
     public function testAddingGlobalCss()

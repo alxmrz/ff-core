@@ -12,7 +12,7 @@ class PHPDIContainer implements ContainerInterface
      */
     private $container;
 
-    public function __construct($definitions)
+    public function __construct($definitions = [])
     {
         $builder = new ContainerBuilder();
         $builder->addDefinitions($definitions);

@@ -15,7 +15,5 @@ class CommonTestCase extends TestCase
 
     public function setUp()
     {
-        $definitions = require __DIR__ . '/../../config/definitions.php';
-        $this->nativeContainer = new PHPDIContainer($definitions);
     }
 }

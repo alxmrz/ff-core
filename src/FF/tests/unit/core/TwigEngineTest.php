@@ -13,8 +13,8 @@ class TwigEngineTest extends CommonTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->twigEngine = $this->nativeContainer->get(TwigEngine::class);
-        $this->twigEngine->setTemplatePath(TEMPLATE_PATH);
+        $templatePath = __DIR__ . '/../../templates/';
+        $this->twigEngine = new TwigEngine($templatePath, new Twig_Environment(new Twig_Loader_Filesystem($templatePath)));
     }
     public function testRenderReturnsContent()
     {
