@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ ./vendor/bin/phpunit src/FF/tests/ --colors=always -v
