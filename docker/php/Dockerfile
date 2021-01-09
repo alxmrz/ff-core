@@ -1,7 +1,7 @@
-FROM php:7.4-fpm
+FROM php:7.4
 
 #xdebug install
-RUN pecl install xdebug
+RUN pecl install xdebug-2.9.2
 
 RUN apt-get update && \
     apt-get -y install \

@@ -56,18 +56,17 @@ class Application extends BaseApplication
         $context = ['request' => $requestUri, 'ip' => $remoteAddr];
         try {
             $this->registerController();
+            $action = $this->router->getAction();
+            $response = $this->controller->$action();
         } catch (UnavailableRequestException $e) {
             $this->logger->error('Not available request', $context);
-            $this->showErrorPage($e, '404 Page not found');
-            exit();
+            $response = $this->showErrorPage($e, '404 Page not found');
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage(), $context);
-            $this->showErrorPage($e);
-            exit();
+            $response = $this->showErrorPage($e);
         }
-        $action = $this->router->getAction();
 
-        return $this->status ? $this->controller->$action() : $this->status;
+        echo $response;
     }
 
     /**
@@ -78,7 +77,12 @@ class Application extends BaseApplication
     {
         $this->status = false;
         $errorMessage = $e->getMessage();
-        require __DIR__ . '/../view/error.php';
+        $fileName = __DIR__ . '/../view/error.php';
+        if (!is_file($fileName)) {
+            return 'FATAL Error occurred: ' . $errorMessage;
+        }
+
+        require $fileName;
     }
 
     private function registerController(): void
