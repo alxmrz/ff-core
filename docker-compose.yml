@@ -8,3 +8,4 @@ services:
       - ./:/application/
       - ./docker/php/php_ini_overrides.ini:/usr/local/etc/php/conf.d/99-overrides.ini
       - ./docker/php/xdebug.ini:/usr/local/etc/php/conf.d/20-xdebug.ini
+    working_dir: /application

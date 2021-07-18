@@ -10,7 +10,7 @@ final class ApplicationTest extends CommonTestCase
 
     private $application;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $_SERVER['REQUEST_URI'] = '/mainpage/';

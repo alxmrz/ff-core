@@ -13,7 +13,7 @@ class CommonTestCase extends TestCase
      */
     protected $nativeContainer;
 
-    public function setUp()
+    public function setUp(): void
     {
     }
 }

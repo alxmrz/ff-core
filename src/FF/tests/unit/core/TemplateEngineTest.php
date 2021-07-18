@@ -16,7 +16,7 @@ class TemplateEngineTest extends CommonTestCase
 {
     private $templateEngine;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->templateEngine = new TemplateEngine(__DIR__ . '/../../templates/');
     }
@@ -33,9 +33,9 @@ class TemplateEngineTest extends CommonTestCase
     public function testAllArrayDataIsGot()
     {
         $content = $this->templateEngine->render('arrayPage', ['var' => 'var', 'newLine' => 'new line here']);
-        $this->assertRegexp('/super var/', $content);
-        $this->assertRegexp('/new line here/', $content);
-        $this->assertNotRegExp('/it does not exist/', $content);
+        $this->assertMatchesRegularExpression('/super var/', $content);
+        $this->assertMatchesRegularExpression('/new line here/', $content);
+        $this->assertDoesNotMatchRegularExpression('/it does not exist/', $content);
     }
 
     public function testExceptionIfTemplateDoesNotExist()
