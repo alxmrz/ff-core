@@ -1,8 +1,6 @@
 <?php
 
-
 namespace FF\db\models;
-
 
 class Migration
 {

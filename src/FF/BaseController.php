@@ -3,11 +3,10 @@
 namespace FF;
 
 use FF\db\DatabaseConnection;
-use \PDO;
 
 abstract class BaseController
 {
-    protected $db;
+    protected DatabaseConnection $db;
 
     /**
      * @return mixed
@@ -18,7 +17,7 @@ abstract class BaseController
     }
 
     /**
-     * @param mixed $db
+     * @param DatabaseConnection $db
      */
     public function setDb(DatabaseConnection $db): void
     {

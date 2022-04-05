@@ -5,21 +5,9 @@ use FF\Security;
 
 class Request implements RequestInterface
 {
-    /**
-     * @var array
-     */
-    private $get;
-
-    /**
-     * @var array
-     */
-    private $post;
-
-    /**
-     * Массив $_SERVER
-     * @var array
-     */
-    private $server;
+    private array $get;
+    private array $post;
+    private array $server;
 
     public function __construct()
     {
@@ -32,7 +20,7 @@ class Request implements RequestInterface
      * Возвращает массив $_GET
      * @return array
      */
-    public function get()
+    public function get(): array
     {
         return $this->get;
     }
@@ -40,21 +28,21 @@ class Request implements RequestInterface
     /**
      * @return array
      */
-    public function post()
+    public function post(): array
     {
         return $this->post;
     }
 
     /**
      * @param string|null $param
-     * @return array|mixed|string
+     * @return array|string
      */
-    public function server(string $param = null)
+    public function server(string $param = null): array|string
     {
         if ($param !== null) {
             return $this->server[$param] ?? '';
         }
+
         return $this->server;
     }
-
 }

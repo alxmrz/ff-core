@@ -1,12 +1,10 @@
 <?php
 
-
 namespace FF\console\controller;
 
-
-use console\services\migration\CreateService;
-use console\services\migration\DownService;
-use console\services\migration\UpService;
+use FF\console\services\migration\CreateService;
+use FF\console\services\migration\DownService;
+use FF\console\services\migration\UpService;
 use FF\ConsoleController;
 use FF\db\repositories\MigrationRepository;
 use FF\libraries\DateTime;

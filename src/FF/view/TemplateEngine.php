@@ -10,10 +10,7 @@ use FF\exceptions\FileDoesNotExist;
  */
 class TemplateEngine implements TemplateInterface
 {
-    /**.
-     * @var string
-     */
-    private $templatesPath;
+    private string $templatesPath;
 
     /**
      * TemplateEngine constructor.
@@ -30,7 +27,7 @@ class TemplateEngine implements TemplateInterface
      * @return string
      * @throws FileDoesNotExist
      */
-    public function render(string $templatePath, array $data = [])
+    public function render(string $templatePath, array $data = []): string
     {
         $pathToTemplate = $this->templatesPath . DIRECTORY_SEPARATOR . $templatePath . '.php';
         $this->throwExceptionIfTemplateDoesNotExist($pathToTemplate);
@@ -54,7 +51,7 @@ class TemplateEngine implements TemplateInterface
      * @param array $data
      * @return string
      */
-    private function renderTemplate(string $pathToTemplate, array $data = [])
+    private function renderTemplate(string $pathToTemplate, array $data = []): string
     {
         ob_start();
         foreach ($data as $key => $value) {
@@ -64,7 +61,7 @@ class TemplateEngine implements TemplateInterface
         return ob_get_clean();
     }
 
-    public function setTemplatePath(string $templatesPath)
+    public function setTemplatePath(string $templatesPath): void
     {
         $this->templatesPath = $templatesPath;
     }

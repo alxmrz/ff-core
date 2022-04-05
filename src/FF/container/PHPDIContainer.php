@@ -1,17 +1,19 @@
 <?php
+
 namespace FF\container;
 
 use DI\Container;
 use DI\ContainerBuilder;
+use Exception;
 use Psr\Container\ContainerInterface;
 
 class PHPDIContainer implements ContainerInterface
 {
-    /**
-     * @var Container
-     */
-    private $container;
+    private Container $container;
 
+    /**
+     * @throws Exception
+     */
     public function __construct($definitions = [])
     {
         $builder = new ContainerBuilder();
@@ -23,7 +25,7 @@ class PHPDIContainer implements ContainerInterface
      * @param string $id
      * @return mixed
      */
-    public function get($id)
+    public function get(string $id): mixed
     {
         return $this->container->get($id);
     }
@@ -32,7 +34,7 @@ class PHPDIContainer implements ContainerInterface
      * @param string $id
      * @return bool
      */
-    public function has($id)
+    public function has(string $id): bool
     {
         return $this->container->has($id);
     }

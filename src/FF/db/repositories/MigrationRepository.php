@@ -1,8 +1,6 @@
 <?php
 
-
 namespace FF\db\repositories;
-
 
 use FF\db\DatabaseConnection;
 use FF\db\models\Migration;

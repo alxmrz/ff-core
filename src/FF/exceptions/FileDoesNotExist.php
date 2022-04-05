@@ -1,8 +1,7 @@
 <?php
-namespace FF\exceptions;
 
+namespace FF\exceptions;
 
 class FileDoesNotExist extends \Exception
 {
-
 }
