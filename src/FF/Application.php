@@ -44,25 +44,28 @@ class Application extends BaseApplication
      */
     public function run(): int
     {
-        $context = [
-            'request' => $this->request->server('REQUEST_URI'),
-            'ip' => $this->request->server('REMOTE_ADDR')
-        ];
-
         try {
             $this->registerController();
             $action = $this->router->getAction();
 
             return $this->status ? $this->controller->$action() : $this->status;
         } catch (UnavailableRequestException $e) {
-            $this->logger->error('Not available request', $context);
+            $this->logger->error('Not available request', $this->getContext());
             $this->showErrorPage($e, '404 Page not found');
             exit();
         } catch (Exception $e) {
-            $this->logger->error($e->getMessage(), $context);
+            $this->logger->error($e->getMessage(), $this->getContext());
             $this->showErrorPage($e);
             exit();
         }
+    }
+
+    private function getContext(): array
+    {
+        return [
+            'request' => $this->request->server('REQUEST_URI'),
+            'ip' => $this->request->server('REMOTE_ADDR')
+        ];
     }
 
     /**
