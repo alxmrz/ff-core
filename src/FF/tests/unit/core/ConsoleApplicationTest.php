@@ -96,8 +96,8 @@ final class ConsoleApplicationTest extends CommonTestCase
         $args = array_merge(['scriptname'], $args);
 
         $consoleApplication = new class($args, $config) extends ConsoleApplication {
-            public $controllerMock;
-            public $db;
+            public ConsoleController $controllerMock;
+            public DatabaseConnection $db;
 
             public function createCurrentController(): ConsoleController
             {

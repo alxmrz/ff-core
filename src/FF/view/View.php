@@ -4,22 +4,11 @@ namespace FF\view;
 
 class View
 {
-    /**
-     * @var string
-     */
-    protected $title;
+    protected string $title;
+    protected array $assets;
+    protected TemplateInterface $templateEngine;
 
-    /**
-     * @var array
-     */
-    protected $assets;
-
-    /**
-     * @var TemplateInterface
-     */
-    protected $templateEngine;
-
-    public function __construct(TemplateInterface $templateEngine, $globalAssets = [])
+    public function __construct(TemplateInterface $templateEngine, array $globalAssets = [])
     {
         $this->templateEngine = $templateEngine;
         $this->assets['global_assets'] = $globalAssets;
@@ -43,7 +32,7 @@ class View
     public function getGlobalCss(): string
     {
         $return = '';
-        foreach ($this->assets['global_assets']['css']??[] as $style) {
+        foreach ($this->assets['global_assets']['css'] ?? [] as $style) {
             $return .= "<link href='/assets/global/css/{$style}' rel='stylesheet' type='text/css' />";
         }
         return $return;
@@ -56,7 +45,7 @@ class View
     public function getGlobalJs(): string
     {
         $return = '';
-        foreach ($this->assets['global_assets']['js']??[] as $script) {
+        foreach ($this->assets['global_assets']['js'] ?? [] as $script) {
             $return .= "<script src='/assets/global/js/{$script}'></script>";
         }
         return $return;
@@ -65,17 +54,19 @@ class View
     /**
      * Add css to page where method executed
      * @param string $cssFileName
+     * @return string
      */
-    public function addLocalCss($cssFileName = ''): string
+    public function addLocalCss(string $cssFileName = ''): string
     {
         return "<link href='/assets/{$cssFileName}' rel='stylesheet' type='text/css' />";
     }
 
     /**
      * The same as addLocalCss but $cssFilename may be in other locations
-     * @param $cssFileName
+     * @param string $cssFileName
+     * @return string
      */
-    public function addCssFrom($cssFileName): string
+    public function addCssFrom(string $cssFileName): string
     {
         return "<link href='{$cssFileName}' rel='stylesheet' type='text/css' />";
     }
@@ -94,7 +85,7 @@ class View
     /**
      * @param string $title
      */
-    public function setTitle($title): void
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
@@ -110,8 +101,9 @@ class View
     /**
      * @return string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 }
+

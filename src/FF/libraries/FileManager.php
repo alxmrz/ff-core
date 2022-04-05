@@ -1,8 +1,6 @@
 <?php
 
-
 namespace FF\libraries;
-
 
 use FF\exceptions\FileNotCreated;
 use FF\exceptions\UnavailablePath;
@@ -40,6 +38,9 @@ class FileManager
         return true;
     }
 
+    /**
+     * @throws UnavailablePath
+     */
     public function scanDir(string $dirPath): array
     {
         if (!is_dir($dirPath)) {

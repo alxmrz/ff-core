@@ -3,25 +3,21 @@ namespace FF\router;
 
 use FF\exceptions\UnavailableRequestException;
 
-class Router
+class Router implements RouterInterface
 {
-
-
-    /**
-     * @var array
-     */
-    private $requestsExpected = array(
+    private array $requestsExpected = [
         'MainpageController',
         'AuthController'
-    );
-    private $controller;
+    ];
+    private string $controller;
+    private string $action;
 
     /**
      *
      * @param string $uri
-     * @return array
+     * @throws UnavailableRequestException
      */
-    public function parseUri($uri)
+    public function parseUri(string $uri): void
     {
         $this->setUrlParams($uri);
     }
@@ -30,7 +26,7 @@ class Router
      * @param $uri
      * @throws UnavailableRequestException
      */
-    private function setUrlParams($uri)
+    private function setUrlParams($uri): void
     {
         $explodedArray = explode('/', ($uri));
 
@@ -43,7 +39,7 @@ class Router
         if (empty($explodedArray[2])) {
             $this->action = 'actionIndex';
         } else {
-            if (strstr($explodedArray[2], '-')) {
+            if (str_contains($explodedArray[2], '-')) {
                 $actionParts = explode('-', $explodedArray[2]);
                 foreach($actionParts as &$actionPart) {
                     $actionPart = ucfirst($actionPart);
@@ -61,13 +57,13 @@ class Router
 
     /**
      * @param string $controllerPart
-     * @return bool
+     * @return void
      * @throws UnavailableRequestException
      */
-    private function isRequestExpected(string $controllerPart): bool
+    private function isRequestExpected(string $controllerPart): void
     {
         if (in_array($controllerPart, $this->requestsExpected)) {
-            return true;
+            return;
         }
         throw new UnavailableRequestException("REQUEST {$this->controller} IS NOT AVAILIBLE");
     }

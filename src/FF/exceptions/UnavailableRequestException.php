@@ -2,9 +2,11 @@
 
 namespace FF\exceptions;
 
-class UnavailableRequestException extends \Exception
+use Exception;
+
+class UnavailableRequestException extends Exception
 {
-    public function showErrorMessage()
+    public function showErrorMessage(): void
     {
         echo 'BAD REQUEST';
         exit();

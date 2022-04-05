@@ -1,25 +1,25 @@
 <?php
 
-
 namespace FF\console\services\migration;
 
-
+use Exception;
 use FF\db\DatabaseConnection;
+use FF\Migration;
 
 class DownService
 {
-    private DatabaseConnection $db;
-
-    public function __construct(DatabaseConnection $db)
+    public function __construct(private DatabaseConnection $db)
     {
-        $this->db = $db;
     }
 
+    /**
+     * @throws Exception
+     */
     public function down()
     {
         $files = $this->getMigrations();
         if (!$files) {
-            throw new \Exception('Migrations not found');
+            throw new Exception('Migrations not found');
         }
 
         foreach (array_reverse($files) as $file) {
@@ -34,19 +34,16 @@ class DownService
         }
     }
 
-    protected function getMigrations()
+    protected function getMigrations(): bool|array
     {
         return scandir(__DIR__ . '/../../migrations/');
     }
 
-    protected function getMigrationClass($className)
+    protected function getMigrationClass(string $className): Migration
     {
         return new $className($this->getDb());
     }
 
-    /**
-     * @return DatabaseConnection
-     */
     public function getDb(): DatabaseConnection
     {
         return $this->db;

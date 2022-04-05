@@ -2,8 +2,11 @@
 declare(strict_types=1);
 
 use FF\Application;
+use FF\request\Request;
+use FF\router\Router;
 use FF\tests\unit\CommonTestCase;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 final class ApplicationTest extends CommonTestCase
 {
@@ -14,7 +17,15 @@ final class ApplicationTest extends CommonTestCase
     {
         parent::setUp();
         $_SERVER['REQUEST_URI'] = '/mainpage/';
-        $this->application = new Application($this->createMock(ContainerInterface::class));
+
+        $containerStub = $this->createStub(ContainerInterface::class);
+        $containerStub->method('get')->willReturnOnConsecutiveCalls(
+            $this->createStub(Router::class),
+            $this->createStub(Request::class),
+            $this->createStub(LoggerInterface::class)
+        );
+
+        $this->application = new Application($containerStub);
     }
 
     public function testMock()

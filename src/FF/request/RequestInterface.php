@@ -4,9 +4,9 @@ namespace FF\request;
 
 interface RequestInterface
 {
-    public function get();
+    public function get(): array;
 
-    public function post();
+    public function post(): array;
 
-    public function server();
+    public function server(): array|string;
 }

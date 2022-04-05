@@ -1,8 +1,6 @@
 <?php
 
-
 namespace FF;
-
 
 use FF\db\DatabaseConnection;
 

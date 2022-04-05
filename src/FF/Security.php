@@ -4,20 +4,14 @@ namespace FF;
 
 class Security
 {
-    /**
-     * @return array
-     */
-    public static function filterGetInput()
+    public static function filterGetInput(): array
     {
-        return filter_input_array(INPUT_GET, FILTER_SANITIZE_SPECIAL_CHARS);
+        return filter_input_array(INPUT_GET, FILTER_SANITIZE_SPECIAL_CHARS) ?? [];
     }
 
-    /**
-     * @return array
-     */
-    public static function filterPostInput()
+    public static function filterPostInput(): array
     {
-        return filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS);
+        return filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS) ?? [];
     }
-
 }
+
