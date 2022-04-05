@@ -12,15 +12,12 @@ use FF\libraries\FileManager;
 
 class CreateService
 {
-    private DateTime $now;
-    private FileManager $fileManager;
     private string $migrationTemplatePath = __DIR__ . '/../../../core/MigrationClassTemplate.php';
 
-    public function __construct(DateTime $now, FileManager $fileManager)
-    {
-        $this->now = $now;
-        $this->fileManager = $fileManager;
-    }
+    public function __construct(
+        private DateTime $now,
+        private FileManager $fileManager
+    ){}
 
     /**
      * Creates migration file with the specified name

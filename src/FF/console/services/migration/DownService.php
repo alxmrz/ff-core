@@ -8,9 +8,7 @@ use FF\Migration;
 
 class DownService
 {
-    public function __construct(private DatabaseConnection $db)
-    {
-    }
+    public function __construct(private DatabaseConnection $db){}
 
     /**
      * @throws Exception

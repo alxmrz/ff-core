@@ -9,7 +9,7 @@ abstract class BaseController
     protected DatabaseConnection $db;
 
     /**
-     * @return mixed
+     * @return DatabaseConnection
      */
     public function getDb(): DatabaseConnection
     {

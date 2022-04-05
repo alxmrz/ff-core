@@ -17,25 +17,14 @@ use FF\MigrationFactory;
 class UpService
 {
     private const MIGRATIONS_PATH = __DIR__ . '/../../migrations/';
-    private DatabaseConnection $db;
-    private FileManager $fileManager;
-    private DateTime $now;
-    private MigrationRepository $migrationRepository;
-    private MigrationFactory $migrationFactory;
 
     public function __construct(
-        DatabaseConnection $db,
-        FileManager $fileManager,
-        DateTime $now,
-        MigrationRepository $migrationRepository,
-        MigrationFactory $migrationFactory)
-    {
-        $this->db = $db;
-        $this->fileManager = $fileManager;
-        $this->now = $now;
-        $this->migrationRepository = $migrationRepository;
-        $this->migrationFactory = $migrationFactory;
-    }
+        private DatabaseConnection $db,
+        private FileManager $fileManager,
+        private DateTime $now,
+        private MigrationRepository $migrationRepository,
+        private MigrationFactory $migrationFactory
+    ){}
 
     /**
      * @return string
