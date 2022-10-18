@@ -1,6 +1,13 @@
 # Frozen Framework 
-This is my super good framework realization.  
-In general it is a MVC project.  
+An MVC php framework.  
+
+Run the commands below for starting dev containers, docker required:
+- *make build* - build php image
+- *make run*   - run container with php
+- *make deps*  - install composer deps
+
+Use *make test* for running all tests in project
+
 How to use:
 1) Make Controller with name of your requestUri. Example:
     http://example.com/request/page
