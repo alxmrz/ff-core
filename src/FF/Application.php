@@ -76,7 +76,7 @@ class Application extends BaseApplication
     {
         $this->status = false;
         $errorMessage = $e->getMessage() . PHP_EOL . $additionalInfo;
-        require __DIR__ . '/../view/error.php';
+        require __DIR__ . '/view/error.php';
     }
 
     /**
@@ -86,9 +86,12 @@ class Application extends BaseApplication
      */
     private function registerController(): void
     {
+        if (!isset($this->config['controllerNamespace'])) {
+            throw new Exception('Params controllerNamespace is not specified in app config');
+        }
         $server = $this->request->server();
         $this->router->parseUri($server['REQUEST_URI']);
-        $pageController = 'controller\\' . $this->router->getController();
+        $pageController = $this->config['controllerNamespace'] . $this->router->getController();
 
         $this->controller = $this->container->get($pageController);
         $this->controller->setRouter($this->router);
