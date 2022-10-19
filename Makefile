@@ -7,5 +7,8 @@ run:
 deps:
 	docker exec -it ff-core composer install
 
+php:
+	docker exec -it ff-core bash
+
 test:
 	docker exec -it ff-core /code/vendor/bin/phpunit /code/src/FF/tests/ --colors=always -v

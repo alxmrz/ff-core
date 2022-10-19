@@ -21,6 +21,7 @@ class Application extends BaseApplication
     private Controller $controller;
     private Request $request;
     private bool $status = true;
+    private array $handlers = [];
 
     /**
      * @param ContainerInterface $container
@@ -30,6 +31,7 @@ class Application extends BaseApplication
      */
     public function __construct(ContainerInterface $container, array $config = [])
     {
+        $config['mode'] = $config['mode'] ?? 'default';
         parent::__construct($container, $config);
 
         $this->router = $this->container->get(Router::class);
@@ -45,19 +47,31 @@ class Application extends BaseApplication
     public function run(): int
     {
         try {
-            $this->registerController();
-            $action = $this->router->getAction();
+            $result = 0;
+            if ($this->config['mode'] === 'default') {
+                $this->registerController();
+                $action = $this->router->getAction();
+                $this->controller->$action();
+                $result = ExitCode::SUCCESS;
+            } elseif ($this->config['mode'] === 'micro') {
+                $requestUri = $this->request->server('REQUEST_URI');
+                $handler = $this->handlers[$requestUri] ?? null;
+                if ($handler) {
+                    echo $handler();
+                    $result = ExitCode::SUCCESS;
+                }
+            }
 
-            return $this->status ? $this->controller->$action() : $this->status;
+            return $this->status ? $result : $this->status;
         } catch (UnavailableRequestException $e) {
             $this->logger->error('Not available request', $this->getContext());
             $this->showErrorPage($e, '404 Page not found');
-            exit();
         } catch (Exception $e) {
             $this->logger->error($e->getMessage(), $this->getContext());
             $this->showErrorPage($e);
-            exit();
         }
+
+        return ExitCode::ERROR;
     }
 
     private function getContext(): array
@@ -95,5 +109,15 @@ class Application extends BaseApplication
 
         $this->controller = $this->container->get($pageController);
         $this->controller->setRouter($this->router);
+    }
+
+    /**
+     * @param string $path
+     * @param callable $handler
+     * @return void
+     */
+    public function get(string $path, callable $handler): void
+    {
+        $this->handlers[$path] = $handler;
     }
 }
