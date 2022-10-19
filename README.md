@@ -16,4 +16,5 @@ How to use:
 2) If you need you can make a template in `view` directory and render it with:
 `$this->render('path/to/template', $data)`. Look at MainpageController for example.      
 The default template system is `TWIG`.
-3) Start your request page to see result.
+3) Also use can use framework in micro mode. Define param ['mode' => 'micro'] in application config. See example/index.php for details. 
+4) Start your request page to see result.

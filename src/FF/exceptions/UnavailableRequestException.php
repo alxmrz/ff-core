@@ -9,6 +9,5 @@ class UnavailableRequestException extends Exception
     public function showErrorMessage(): void
     {
         echo 'BAD REQUEST';
-        exit();
     }
 }
