@@ -2,7 +2,9 @@
 
 namespace FF;
 
+use Closure;
 use Exception;
+use FF\exceptions\MethodAlreadyRegistered;
 use FF\exceptions\UnavailableRequestException;
 use FF\logger\MonologLogger;
 use FF\request\Request;
@@ -54,8 +56,9 @@ class Application extends BaseApplication
                 $this->controller->$action();
                 $result = ExitCode::SUCCESS;
             } elseif ($this->config['mode'] === 'micro') {
+                $requestMethod = $this->request->server('REQUEST_METHOD');
                 $requestUri = $this->request->server('REQUEST_URI');
-                $handler = $this->handlers[$requestUri] ?? null;
+                $handler = $this->handlers[$requestMethod][$requestUri] ?? null;
                 if ($handler) {
                     echo $handler();
                     $result = ExitCode::SUCCESS;
@@ -113,11 +116,29 @@ class Application extends BaseApplication
 
     /**
      * @param string $path
-     * @param callable $handler
+     * @param Closure $handler
      * @return void
+     * @throws MethodAlreadyRegistered
      */
-    public function get(string $path, callable $handler): void
+    public function get(string $path, Closure $handler): void
     {
-        $this->handlers[$path] = $handler;
+        if (!isset($this->handlers["GET"])) {
+            $this->handlers["GET"] = [];
+        }
+
+        if (isset($this->handlers["GET"][$path])) {
+            throw new MethodAlreadyRegistered("Method GET {$path} already registered!");
+        }
+
+        $this->handlers["GET"][$path] = $handler;
+    }
+
+    public function post(string $path, Closure $handler)
+    {
+        if (!isset($this->handlers["POST"])) {
+            $this->handlers["POST"] = [];
+        }
+
+        $this->handlers["POST"][$path] = $handler;
     }
 }
