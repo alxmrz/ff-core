@@ -4,7 +4,7 @@
 namespace tests\unit\core;
 
 
-use FF\request\Request;
+use FF\http\Request;
 use FF\tests\unit\CommonTestCase;
 
 class RequestTest extends CommonTestCase
