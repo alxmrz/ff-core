@@ -1,43 +1,59 @@
 <?php
 namespace FF\router;
 
+use Closure;
+use Exception;
+use FF\exceptions\MethodAlreadyRegistered;
 use FF\exceptions\UnavailableRequestException;
+use FF\http\RequestInterface;
 
 class Router implements RouterInterface
 {
-    private array $requestsExpected = [
-        'MainpageController',
-        'AuthController'
-    ];
-    private string $controller;
-    private string $action;
+    private array $config;
+    private array $handlers = [];
 
-    /**
-     *
-     * @param string $uri
-     * @throws UnavailableRequestException
-     */
-    public function parseUri(string $uri): void
+    public function __construct(array $config = [])
     {
-        $this->setUrlParams($uri);
+        $this->config = $config;
     }
 
     /**
-     * @param $uri
+     * @param RequestInterface $request
+     * @return array
      * @throws UnavailableRequestException
      */
-    private function setUrlParams($uri): void
+    public function parseRequest(RequestInterface $request): array
+    {
+        $requestMethod = $request->server('REQUEST_METHOD');
+        $requestUri = $request->server('REQUEST_URI');
+        $handler = $this->handlers[$requestMethod][$requestUri] ?? null;
+        if ($handler) {
+            return [null, null, $handler];
+        }
+
+        if (!isset($this->config['controllerNamespace'])) {
+            throw new Exception('Params controllerNamespace is not specified in app config');
+        }
+
+        return array_merge($this->parseUrlParams($requestUri), [null]);
+    }
+
+    /**
+     * @param string $uri
+     * @return array
+     */
+    private function parseUrlParams(string $uri): array
     {
         $explodedArray = explode('/', ($uri));
 
         if (empty($explodedArray[1])) {
-            $this->controller = 'MainpageController';
+            $controllerName = 'MainpageController';
         } else {
-            $this->controller = ucfirst($explodedArray[1]) . 'Controller';
+            $controllerName = ucfirst($explodedArray[1]) . 'Controller';
         }
 
         if (empty($explodedArray[2])) {
-            $this->action = 'actionIndex';
+            $action = 'actionIndex';
         } else {
             if (str_contains($explodedArray[2], '-')) {
                 $actionParts = explode('-', $explodedArray[2]);
@@ -49,38 +65,59 @@ class Router implements RouterInterface
                 $actionPart = ucfirst($explodedArray[2]);
             }
 
-            $this->action = "action{$actionPart}";
+            $action = "action{$actionPart}";
         }
 
-        $this->isRequestExpected($this->controller);
+        return [$controllerName, $action];
     }
 
     /**
-     * @param string $controllerPart
+     * @param string $path
+     * @param Closure $handler
      * @return void
-     * @throws UnavailableRequestException
+     * @throws MethodAlreadyRegistered
      */
-    private function isRequestExpected(string $controllerPart): void
+    public function get(string $path, Closure $handler): void
     {
-        if (in_array($controllerPart, $this->requestsExpected)) {
-            return;
+        $this->registerHandler("GET", $path, $handler);
+
+    }
+
+    /**
+     * @param string $path
+     * @param Closure $handler
+     * @throws MethodAlreadyRegistered
+     */
+    public function post(string $path, Closure $handler): void
+    {
+        $this->registerHandler("POST", $path, $handler);
+    }
+
+    /**
+     * @param string $method
+     * @param string $path
+     * @param Closure $handler
+     * @return void
+     * @throws MethodAlreadyRegistered
+     */
+    private function registerHandler(string $method, string $path, Closure $handler): void
+    {
+        if (!isset($this->handlers[$method])) {
+            $this->handlers[$method] = [];
         }
-        throw new UnavailableRequestException("REQUEST {$this->controller} IS NOT AVAILIBLE");
+
+        if (isset($this->handlers[$method][$path])) {
+            throw new MethodAlreadyRegistered("Method {$method} {$path} already registered!");
+        }
+
+        $this->handlers[$method][$path] = $handler;
     }
 
     /**
-     * @return string
+     * @param array $config
      */
-    public function getController(): string
+    public function setConfig(array $config): void
     {
-        return $this->controller;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAction(): string
-    {
-        return $this->action;
+        $this->config = $config;
     }
 }

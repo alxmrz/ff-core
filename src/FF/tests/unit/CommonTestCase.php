@@ -11,7 +11,7 @@ class CommonTestCase extends TestCase
     /**
      * @var ContainerInterface
      */
-    protected $nativeContainer;
+    protected ContainerInterface $nativeContainer;
 
     public function setUp(): void
     {

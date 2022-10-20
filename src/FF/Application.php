@@ -6,24 +6,24 @@ use Closure;
 use Exception;
 use FF\exceptions\MethodAlreadyRegistered;
 use FF\exceptions\UnavailableRequestException;
+use FF\http\Request;
+use FF\http\Response;
 use FF\logger\MonologLogger;
-use FF\request\Request;
 use FF\router\Router;
 use FF\router\RouterInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 class Application extends BaseApplication
 {
     public RouterInterface $router;
     public LoggerInterface $logger;
 
-    private Controller $controller;
     private Request $request;
     private bool $status = true;
-    private array $handlers = [];
 
     /**
      * @param ContainerInterface $container
@@ -37,6 +37,7 @@ class Application extends BaseApplication
         parent::__construct($container, $config);
 
         $this->router = $this->container->get(Router::class);
+        $this->router->setConfig($config);
         $this->request = $this->container->get(Request::class);
         $this->logger = $this->container->get(MonologLogger::class);
     }
@@ -49,23 +50,36 @@ class Application extends BaseApplication
     public function run(): int
     {
         try {
-            $result = 0;
-            if ($this->config['mode'] === 'default') {
-                $this->registerController();
-                $action = $this->router->getAction();
-                $this->controller->$action();
-                $result = ExitCode::SUCCESS;
-            } elseif ($this->config['mode'] === 'micro') {
-                $requestMethod = $this->request->server('REQUEST_METHOD');
-                $requestUri = $this->request->server('REQUEST_URI');
-                $handler = $this->handlers[$requestMethod][$requestUri] ?? null;
-                if ($handler) {
-                    echo $handler();
-                    $result = ExitCode::SUCCESS;
+            $response = new Response();
+
+            [$controllerName, $action, $handler] = $this->router->parseRequest($this->request);
+
+            try {
+                if ($handler !== null) {
+                    $handler($this->request, $response);
+                } elseif ($controllerName !== null && $action !== null) {
+                    $controller = $this->container->get($controllerName);
+                    $controller->setRouter($this->router);
+
+                    $controller->$action($this->request, $response);
+                } else {
+                    throw new Exception("No handlers for request found");
                 }
+            } catch (Throwable $e) {
+                $this->logger->error($e->getMessage(), $this->getContext());
+                $response->setBody($e->getMessage());
+                $this->status = false;
             }
 
-            return $this->status ? $result : $this->status;
+            try {
+                // TODO: add response headers and code
+                echo $response;
+            } catch (\Throwable $e) {
+                $this->status = false;
+                $this->logger->error($e->getMessage(), $this->getContext());
+            }
+
+            return $this->status ? ExitCode::SUCCESS : ExitCode::ERROR;
         } catch (UnavailableRequestException $e) {
             $this->logger->error('Not available request', $this->getContext());
             $this->showErrorPage($e, '404 Page not found');
@@ -97,24 +111,6 @@ class Application extends BaseApplication
     }
 
     /**
-     * @return void
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
-    private function registerController(): void
-    {
-        if (!isset($this->config['controllerNamespace'])) {
-            throw new Exception('Params controllerNamespace is not specified in app config');
-        }
-        $server = $this->request->server();
-        $this->router->parseUri($server['REQUEST_URI']);
-        $pageController = $this->config['controllerNamespace'] . $this->router->getController();
-
-        $this->controller = $this->container->get($pageController);
-        $this->controller->setRouter($this->router);
-    }
-
-    /**
      * @param string $path
      * @param Closure $handler
      * @return void
@@ -122,23 +118,17 @@ class Application extends BaseApplication
      */
     public function get(string $path, Closure $handler): void
     {
-        if (!isset($this->handlers["GET"])) {
-            $this->handlers["GET"] = [];
-        }
+        $this->router->get($path, $handler);
 
-        if (isset($this->handlers["GET"][$path])) {
-            throw new MethodAlreadyRegistered("Method GET {$path} already registered!");
-        }
-
-        $this->handlers["GET"][$path] = $handler;
     }
 
-    public function post(string $path, Closure $handler)
+    /**
+     * @param string $path
+     * @param Closure $handler
+     * @throws MethodAlreadyRegistered
+     */
+    public function post(string $path, Closure $handler): void
     {
-        if (!isset($this->handlers["POST"])) {
-            $this->handlers["POST"] = [];
-        }
-
-        $this->handlers["POST"][$path] = $handler;
+        $this->router->post($path, $handler);
     }
 }

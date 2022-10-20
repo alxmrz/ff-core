@@ -1,5 +1,5 @@
 <?php
-namespace FF\request;
+namespace FF\http;
 
 
 interface RequestInterface

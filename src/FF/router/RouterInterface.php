@@ -1,11 +1,9 @@
 <?php
 namespace FF\router;
 
+use FF\http\RequestInterface;
+
 interface RouterInterface
 {
-    public function parseUri(string $uri);
-
-    public function getController(): string;
-
-    public function getAction(): string;
+    public function parseRequest(RequestInterface $request);
 }
