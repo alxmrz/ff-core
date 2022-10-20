@@ -3,7 +3,7 @@
 /**
  * Use this template for index.php to start project.
  * Application expects you to register handlers for web path via $app->get or $app->post
- * Alternately you can create controller with action to work with
+ * Alternatively you can create controller with action to work with
  * For example web path GET /order/create can be defined as (Slim way):
  * $app->get('/order/create', function(RequestInterface $request, ResponseInterface $response) {
  *     $response->setBody("Hello from order create request");
