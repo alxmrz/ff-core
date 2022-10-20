@@ -33,7 +33,6 @@ class Application extends BaseApplication
      */
     public function __construct(ContainerInterface $container, array $config = [])
     {
-        $config['mode'] = $config['mode'] ?? 'default';
         parent::__construct($container, $config);
 
         $this->router = $this->container->get(Router::class);
