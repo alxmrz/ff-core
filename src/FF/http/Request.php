@@ -45,4 +45,12 @@ class Request implements RequestInterface
 
         return $this->server;
     }
+
+    public function context(): array
+    {
+        return [
+            'request' => $this->server('REQUEST_URI'),
+            'ip' => $this->server('REMOTE_ADDR')
+        ];
+    }
 }
