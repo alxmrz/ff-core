@@ -1,5 +1,5 @@
 {
-  "name": "ff/ff-core",
+  "name": "alxmrz/ff-core",
   "require": {
     "monolog/monolog": "1.0.*",
     "phpunit/phpunit": "^9",
