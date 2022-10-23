@@ -8,5 +8,7 @@ interface RequestInterface
 
     public function post(): array;
 
-    public function server(): array|string;
+    public function server(string $param = null): array|string;
+
+    public function context(): array;
 }

@@ -3,11 +3,16 @@
 namespace FF\exceptions;
 
 use Exception;
+use Throwable;
 
 class UnavailableRequestException extends Exception
 {
-    public function showErrorMessage(): void
+    public function __construct(
+        string     $message = "No handlers for request found",
+        int        $code = 0,
+        ?Throwable $previous = null
+    )
     {
-        echo 'BAD REQUEST';
+        parent::__construct($message, $code, $previous);
     }
 }

@@ -5,7 +5,7 @@ namespace FF;
 use FF\router\RouterInterface;
 use FF\view\View;
 
-abstract class Controller extends BaseController
+abstract class WebController extends BaseController
 {
     protected View $view;
     protected RouterInterface $router;

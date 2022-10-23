@@ -1,4 +1,5 @@
 <?php
+
 namespace FF\router;
 
 use Closure;
@@ -24,18 +25,24 @@ class Router implements RouterInterface
      */
     public function parseRequest(RequestInterface $request): array
     {
+        $controller = $action = null;
+
         $requestMethod = $request->server('REQUEST_METHOD');
         $requestUri = $request->server('REQUEST_URI');
         $handler = $this->handlers[$requestMethod][$requestUri] ?? null;
-        if ($handler) {
-            return [null, null, $handler];
+        if ($handler === null) {
+            if (!isset($this->config['controllerNamespace'])) {
+                throw new Exception('Params controllerNamespace is not specified in app config');
+            }
+
+            [$controller, $action] = $this->parseUrlParams($requestUri);
         }
 
-        if (!isset($this->config['controllerNamespace'])) {
-            throw new Exception('Params controllerNamespace is not specified in app config');
+        if ($handler === null && ($controller === null || $action === null)) {
+            throw new UnavailableRequestException();
         }
 
-        return array_merge($this->parseUrlParams($requestUri), [null]);
+        return [$handler, $controller, $action];
     }
 
     /**
@@ -57,7 +64,7 @@ class Router implements RouterInterface
         } else {
             if (str_contains($explodedArray[2], '-')) {
                 $actionParts = explode('-', $explodedArray[2]);
-                foreach($actionParts as &$actionPart) {
+                foreach ($actionParts as &$actionPart) {
                     $actionPart = ucfirst($actionPart);
                 }
                 $actionPart = implode($actionParts);

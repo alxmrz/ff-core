@@ -8,7 +8,10 @@ use FF\container\PHPDIContainer;
 use FF\exceptions\MethodAlreadyRegistered;
 use FF\exceptions\UnavailableRequestException;
 use FF\http\Request;
+use FF\http\RequestInterface;
 use FF\http\Response;
+use FF\http\ResponseInterface;
+use FF\http\StatusCode;
 use FF\logger\MonologLogger;
 use FF\router\Router;
 use FF\router\RouterInterface;
@@ -25,9 +28,6 @@ class Application extends BaseApplication
 {
     public RouterInterface $router;
     public LoggerInterface $logger;
-
-    /** @var bool is application running correctly */
-    private bool $status = true;
 
     /**
      * @param ContainerInterface $container
@@ -77,8 +77,8 @@ class Application extends BaseApplication
         if (isset($config['definitions']) && is_array($config['definitions'])) {
             $definitions = array_merge($definitions, $config['definitions']);
         }
-
         $container = new PHPDIContainer($definitions);
+
         return new static(
             $container,
             $container->get(RouterInterface::class),
@@ -98,49 +98,33 @@ class Application extends BaseApplication
         $response = $this->createResponse();
 
         try {
-            [$controllerName, $action, $handler] = $this->router->parseRequest($request);
+            [$handler, $controllerName, $action] = $this->router->parseRequest($request);
 
             try {
-                if ($handler !== null) {
+                if (is_callable($handler)) {
                     $handler($request, $response);
-                } elseif ($controllerName !== null && $action !== null) {
+                } else {
                     $controller = $this->container->get($controllerName);
                     $controller->setRouter($this->router);
 
                     $controller->$action($request, $response);
-                } else {
-                    throw new Exception("No handlers for request found");
                 }
+            } catch (UnavailableRequestException $e) {
+                $this->logger->error($e->getMessage(), $request->context());
+                $response->withBody($e->getMessage())->withStatusCode(StatusCode::NOT_FOUND);
             } catch (Throwable $e) {
                 $this->logger->error($e->getMessage(), $request->context());
-                $response->setBody($e->getMessage());
-                $this->status = false;
+                $response->withBody($e->getMessage())->withStatusCode(StatusCode::INTERNAL_SERVER_ERROR);
             }
 
             $response->send();
 
-            return $this->status ? ExitCode::SUCCESS : ExitCode::ERROR;
-        } catch (UnavailableRequestException $e) {
-            $this->logger->error('Not available request', $request->context());
-            $this->showErrorPage($e, '404 Page not found');
+            return ExitCode::SUCCESS;
         } catch (Exception $e) {
             $this->logger->error($e->getMessage(), $request->context());
-            $this->showErrorPage($e);
         }
 
         return ExitCode::ERROR;
-    }
-
-
-    /**
-     * @param Exception $e
-     * @param string $additionalInfo
-     */
-    private function showErrorPage(Exception $e, string $additionalInfo = '')
-    {
-        $this->status = false;
-        $errorMessage = $e->getMessage() . PHP_EOL . $additionalInfo;
-        require __DIR__ . '/view/error.php';
     }
 
     /**
@@ -152,7 +136,6 @@ class Application extends BaseApplication
     public function get(string $path, Closure $handler): void
     {
         $this->router->get($path, $handler);
-
     }
 
     /**
@@ -166,17 +149,17 @@ class Application extends BaseApplication
     }
 
     /**
-     * @return Request
+     * @return RequestInterface
      */
-    private function createRequest(): Request
+    private function createRequest(): RequestInterface
     {
         return new Request();
     }
 
     /**
-     * @return Response
+     * @return ResponseInterface
      */
-    private function createResponse(): Response
+    private function createResponse(): ResponseInterface
     {
         return new Response;
     }
