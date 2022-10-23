@@ -1,20 +1,76 @@
 <?php
+
 namespace FF\http;
 
-class Response
+use Exception;
+
+class Response implements ResponseInterface
 {
+    private array $headers = [];
     private string $body;
 
     /**
-     * @param string $body
+     * @throws Exception
      */
-    public function setBody(string $body): void
-    {
-        $this->body = $body;
-    }
-
     public function send(): void
     {
+        if (headers_sent()) {
+            throw new Exception('Headers is already sent');
+        }
+
+        foreach ($this->headers as $header => $value) {
+            header("{$header}: {$value}");
+        }
+
         echo $this->body;
+    }
+
+    /**
+     * @param string $body
+     * @return Response
+     */
+    public function withBody(string $body): static
+    {
+        $this->body = $body;
+
+        return $this;
+    }
+
+    /**
+     * @param mixed $body
+     * @return $this
+     * @throws Exception
+     */
+    public function withJsonBody(mixed $body): static
+    {
+        $this->withBody(json_encode($body, JSON_UNESCAPED_UNICODE))
+            ->withHeader('Content-type', 'application/json');
+
+        return $this;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function withHeader(string $header, string $value): static
+    {
+        if (isset($this->headers[$header])) {
+            throw new Exception("Header <{$header}> is already defined!");
+        }
+
+        $this->headers[$header] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @param int $statusCode
+     * @return Response
+     */
+    public function withStatusCode(int $statusCode): static
+    {
+        http_response_code($statusCode);
+
+        return $this;
     }
 }

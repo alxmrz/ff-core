@@ -24,8 +24,9 @@ final class RouterTest extends CommonTestCase
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_URI'] = '/mainpage/getList';
 
-        [$controllerName, $action] = $this->router->parseRequest($this->createRequest());
+        [$handler, $controllerName, $action] = $this->router->parseRequest($this->createRequest());
 
+        $this->assertNull($handler);
         $this->assertEquals('MainpageController', $controllerName);
         $this->assertEquals( 'actionGetList', $action);
     }
