@@ -1,17 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 use FF\Application;
-use FF\http\Request;
-use FF\http\Response;
+use FF\http\RequestInterface;
+use FF\http\ResponseInterface;
 
 include_once '../../vendor/autoload.php';
 
 $app = Application::construct(['appName' => 'ff-demo-app']);
 
-$app->get('/', function (Request $request, Response $response) {
+$app->get('/', function (RequestInterface $request, ResponseInterface $response) {
     $response->withBody("Hello from main route");
 });
-$app->post('/order', function(Request $request, Response $response) {
+$app->post('/order', function (RequestInterface $request, ResponseInterface $response) {
     $response->withJsonBody(["message" => "Hello from order post request"]);
 });
 
