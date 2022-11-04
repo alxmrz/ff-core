@@ -13,13 +13,13 @@ class RequestTest extends CommonTestCase
     {
         $request = $this->createRequest();
 
-        $this->assertEquals(1, $request->server('param'));
+        $this->assertEquals('value', $request->server('param'));
         $this->assertCount(1, $request->server());
     }
 
     protected function createRequest(): Request
     {
-        $_SERVER = ['param' => 1];
+        $_SERVER = ['param' => 'value'];
         return new Request();
     }
 

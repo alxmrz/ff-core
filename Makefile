@@ -4,6 +4,9 @@ build:
 run:
 	docker run -d --name ff-core -v ${PWD}/:/code -w /code fc-php
 
+start:
+	docker start ff-core
+
 deps:
 	docker exec -it ff-core composer install
 
