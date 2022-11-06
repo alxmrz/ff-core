@@ -11,6 +11,7 @@ class Request implements RequestInterface
     private array $get;
     private array $post;
     private array $server;
+    private array $args;
 
     public function __construct()
     {

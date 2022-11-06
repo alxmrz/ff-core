@@ -27,31 +27,72 @@ class Router implements RouterInterface
      */
     public function parseRequest(RequestInterface $request): array
     {
+        $args = [];
         $controller = $action = null;
 
         $requestMethod = $request->server('REQUEST_METHOD');
         $requestUri = $request->server('REQUEST_URI');
-        $handler = $this->handlers[$requestMethod][$requestUri] ?? null;
+
+        [$handler, $routeArgs] = $this->findHandlerForUri($requestMethod, $requestUri);
+        $args = array_merge($args, $routeArgs);
+
         if ($handler === null) {
             if (!isset($this->config['controllerNamespace'])) {
                 throw new Exception('Params controllerNamespace is not specified in app config');
             }
 
-            [$controller, $action] = $this->parseUrlParams($requestUri);
+            [$controller, $action] = $this->findControllerWithActionForUri($requestUri);
         }
 
         if ($handler === null && ($controller === null || $action === null)) {
             throw new UnavailableRequestException();
         }
 
-        return [$handler, $controller, $action];
+        return [$handler, $controller, $action, $args];
+    }
+
+
+    /**
+     * @param string $requestMethod
+     * @param string $requestUri
+     * @return array
+     */
+    private function findHandlerForUri(string $requestMethod, string $requestUri): array
+    {
+        $routeArgs = [];
+        $handler = $this->handlers[$requestMethod][$requestUri] ?? null;
+        if ($handler === null) {
+            $requestUriParts = explode('/', $requestUri);
+            $lenUriParts = count($requestUriParts);
+            foreach ($this->handlers[$requestMethod] ?? [] as $route => $func) {
+                $routeParts = explode('/', $route);
+                if (count($routeParts) !== $lenUriParts) continue;
+                foreach ($routeParts as $key => $part) {
+                    if ($requestUriParts[$key] === $part) continue;
+                    preg_match("/{(\w+)}/", $part, $matches);
+                    if (count($matches) > 0) {
+                        $routeArgs[$matches[1]] = $requestUriParts[$key];
+                    } else {
+                        $routeArgs = [];
+                        break;
+                    }
+                }
+
+                if (count($routeArgs) > 0) {
+                    $handler = $func;
+                    break;
+                }
+            }
+
+        }
+        return [$handler, $routeArgs];
     }
 
     /**
      * @param string $uri
      * @return array
      */
-    private function parseUrlParams(string $uri): array
+    private function findControllerWithActionForUri(string $uri): array
     {
         $explodedArray = explode('/', ($uri));
 

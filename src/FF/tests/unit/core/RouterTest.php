@@ -63,6 +63,39 @@ final class RouterTest extends CommonTestCase
         $this->router->parseRequest($this->createRequest());
     }
 
+    /**
+     * @dataProvider dpTestParsingVariablesInUri
+     *
+     * @return void
+     * @throws MethodAlreadyRegistered
+     * @throws \FF\exceptions\UnavailableRequestException
+     */
+    public function testParsingVariablesInUri(string $uri, string $route, array $expectedArgs)
+    {
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['REQUEST_URI'] = $uri;
+        $func = function () {
+            return 'Order route get by id';
+        };
+        $this->router->get($route, $func);
+        [$handler, $controllerName, $action, $args] = $this->router->parseRequest($this->createRequest());
+
+        $this->assertEquals($func, $handler);
+        $this->assertNull($controllerName);
+        $this->assertNull($action);
+        $this->assertEquals($expectedArgs, $args);
+    }
+
+    private function dpTestParsingVariablesInUri(): array
+    {
+        return [
+            ['uri' => '/', 'route' => '/', 'expectedArgs' => []],
+            ["uri" => '/order/5', 'route' => '/order/{id}', 'expectedArgs' => ['id' => '5']],
+            ["uri" => '/user/5/order/2', 'route' => '/user/{id}/order/{number}', 'expectedArgs' => ['id' => '5', 'number' => '2']],
+        ];
+    }
+
+
     private function createRequest(): Request
     {
         return new Request();
