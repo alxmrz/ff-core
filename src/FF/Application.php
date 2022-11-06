@@ -100,11 +100,10 @@ class Application extends BaseApplication
         $response = $this->createResponse();
 
         try {
-            [$handler, $controllerName, $action] = $this->router->parseRequest($request);
-
+            [$handler, $controllerName, $action, $args] = $this->router->parseRequest($request);
             try {
                 if (is_callable($handler)) {
-                    $handler($request, $response);
+                    $handler($request, $response, ...$args);
                 } else {
                     $controller = $this->container->get($controllerName);
                     $controller->setRouter($this->router);
