@@ -13,3 +13,5 @@ Run the commands below for starting dev containers, docker required:
 Use *make test* for running all tests in project
 
 See *example/index.php* for details of using
+
+Use **php -S 127.0.0.1:8081 -t ./example/** to run example application.

@@ -6,7 +6,7 @@ use FF\Application;
 use FF\http\RequestInterface;
 use FF\http\ResponseInterface;
 
-include_once '../../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 $app = Application::construct(['appName' => 'ff-demo-app']);
 
