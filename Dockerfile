@@ -17,7 +17,7 @@ RUN apt-get update \
 
 RUN pecl install xdebug
 RUN docker-php-ext-enable xdebug \
-    && echo "xdebug.mode=debug" \
+    && echo "xdebug.mode=debug,coverage" >> /usr/local/etc/php/conf.d/20-xdebug.ini \
     && echo "xdebug.log=/var/www/xdebug.log" >> /usr/local/etc/php/conf.d/20-xdebug.ini \
     && echo "xdebug.discover_client_host=true" >> /usr/local/etc/php/conf.d/20-xdebug.ini \
     && echo "xdebug.remote_cookie_expire_time=3600" >> /usr/local/etc/php/conf.d/20-xdebug.ini \

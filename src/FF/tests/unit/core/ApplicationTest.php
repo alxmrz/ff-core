@@ -1,65 +1,63 @@
 <?php
 declare(strict_types=1);
 
+namespace app\tests\unit\core;
+
 use FF\Application;
+use FF\container\PHPDIContainer;
 use FF\exceptions\MethodAlreadyRegistered;
-use FF\ExitCode;
-use FF\http\Request;
+use FF\http\RequestInterface;
+use FF\http\ResponseInterface;
 use FF\router\Router;
 use FF\tests\unit\CommonTestCase;
-use Psr\Container\ContainerInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Log\LoggerInterface;
 
 final class ApplicationTest extends CommonTestCase
 {
-    public function testStub()
-    {
-        $this->assertTrue(true);
-    }
-
-    public function _testRunGetRoutesViaAnonymousFunction(): void
+    /**
+     * @runInSeparateProcess
+     * @return void
+     * @throws MethodAlreadyRegistered
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    public function testRunGetRoutesViaAnonymousFunction(): void
     {
         $_SERVER['REQUEST_URI'] = '/order';
         $_SERVER['REQUEST_METHOD'] = 'GET';
 
-        $router = $this->createStub(Request::class);
-        $router->method('server')->willReturnOnConsecutiveCalls($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
-        $app = new Application($this->createContainerStub(request: $router), ['mode' => 'micro']);
-        $app->get('/order', function () {
-            return 'Order route';
+        $app = new Application(new PHPDIContainer(), new Router(), $this->createStub(LoggerInterface::class));
+        $app->get('/order', function (RequestInterface $request, ResponseInterface $response) {
+            $response->withBody('<p>Order route</p>');
         });
 
-        $this->expectOutputString('Order route');
+        $this->expectOutputString('<p>Order route</p>');
+
         $app->run();
     }
 
 
-
-    public function _testRegisterPostMethod(): void
+    /**
+     * @runInSeparateProcess
+     * @return void
+     * @throws ContainerExceptionInterface
+     * @throws MethodAlreadyRegistered
+     * @throws NotFoundExceptionInterface
+     */
+    public function testRegisterPostMethod(): void
     {
         $_SERVER['REQUEST_URI'] = '/order';
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
-        $router = $this->createStub(Request::class);
-        $router->method('server')->willReturnOnConsecutiveCalls($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
-        $app = new Application($this->createContainerStub(request: $router), ['mode' => 'micro']);
-        $app->post('/order', function () {
-            return 'Order route from post';
+        $app = new Application(new PHPDIContainer(), new Router(), $this->createStub(LoggerInterface::class));
+        $app->post('/order', function (RequestInterface $request, ResponseInterface $response) {
+            $response->withBody('Order route from post');
         });
 
         $this->expectOutputString('Order route from post');
+
         $app->run();
-    }
-
-    private function createContainerStub(Request $request = null): ContainerInterface
-    {
-        $containerStub = $this->createStub(ContainerInterface::class);
-        $containerStub->method('get')->willReturnOnConsecutiveCalls(
-            $this->createStub(Router::class),
-            $request ?? $this->createStub(Request::class),
-            $this->createStub(LoggerInterface::class)
-        );
-
-        return $containerStub;
     }
 }
