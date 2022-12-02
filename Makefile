@@ -15,3 +15,6 @@ php:
 
 test:
 	docker exec -it ff-core /code/vendor/bin/phpunit /code/src/FF/tests/ --colors=always -v
+
+test-coverage:
+	docker exec -it ff-core ./vendor/bin/phpunit --coverage-text ./src
