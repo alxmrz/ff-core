@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use FF\view\TemplateInterface;
@@ -7,7 +8,6 @@ use FF\tests\unit\CommonTestCase;
 
 final class ViewTest extends CommonTestCase
 {
-
     public $view;
 
     public function setUp(): void

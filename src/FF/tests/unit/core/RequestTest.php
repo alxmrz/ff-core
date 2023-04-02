@@ -1,8 +1,6 @@
 <?php
 
-
 namespace tests\unit\core;
-
 
 use FF\http\Request;
 use FF\tests\unit\CommonTestCase;

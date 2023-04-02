@@ -42,8 +42,7 @@ class Application extends BaseApplication
         RouterInterface    $router,
         LoggerInterface    $logger,
         array              $config = []
-    )
-    {
+    ) {
         parent::__construct($container, $config);
 
         $this->logger = $logger;
@@ -162,6 +161,6 @@ class Application extends BaseApplication
      */
     private function createResponse(): ResponseInterface
     {
-        return new Response;
+        return new Response();
     }
 }

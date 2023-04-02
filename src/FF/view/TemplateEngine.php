@@ -34,7 +34,6 @@ class TemplateEngine implements TemplateInterface
         $pathToTemplate = $this->templatesPath . DIRECTORY_SEPARATOR . $templatePath . '.php';
         $this->throwExceptionIfTemplateDoesNotExist($pathToTemplate);
         return $this->renderTemplate($pathToTemplate, $data);
-
     }
 
     /**

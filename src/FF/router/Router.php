@@ -66,9 +66,13 @@ class Router implements RouterInterface
             $lenUriParts = count($requestUriParts);
             foreach ($this->handlers[$requestMethod] ?? [] as $route => $func) {
                 $routeParts = explode('/', $route);
-                if (count($routeParts) !== $lenUriParts) continue;
+                if (count($routeParts) !== $lenUriParts) {
+                    continue;
+                }
                 foreach ($routeParts as $key => $part) {
-                    if ($requestUriParts[$key] === $part) continue;
+                    if ($requestUriParts[$key] === $part) {
+                        continue;
+                    }
                     preg_match("/{(\w+)}/", $part, $matches);
                     if (count($matches) > 0) {
                         $routeArgs[$matches[1]] = $requestUriParts[$key];
@@ -83,7 +87,6 @@ class Router implements RouterInterface
                     break;
                 }
             }
-
         }
         return [$handler, $routeArgs];
     }
@@ -130,7 +133,6 @@ class Router implements RouterInterface
     public function get(string $path, Closure $handler): void
     {
         $this->registerHandler("GET", $path, $handler);
-
     }
 
     /**

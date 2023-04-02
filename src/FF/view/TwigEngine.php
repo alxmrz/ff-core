@@ -16,7 +16,6 @@ use Twig_Environment;
  */
 class TwigEngine implements TemplateInterface
 {
-
     private string $templatesPath;
     private Twig_Environment $twigEnvironment;
 
@@ -29,8 +28,7 @@ class TwigEngine implements TemplateInterface
     public function __construct(
         string $templatesPath,
         Twig_Environment $te
-    )
-    {
+    ) {
         $this->templatesPath = $templatesPath;
         $this->twigEnvironment = $te;
     }

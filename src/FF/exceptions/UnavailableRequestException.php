@@ -13,8 +13,7 @@ class UnavailableRequestException extends Exception
         string     $message = "No handlers for request found",
         int        $code = 0,
         ?Throwable $previous = null
-    )
-    {
+    ) {
         parent::__construct($message, $code, $previous);
     }
 }
