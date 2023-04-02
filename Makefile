@@ -7,6 +7,9 @@ run:
 start:
 	docker start ff-core
 
+stop:
+	docker stop ff-core
+
 deps:
 	docker exec -it ff-core composer install
 
@@ -18,7 +21,9 @@ test:
 
 test-coverage:
 	docker exec -it ff-core ./vendor/bin/phpunit --coverage-text ./src
+
 cs:
 	docker exec -it ff-core ./vendor/bin/phpcs ./src
+
 psalm:
 	docker exec -it ff-core ./vendor/bin/psalm
