@@ -1,14 +1,11 @@
 <?php
 
-
 namespace FF\tests\stubs;
-
 
 use Psr\Log\LoggerInterface;
 
 class MonologLogger implements LoggerInterface
 {
-
     public function emergency($message, array $context = array())
     {
         // TODO: Implement emergency() method.

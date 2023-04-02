@@ -108,4 +108,3 @@ class View
         return $this->title;
     }
 }
-

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use FF\exceptions\MethodAlreadyRegistered;
@@ -28,7 +29,7 @@ final class RouterTest extends CommonTestCase
 
         $this->assertNull($handler);
         $this->assertEquals('MainpageController', $controllerName);
-        $this->assertEquals( 'actionGetList', $action);
+        $this->assertEquals('actionGetList', $action);
     }
 
     /**

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: alexandr
@@ -42,6 +43,5 @@ class TemplateEngineTest extends CommonTestCase
     {
         $this->expectException(\FF\exceptions\FileDoesNotExist::class);
         $content = $this->templateEngine->render('no_template');
-
     }
 }

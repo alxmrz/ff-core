@@ -5,7 +5,6 @@
     "phpunit/phpunit": "^9",
     "twig/twig": "^2.0",
     "psr/log": "^1.0",
-    "squizlabs/php_codesniffer": "*",
     "psr/container": "^1.0",
     "php-di/php-di": "^6.0",
     "ext-pdo": "*"
@@ -15,5 +14,8 @@
       "FF\\": "./src/FF"
     }
   },
-  "minimum-stability": "dev"
+  "minimum-stability": "dev",
+  "require-dev": {
+    "squizlabs/php_codesniffer": "3.7.2"
+  }
 }
