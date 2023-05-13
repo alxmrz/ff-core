@@ -27,3 +27,5 @@ cs:
 
 psalm:
 	docker exec -it ff-core ./vendor/bin/psalm
+md:
+	docker exec -it ff-core ./vendor/bin/phpmd
