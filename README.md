@@ -1,7 +1,7 @@
 # Frozen Framework 
 
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%208.1-8892BF.svg?style=flat-square)](https://php.net/)
-[![Type Coverage](https://img.shields.io/badge/coverage-65-yellow?style=flat-square)]()
+[![Type Coverage](https://img.shields.io/badge/coverage-75-green?style=flat-square)]()
 
 An MVC php framework.  
 

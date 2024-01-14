@@ -3,6 +3,10 @@
   <coverage>
     <include>
       <directory suffix=".php">src</directory>
+
     </include>
+    <exclude>
+      <directory suffix=".php">src/FF/tests</directory>
+    </exclude>
   </coverage>
 </phpunit>

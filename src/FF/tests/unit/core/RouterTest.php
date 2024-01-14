@@ -5,6 +5,8 @@ declare(strict_types=1);
 use FF\exceptions\MethodAlreadyRegistered;
 use FF\http\Request;
 use FF\router\Router;
+use FF\tests\stubs\FileManagerFake;
+use FF\tests\stubs\FileManagerFileNotExistFake;
 use FF\tests\unit\CommonTestCase;
 
 final class RouterTest extends CommonTestCase
@@ -13,11 +15,13 @@ final class RouterTest extends CommonTestCase
      * @var Router
      */
     private Router $router;
+    private FileManagerFake $fileManager;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->router = new Router(['controllerNamespace' => 'app\controller\\']);
+        $this->fileManager = new FileManagerFake();
+        $this->router = new Router($this->fileManager, ['controllerNamespace' => 'app\controller\\']);
     }
 
     public function testGettingArrayWithRoute(): void
@@ -49,19 +53,24 @@ final class RouterTest extends CommonTestCase
 
     public function testControllerNamespaceMustBeSpecifiedWhenAppModeIsDefault(): void
     {
-        $router = new Router();
+        $router = new Router(new FileManagerFake());
 
         $this->expectExceptionMessage('Params controllerNamespace is not specified in app config');
         $router->parseRequest($this->createRequest());
     }
 
-    public function _testThrowErrorWhenRequestIs404()
+    public function testThrowErrorWhenRequestIs404()
     {
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_URI'] = 'job/unavailablerequest/';
 
+        $router = new Router(
+            new FileManagerFileNotExistFake(),
+            ['controllerNamespace' => 'app\controller\\']
+        );
+
         $this->expectException(FF\exceptions\UnavailableRequestException::class);
-        $this->router->parseRequest($this->createRequest());
+        $router->parseRequest($this->createRequest());
     }
 
     /**

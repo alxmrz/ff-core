@@ -9,15 +9,18 @@ use Exception;
 use FF\exceptions\MethodAlreadyRegistered;
 use FF\exceptions\UnavailableRequestException;
 use FF\http\RequestInterface;
+use FF\libraries\FileManager;
 
 class Router implements RouterInterface
 {
     private array $config;
     private array $handlers = [];
+    private FileManager $fileManager;
 
-    public function __construct(array $config = [])
+    public function __construct(FileManager $fileManager, array $config = [])
     {
         $this->config = $config;
+        $this->fileManager = $fileManager;
     }
 
     /**
@@ -61,33 +64,36 @@ class Router implements RouterInterface
     {
         $routeArgs = [];
         $handler = $this->handlers[$requestMethod][$requestUri] ?? null;
-        if ($handler === null) {
-            $requestUriParts = explode('/', $requestUri);
-            $lenUriParts = count($requestUriParts);
-            foreach ($this->handlers[$requestMethod] ?? [] as $route => $func) {
-                $routeParts = explode('/', $route);
-                if (count($routeParts) !== $lenUriParts) {
+        if ($handler !== null) {
+            return [$handler, $routeArgs];
+        }
+
+        $requestUriParts = explode('/', $requestUri);
+        $lenUriParts = count($requestUriParts);
+        foreach ($this->handlers[$requestMethod] ?? [] as $route => $func) {
+            $routeParts = explode('/', $route);
+            if (count($routeParts) !== $lenUriParts) {
+                continue;
+            }
+            foreach ($routeParts as $key => $part) {
+                if ($requestUriParts[$key] === $part) {
                     continue;
                 }
-                foreach ($routeParts as $key => $part) {
-                    if ($requestUriParts[$key] === $part) {
-                        continue;
-                    }
-                    preg_match("/{(\w+)}/", $part, $matches);
-                    if (count($matches) > 0) {
-                        $routeArgs[$matches[1]] = $requestUriParts[$key];
-                    } else {
-                        $routeArgs = [];
-                        break;
-                    }
-                }
-
-                if (count($routeArgs) > 0) {
-                    $handler = $func;
+                preg_match("/{(\w+)}/", $part, $matches);
+                if (count($matches) > 0) {
+                    $routeArgs[$matches[1]] = $requestUriParts[$key];
+                } else {
+                    $routeArgs = [];
                     break;
                 }
             }
+
+            if (count($routeArgs) > 0) {
+                $handler = $func;
+                break;
+            }
         }
+
         return [$handler, $routeArgs];
     }
 
@@ -98,10 +104,9 @@ class Router implements RouterInterface
     private function findControllerWithActionForUri(string $uri): array
     {
         $explodedArray = explode('/', ($uri));
+        $controllerName = 'MainpageController';
 
-        if (empty($explodedArray[1])) {
-            $controllerName = 'MainpageController';
-        } else {
+        if (!empty($explodedArray[1])) {
             $controllerName = ucfirst($explodedArray[1]) . 'Controller';
         }
 
@@ -119,6 +124,10 @@ class Router implements RouterInterface
             }
 
             $action = "action{$actionPart}";
+        }
+
+        if (!$this->fileManager->isFileExist($this->config['controllerNamespace'] . $controllerName)) {
+            $controllerName = null;
         }
 
         return [$controllerName, $action];

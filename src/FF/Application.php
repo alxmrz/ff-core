@@ -14,6 +14,7 @@ use FF\http\RequestInterface;
 use FF\http\Response;
 use FF\http\ResponseInterface;
 use FF\http\StatusCode;
+use FF\libraries\FileManager;
 use FF\logger\MonologLogger;
 use FF\router\Router;
 use FF\router\RouterInterface;
@@ -65,7 +66,7 @@ class Application extends BaseApplication
                 return new MonologLogger(new Logger($config['appName'] ?? 'ff-core-app'));
             },
             RouterInterface::class => function () {
-                return new Router();
+                return new Router(new FileManager());
             },
         ];
 
@@ -121,6 +122,7 @@ class Application extends BaseApplication
 
             return ExitCode::SUCCESS;
         } catch (Exception $e) {
+            echo 'Server error: ' . $e->getMessage() . '<br />';
             $this->logger->error($e->getMessage(), $request->context());
         }
 

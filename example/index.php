@@ -8,7 +8,7 @@ use FF\http\ResponseInterface;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$app = Application::construct(['appName' => 'ff-demo-app']);
+$app = Application::construct(['appName' => 'ff-demo-app', 'controllerNamespace' => './controllers/']);
 
 $app->get('/', function (RequestInterface $request, ResponseInterface $response) {
     $response->withBody("Hello from main route");

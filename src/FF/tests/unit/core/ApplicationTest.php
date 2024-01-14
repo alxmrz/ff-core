@@ -10,6 +10,7 @@ use FF\exceptions\MethodAlreadyRegistered;
 use FF\http\RequestInterface;
 use FF\http\ResponseInterface;
 use FF\router\Router;
+use FF\tests\stubs\FileManagerFake;
 use FF\tests\unit\CommonTestCase;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -29,7 +30,7 @@ final class ApplicationTest extends CommonTestCase
         $_SERVER['REQUEST_URI'] = '/order';
         $_SERVER['REQUEST_METHOD'] = 'GET';
 
-        $app = new Application(new PHPDIContainer(), new Router(), $this->createStub(LoggerInterface::class));
+        $app = new Application(new PHPDIContainer(), new Router(new FileManagerFake()), $this->createStub(LoggerInterface::class));
         $app->get('/order', function (RequestInterface $request, ResponseInterface $response) {
             $response->withBody('<p>Order route</p>');
         });
@@ -52,7 +53,7 @@ final class ApplicationTest extends CommonTestCase
         $_SERVER['REQUEST_URI'] = '/order';
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
-        $app = new Application(new PHPDIContainer(), new Router(), $this->createStub(LoggerInterface::class));
+        $app = new Application(new PHPDIContainer(), new Router(new FileManagerFake()), $this->createStub(LoggerInterface::class));
         $app->post('/order', function (RequestInterface $request, ResponseInterface $response) {
             $response->withBody('Order route from post');
         });
@@ -60,5 +61,12 @@ final class ApplicationTest extends CommonTestCase
         $this->expectOutputString('Order route from post');
 
         $app->run();
+    }
+
+    public function testConstruct(): void
+    {
+        $application = Application::construct(['viewPath' => 'viewPath', 'definitions' => []]);
+
+        $this->assertInstanceOf(Application::class, $application);
     }
 }
