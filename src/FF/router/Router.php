@@ -173,12 +173,4 @@ class Router implements RouterInterface
 
         $this->handlers[$method][$path] = $handler;
     }
-
-    /**
-     * @param array $config
-     */
-    public function setConfig(array $config): void
-    {
-        $this->config = $config;
-    }
 }
