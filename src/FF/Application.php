@@ -166,7 +166,7 @@ class Application extends BaseApplication
      */
     private function runHandler(ResponseInterface $response): void
     {
-        [$handler, $controllerName, $action, $args] = $this->router->parseRequest($this->request);
+        [$handler, $args, $controllerName, $action] = $this->router->parseRequest($this->request);
 
         if (is_callable($handler)) {
             $handler($this->request, $response, ...$args);

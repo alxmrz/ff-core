@@ -24,116 +24,6 @@ class Router implements RouterInterface
     }
 
     /**
-     * @param RequestInterface $request
-     * @return array
-     * @throws UnavailableRequestException
-     */
-    public function parseRequest(RequestInterface $request): array
-    {
-        $args = [];
-        $controller = $action = null;
-
-        $requestMethod = $request->server('REQUEST_METHOD');
-        $requestUri = $request->server('REQUEST_URI');
-
-        [$handler, $routeArgs] = $this->findHandlerForUri($requestMethod, $requestUri);
-        $args = array_merge($args, $routeArgs);
-
-        if ($handler === null) {
-            if (!isset($this->config['controllerNamespace'])) {
-                throw new Exception('Params controllerNamespace is not specified in app config');
-            }
-
-            [$controller, $action] = $this->findControllerWithActionForUri($requestUri);
-        }
-
-        if ($handler === null && ($controller === null || $action === null)) {
-            throw new UnavailableRequestException();
-        }
-
-        return [$handler, $controller, $action, $args];
-    }
-
-
-    /**
-     * @param string $requestMethod
-     * @param string $requestUri
-     * @return array
-     */
-    private function findHandlerForUri(string $requestMethod, string $requestUri): array
-    {
-        $routeArgs = [];
-        $handler = $this->handlers[$requestMethod][$requestUri] ?? null;
-        if ($handler !== null) {
-            return [$handler, $routeArgs];
-        }
-
-        $requestUriParts = explode('/', $requestUri);
-        $lenUriParts = count($requestUriParts);
-        foreach ($this->handlers[$requestMethod] ?? [] as $route => $func) {
-            $routeParts = explode('/', $route);
-            if (count($routeParts) !== $lenUriParts) {
-                continue;
-            }
-            foreach ($routeParts as $key => $part) {
-                if ($requestUriParts[$key] === $part) {
-                    continue;
-                }
-                preg_match("/{(\w+)}/", $part, $matches);
-                if (count($matches) > 0) {
-                    $routeArgs[$matches[1]] = $requestUriParts[$key];
-                } else {
-                    $routeArgs = [];
-                    break;
-                }
-            }
-
-            if (count($routeArgs) > 0) {
-                $handler = $func;
-                break;
-            }
-        }
-
-        return [$handler, $routeArgs];
-    }
-
-    /**
-     * @param string $uri
-     * @return array
-     */
-    private function findControllerWithActionForUri(string $uri): array
-    {
-        $explodedArray = explode('/', ($uri));
-        $controllerName = 'MainpageController';
-
-        if (!empty($explodedArray[1])) {
-            $controllerName = ucfirst($explodedArray[1]) . 'Controller';
-        }
-
-        if (empty($explodedArray[2])) {
-            $action = 'actionIndex';
-        } else {
-            if (str_contains($explodedArray[2], '-')) {
-                $actionParts = explode('-', $explodedArray[2]);
-                foreach ($actionParts as &$actionPart) {
-                    $actionPart = ucfirst($actionPart);
-                }
-                $actionPart = implode($actionParts);
-            } else {
-                $actionPart = ucfirst($explodedArray[2]);
-            }
-
-            $action = "action{$actionPart}";
-        }
-
-        if (!$this->fileManager->isFileExist($this->config['controllerNamespace'] . $controllerName)) {
-            $controllerName = null;
-        }
-
-        return [$controllerName, $action];
-    }
-
-    /**
      * @param string $path
      * @param Closure $handler
      * @return void
@@ -172,5 +62,133 @@ class Router implements RouterInterface
         }
 
         $this->handlers[$method][$path] = $handler;
+    }
+
+    /**
+     * @param RequestInterface $request
+     * @return array
+     * @throws UnavailableRequestException
+     * @throws Exception
+     */
+    public function parseRequest(RequestInterface $request): array
+    {
+        $controller = $action = null;
+
+        $requestMethod = $request->server('REQUEST_METHOD');
+        $requestUri = $request->server('REQUEST_URI');
+
+        [$handler, $args] = $this->findHandlerForUri($requestMethod, $requestUri);
+
+        if ($handler === null) {
+            [$controller, $action] = $this->findControllerForUri($requestUri);
+        }
+
+        if ($handler === null && ($controller === null || $action === null)) {
+            throw new UnavailableRequestException();
+        }
+
+        return [$handler, $args, $controller, $action];
+    }
+
+    /**
+     * @param string $requestMethod
+     * @param string $requestUri
+     * @return array
+     */
+    private function findHandlerForUri(string $requestMethod, string $requestUri): array
+    {
+        if ($handler = $this->findSimpleHandler($requestMethod, $requestUri)) {
+            return [$handler, []];
+        }
+
+        return $this->findHandlerWithArgs($requestMethod, $requestUri);
+    }
+
+    private function findSimpleHandler(string $requestMethod, string $requestUri)
+    {
+        return $this->handlers[$requestMethod][$requestUri] ?? null;
+    }
+
+    private function findHandlerWithArgs(string $requestMethod, string $requestUri): array
+    {
+        $handler = null;
+        $routeArgs = [];
+
+        $requestRoute = new ArgsRoute($requestUri);
+
+        foreach ($this->getHandlersForMethod($requestMethod) as $route => $func) {
+            $route = new ArgsRoute($route);
+            if (!$requestRoute->hasPartsCountEqualedTo($route)) {
+                continue;
+            }
+
+            if ($routeArgs = $requestRoute->extractArgsByTemplateRoute($route)) {
+                $handler = $func;
+            }
+        }
+
+        return [$handler, $routeArgs];
+    }
+
+    private function getHandlersForMethod(string $requestMethod): array
+    {
+        return $this->handlers[$requestMethod] ?? [];
+    }
+
+    /**
+     * @param array|string $requestUri
+     * @return array
+     * @throws Exception
+     */
+    private function findControllerForUri(array|string $requestUri): array
+    {
+        if (!isset($this->config['controllerNamespace'])) {
+            throw new Exception('Params controllerNamespace is not specified in app config');
+        }
+
+        return $this->findControllerWithActionForUri($requestUri);
+    }
+
+    /**
+     * @param string $uri
+     * @return array
+     */
+    private function findControllerWithActionForUri(string $uri): array
+    {
+        $explodedArray = explode('/', ($uri));
+        $controllerName = 'MainpageController';
+
+        if (!empty($explodedArray[1])) {
+            $controllerName = ucfirst($explodedArray[1]) . 'Controller';
+        }
+
+        $action = empty($explodedArray[2])
+            ? 'actionIndex'
+            : $this->parseAction($explodedArray[2]);
+
+        if (!$this->fileManager->isFileExist($this->config['controllerNamespace'] . $controllerName)) {
+            $controllerName = null;
+        }
+
+        return [$controllerName, $action];
+    }
+
+    /**
+     * @param $haystack
+     * @return string
+     */
+    private function parseAction($haystack): string
+    {
+        if (str_contains($haystack, '-')) {
+            $actionParts = explode('-', $haystack);
+            foreach ($actionParts as &$actionPart) {
+                $actionPart = ucfirst($actionPart);
+            }
+            $actionPartName = implode($actionParts);
+        } else {
+            $actionPartName = ucfirst($haystack);
+        }
+
+        return "action{$actionPartName}";
     }
 }

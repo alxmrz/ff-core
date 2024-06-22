@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use FF\exceptions\MethodAlreadyRegistered;
+use FF\exceptions\UnavailableRequestException;
 use FF\http\Request;
 use FF\router\Router;
 use FF\tests\stubs\FileManagerFake;
@@ -29,9 +30,10 @@ final class RouterTest extends CommonTestCase
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_URI'] = '/mainpage/getList';
 
-        [$handler, $controllerName, $action] = $this->router->parseRequest($this->createRequest());
+        [$handler, $args, $controllerName, $action] = $this->router->parseRequest($this->createRequest());
 
         $this->assertNull($handler);
+        $this->assertEmpty($args);
         $this->assertEquals('MainpageController', $controllerName);
         $this->assertEquals('actionGetList', $action);
     }
@@ -78,7 +80,7 @@ final class RouterTest extends CommonTestCase
      *
      * @return void
      * @throws MethodAlreadyRegistered
-     * @throws \FF\exceptions\UnavailableRequestException
+     * @throws UnavailableRequestException
      */
     public function testParsingVariablesInUri(string $uri, string $route, array $expectedArgs)
     {
@@ -88,7 +90,7 @@ final class RouterTest extends CommonTestCase
             return 'Order route get by id';
         };
         $this->router->get($route, $func);
-        [$handler, $controllerName, $action, $args] = $this->router->parseRequest($this->createRequest());
+        [$handler, $args, $controllerName, $action] = $this->router->parseRequest($this->createRequest());
 
         $this->assertEquals($func, $handler);
         $this->assertNull($controllerName);
