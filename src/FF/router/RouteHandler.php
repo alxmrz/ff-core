@@ -12,23 +12,25 @@ class RouteHandler
     /**
      * @var Closure[]
      */
-    private array $mws = [];
+    private array $middleWares = [];
 
     public function __construct(Closure $handler) {
         $this->handler = $handler;
     }
 
-    public function __invoke(RequestInterface $request, ResponseInterface $response): void
+    public function __invoke(RequestInterface $request, ResponseInterface $response, array $args = []): void
     {
-        foreach ($this->mws as $mw) {
-            $mw();
+        foreach ($this->middleWares as $mw) {
+            if ($mw($request, $response, ...$args) === false) {
+                return;
+            }
         }
 
-        ($this->handler)($request, $response);
+        ($this->handler)($request, $response, ...$args);
     }
 
-    public function add(Closure $mw)
+    public function add(Closure $middleWare)
     {
-        $this->mws[] = $mw;
+        $this->middleWares[] = $middleWare;
     }
 }

@@ -171,7 +171,7 @@ class Application extends BaseApplication
         [$handler, $args, $controllerName, $action] = $this->router->parseRequest($this->request);
 
         if (is_callable($handler)) {
-            $handler($this->request, $response, ...$args);
+            $handler($this->request, $response, $args);
 
             return;
         }

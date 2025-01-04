@@ -9,7 +9,7 @@ use Exception;
 class Response implements ResponseInterface
 {
     private array $headers = [];
-    private string $body;
+    private string $body = '';
 
     /**
      * @throws Exception
@@ -21,7 +21,7 @@ class Response implements ResponseInterface
         }
 
         foreach ($this->headers as $header => $value) {
-         //   header("{$header}: {$value}");
+            header("{$header}: {$value}");
         }
 
         echo $this->body;
