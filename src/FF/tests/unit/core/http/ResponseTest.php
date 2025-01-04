@@ -28,6 +28,22 @@ class ResponseTest extends \FF\tests\unit\CommonTestCase
      * @return void
      * @throws \Exception
      */
+    public function testSend_EmptyBody()
+    {
+        $response = new Response();
+
+        $this->expectOutputString('');
+
+        $response->send();
+    }
+
+
+    /**
+     * @runInSeparateProcess
+     *
+     * @return void
+     * @throws \Exception
+     */
     public function testSendWithJsonBody()
     {
         $response = new Response();

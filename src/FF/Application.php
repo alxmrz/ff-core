@@ -16,6 +16,7 @@ use FF\http\ResponseInterface;
 use FF\http\StatusCode;
 use FF\libraries\FileManager;
 use FF\logger\MonologLogger;
+use FF\router\RouteHandler;
 use FF\router\Router;
 use FF\router\RouterInterface;
 use FF\view\TemplateEngine;
@@ -92,22 +93,23 @@ class Application extends BaseApplication
     /**
      * @param string $path
      * @param Closure $handler
-     * @return void
+     * @return RouteHandler
      * @throws MethodAlreadyRegistered
      */
-    public function get(string $path, Closure $handler): void
+    public function get(string $path, Closure $handler): RouteHandler
     {
-        $this->router->get($path, $handler);
+        return $this->router->get($path, $handler);
     }
 
     /**
      * @param string $path
      * @param Closure $handler
+     * @return RouteHandler
      * @throws MethodAlreadyRegistered
      */
-    public function post(string $path, Closure $handler): void
+    public function post(string $path, Closure $handler): RouteHandler
     {
-        $this->router->post($path, $handler);
+        return $this->router->post($path, $handler);
     }
 
     /**
@@ -169,7 +171,7 @@ class Application extends BaseApplication
         [$handler, $args, $controllerName, $action] = $this->router->parseRequest($this->request);
 
         if (is_callable($handler)) {
-            $handler($this->request, $response, ...$args);
+            $handler($this->request, $response, $args);
 
             return;
         }

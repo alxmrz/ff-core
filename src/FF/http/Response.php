@@ -9,7 +9,7 @@ use Exception;
 class Response implements ResponseInterface
 {
     private array $headers = [];
-    private string $body;
+    private string $body = '';
 
     /**
      * @throws Exception
@@ -17,7 +17,7 @@ class Response implements ResponseInterface
     public function send(): void
     {
         if (headers_sent()) {
-            throw new Exception('Headers is already sent');
+            throw new Exception('Headers are already sent');
         }
 
         foreach ($this->headers as $header => $value) {

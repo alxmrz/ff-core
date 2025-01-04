@@ -5,6 +5,7 @@ declare(strict_types=1);
 use FF\exceptions\MethodAlreadyRegistered;
 use FF\exceptions\UnavailableRequestException;
 use FF\http\Request;
+use FF\router\RouteHandler;
 use FF\router\Router;
 use FF\tests\stubs\FileManagerFake;
 use FF\tests\stubs\FileManagerFileNotExistFake;
@@ -92,7 +93,7 @@ final class RouterTest extends CommonTestCase
         $this->router->get($route, $func);
         [$handler, $args, $controllerName, $action] = $this->router->parseRequest($this->createRequest());
 
-        $this->assertEquals($func, $handler);
+        $this->assertEquals(new RouteHandler($func), $handler);
         $this->assertNull($controllerName);
         $this->assertNull($action);
         $this->assertEquals($expectedArgs, $args);
