@@ -1,0 +1,5 @@
+1. Add ability to add routes via anonymous functions as in slim +
+2. Simplify the framework construction. Hide internal structure construction from client code +
+3. Fix the way of exiting from application when exception in Application.php +
+4. Add Response object for return in controllers and functions +
+5. Add middleware for anonymous routes

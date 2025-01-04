@@ -26,32 +26,33 @@ class Router implements RouterInterface
     /**
      * @param string $path
      * @param Closure $handler
-     * @return void
+     * @return RouteHandler
      * @throws MethodAlreadyRegistered
      */
-    public function get(string $path, Closure $handler): void
+    public function get(string $path, Closure $handler): RouteHandler
     {
-        $this->registerHandler("GET", $path, $handler);
+        return $this->registerHandler("GET", $path, $handler);
     }
 
     /**
      * @param string $path
      * @param Closure $handler
+     * @return RouteHandler
      * @throws MethodAlreadyRegistered
      */
-    public function post(string $path, Closure $handler): void
+    public function post(string $path, Closure $handler): RouteHandler
     {
-        $this->registerHandler("POST", $path, $handler);
+        return $this->registerHandler("POST", $path, $handler);
     }
 
     /**
      * @param string $method
      * @param string $path
      * @param Closure $handler
-     * @return void
+     * @return RouteHandler
      * @throws MethodAlreadyRegistered
      */
-    private function registerHandler(string $method, string $path, Closure $handler): void
+    private function registerHandler(string $method, string $path, Closure $handler): RouteHandler
     {
         if (!isset($this->handlers[$method])) {
             $this->handlers[$method] = [];
@@ -61,7 +62,11 @@ class Router implements RouterInterface
             throw new MethodAlreadyRegistered("Method {$method} {$path} already registered!");
         }
 
-        $this->handlers[$method][$path] = $handler;
+        $routeHandler = new RouteHandler($handler);
+
+        $this->handlers[$method][$path] = $routeHandler;
+
+        return $routeHandler;
     }
 
     /**

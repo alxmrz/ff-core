@@ -15,7 +15,7 @@ $app->get('/', function (RequestInterface $request, ResponseInterface $response)
 });
 // Note that $id and other uri variables will be strings, cast operation is on you
 $app->get('/order/{id}', function (RequestInterface $request, ResponseInterface $response, string $id) {
-    $response->withBody("Get order with id = ${id}");
+    $response->withBody("Get order with id = {$id}");
 });
 $app->post('/order', function(RequestInterface $request, ResponseInterface $response) {
     $response->withJsonBody(["message" => "Hello from order post request"]);

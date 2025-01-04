@@ -17,11 +17,11 @@ class Response implements ResponseInterface
     public function send(): void
     {
         if (headers_sent()) {
-            throw new Exception('Headers is already sent');
+            throw new Exception('Headers are already sent');
         }
 
         foreach ($this->headers as $header => $value) {
-            header("{$header}: {$value}");
+         //   header("{$header}: {$value}");
         }
 
         echo $this->body;

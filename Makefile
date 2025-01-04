@@ -19,6 +19,9 @@ php:
 test:
 	docker exec -it ff-core /code/vendor/bin/phpunit /code/src/FF/tests/ --colors=always -v
 
+tt:
+	docker exec -it ff-core /code/vendor/bin/phpunit --bootstrap=/code/src/FF/tests/bootstrap.php /code/src/FF/tests/${test} --colors=always -v
+
 test-coverage:
 	docker exec -it ff-core ./vendor/bin/phpunit --coverage-text ./src
 
@@ -29,3 +32,5 @@ psalm:
 	docker exec -it ff-core ./vendor/bin/psalm
 md:
 	docker exec -it ff-core ./vendor/bin/phpmd
+server:
+	cd ./example && php -S localhost:8000
