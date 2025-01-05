@@ -1,4 +1,9 @@
 .idea/
+.vscode/
+.fleet/
+nbproject
+bin
+
 vendor/
 docker/nginx/logs
 docker/nginx/frozencms.local.conf

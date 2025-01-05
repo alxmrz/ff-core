@@ -33,7 +33,10 @@ class Application extends BaseApplication
     public RouterInterface $router;
     public LoggerInterface $logger;
     private RequestInterface $request;
-
+    /**
+     * @var Closure[]
+     */
+    private array $middleWares = [];
     /**
      * @param ContainerInterface $container
      * @param RouterInterface $router
@@ -132,6 +135,13 @@ class Application extends BaseApplication
         return ExitCode::ERROR;
     }
 
+    public function add(Closure $middleWare): self
+    {
+        $this->middleWares[] = $middleWare;
+
+        return $this;
+    }
+
     private function createRequest(): void
     {
         $this->request = new Request();
@@ -169,6 +179,12 @@ class Application extends BaseApplication
     private function runHandler(ResponseInterface $response): void
     {
         [$handler, $args, $controllerName, $action] = $this->router->parseRequest($this->request);
+
+        foreach ($this->middleWares as $middleware) {
+            if ($middleware($this->request, $response) === false) {
+                return;
+            }
+        }
 
         if (is_callable($handler)) {
             $handler($this->request, $response, $args);
