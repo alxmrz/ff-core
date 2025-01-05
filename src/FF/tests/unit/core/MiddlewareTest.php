@@ -13,7 +13,6 @@ use FF\http\ResponseInterface;
 
 class MiddlewareTest extends CommonTestCase
 {
-
     private Application $app;
 
     public function setUp(): void
@@ -47,7 +46,7 @@ class MiddlewareTest extends CommonTestCase
 
         $this->expectOutputString('<p>Order route</p>');
 
-        $this->runRequest('/order', 'GET');
+      $this->runRequest('/order', 'GET');
 
         $this->assertEquals('Hello World', $actual);
     }
