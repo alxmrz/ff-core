@@ -157,6 +157,27 @@ final class RouterTest extends CommonTestCase
         $this->assertEquals('order', $value);
     }
 
+
+    public function testRouteWithGetParamsParsedCorrectly(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['REQUEST_URI'] = '/order?name=test';
+
+        $value = '';
+
+        $this->router->get('/order', function () use (&$value) {
+            $value = 'order';
+        });
+
+        [$handler, $args, $controllerName, $action] = $this->router->parseRequest($this->createRequest());
+
+        $this->assertNotNull($handler);
+
+        $handler($this->createRequest(), new Response());
+
+        $this->assertEquals('order', $value);
+    }
+
     private function createRequest(): Request
     {
         return new Request();

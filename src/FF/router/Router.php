@@ -102,6 +102,8 @@ class Router implements RouterInterface
      */
     private function findHandlerForUri(string $requestMethod, string $requestUri): array
     {
+        $requestUri = parse_url($requestUri, PHP_URL_PATH);
+
         if ($handler = $this->findSimpleHandler($requestMethod, $requestUri)) {
             return [$handler, []];
         }
