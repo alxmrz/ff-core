@@ -26,6 +26,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Log\LoggerInterface;
+use ReflectionFunction;
 use Throwable;
 
 class Application extends BaseApplication
@@ -178,7 +179,7 @@ class Application extends BaseApplication
      */
     private function runHandler(ResponseInterface $response): void
     {
-        [$handler, $args, $controllerName, $action] = $this->router->parseRequest($this->request);
+        [$routeHandler, $args, $controllerName, $action] = $this->router->parseRequest($this->request);
 
         foreach ($this->middleWares as $middleware) {
             if ($middleware($this->request, $response) === false) {
@@ -186,8 +187,12 @@ class Application extends BaseApplication
             }
         }
 
-        if (is_callable($handler)) {
-            $handler($this->request, $response, $args);
+        if (is_callable($routeHandler)) {
+            $args = ['request' => $this->request, 'response' => $response];
+
+            $args = $this->injectHandlerArgs($routeHandler->getFunc(), $args);
+
+            $routeHandler($this->request, $response, $args);
 
             return;
         }
@@ -196,5 +201,26 @@ class Application extends BaseApplication
         $controller->setRouter($this->router);
 
         $controller->$action($this->request, $response);
+    }
+
+    private function injectHandlerArgs(Closure $handler, array $args): array
+    {
+        $result = [];
+
+        $funcRef = new ReflectionFunction($handler);
+
+        $funcParams = $funcRef->getParameters();
+
+        foreach ($funcParams as $funcParam) {
+            if (isset($args[$funcParam->getName()])) {
+                continue;
+            }
+            
+            $paramType = $funcParam->getType();
+
+            $result[] = $this->container->get($paramType->getName());
+        }
+
+        return $result;
     }
 }
