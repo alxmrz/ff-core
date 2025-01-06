@@ -129,6 +129,8 @@ class Router implements RouterInterface
 
             if ($routeArgs = $requestRoute->extractArgsByTemplateRoute($route)) {
                 $handler = $func;
+
+                break;
             }
         }
 

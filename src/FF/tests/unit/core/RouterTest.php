@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
+use FF\http\Request;
+use FF\http\Response;
+use FF\router\Router;
+use FF\router\RouteHandler;
+use FF\tests\unit\CommonTestCase;
+use FF\tests\stubs\FileManagerFake;
 use FF\exceptions\MethodAlreadyRegistered;
 use FF\exceptions\UnavailableRequestException;
-use FF\http\Request;
-use FF\router\RouteHandler;
-use FF\router\Router;
-use FF\tests\stubs\FileManagerFake;
 use FF\tests\stubs\FileManagerFileNotExistFake;
-use FF\tests\unit\CommonTestCase;
 
 final class RouterTest extends CommonTestCase
 {
@@ -108,6 +109,53 @@ final class RouterTest extends CommonTestCase
         ];
     }
 
+    public function testDifferentRoutesWithTheSameStructure(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['REQUEST_URI'] = '/order/5';
+
+        $value = '';
+
+        $this->router->get('/order/{id}', function () use (&$value) {
+            $value = 'order';
+        });
+        
+        $this->router->get('/shop/{id}', function () use (&$value) {
+            $value = 'shop';
+        });
+
+        [$handler, $args, $controllerName, $action] = $this->router->parseRequest($this->createRequest());
+
+        $this->assertNotNull($handler);
+
+        $handler($this->createRequest(), new Response());
+
+        $this->assertEquals('order', $value);
+    }
+
+    public function testDifferentRoutesWithTheSameStructureButReverOrder(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['REQUEST_URI'] = '/order/5';
+
+        $value = '';
+
+        $this->router->get('/shop/{id}', function () use (&$value) {
+            $value = 'shop';
+        });
+
+        $this->router->get('/order/{id}', function () use (&$value) {
+            $value = 'order';
+        });
+
+        [$handler, $args, $controllerName, $action] = $this->router->parseRequest($this->createRequest());
+
+        $this->assertNotNull($handler);
+
+        $handler($this->createRequest(), new Response());
+
+        $this->assertEquals('order', $value);
+    }
 
     private function createRequest(): Request
     {
