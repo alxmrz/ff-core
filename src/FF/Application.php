@@ -26,7 +26,9 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Log\LoggerInterface;
+use ReflectionClass;
 use ReflectionFunction;
+use ReflectionMethod;
 use Throwable;
 
 class Application extends BaseApplication
@@ -188,7 +190,7 @@ class Application extends BaseApplication
         }
 
         if (is_callable($routeHandler)) {
-            $args = ['request' => $this->request, 'response' => $response];
+            $args = array_merge(['request' => $this->request, 'response' => $response], $args);
 
             $args = $this->injectHandlerArgs($routeHandler->getFunc(), $args);
 
@@ -197,15 +199,25 @@ class Application extends BaseApplication
             return;
         }
 
+        if (!class_exists($this->config['controllerNamespace'] . $controllerName)) {
+            $controllerName = null;
+        } else {
+            $controllerName = $this->config['controllerNamespace'] . $controllerName;
+        }
+
+        $controllerRef = new ReflectionClass( $controllerName);
+        $controllersArgs = array_merge(['request' => $this->request, 'response' => $response], $args);
+        $controllersArgs = $this->injectActionArgs($controllerRef, $action, $controllersArgs);
+
         $controller = $this->container->get($controllerName);
         $controller->setRouter($this->router);
 
-        $controller->$action($this->request, $response);
+        $controller->$action($this->request, $response, ...$controllersArgs);
     }
 
     private function injectHandlerArgs(Closure $handler, array $args): array
     {
-        $result = [];
+        $result = array_slice(array_values($args), 2);
 
         $funcRef = new ReflectionFunction($handler);
 
@@ -221,6 +233,27 @@ class Application extends BaseApplication
             $result[] = $this->container->get($paramType->getName());
         }
 
+        return $result;
+    }
+
+    private function injectActionArgs(ReflectionClass $class, string $action, array $args): array
+    {
+        $result = array_slice(array_values($args), 2);
+
+        $funcRef = $class->getMethod($action);
+
+        $funcParams = $funcRef->getParameters();
+
+        foreach ($funcParams as $funcParam) {
+            if (isset($args[$funcParam->getName()])) {
+                continue;
+            }
+            
+            $paramType = $funcParam->getType();
+
+            $result[] = $this->container->get($paramType->getName());
+        }
+        
         return $result;
     }
 }

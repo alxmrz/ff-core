@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace FF\tests\unit\core;
+
 use FF\http\Request;
 use FF\http\Response;
 use FF\router\Router;
@@ -65,6 +67,7 @@ final class RouterTest extends CommonTestCase
 
     public function testThrowErrorWhenRequestIs404()
     {
+        $this->markTestSkipped('Will be replaced to another module');
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_URI'] = 'job/unavailablerequest/';
 

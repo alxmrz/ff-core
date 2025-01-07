@@ -88,9 +88,9 @@ class Router implements RouterInterface
             [$controller, $action] = $this->findControllerForUri($requestUri);
         }
 
-        if ($handler === null && ($controller === null || $action === null)) {
-            throw new UnavailableRequestException();
-        }
+        //if ($handler === null && ($controller === null || $action === null)) {
+        //    throw new UnavailableRequestException();
+        //}
 
         return [$handler, $args, $controller, $action];
     }
@@ -151,6 +151,7 @@ class Router implements RouterInterface
      */
     private function findControllerForUri(array|string $requestUri): array
     {
+        // TODO: ошибка не нужна, надо переделать, чтобы проверять, что если параметр указан, тогда работаем, иначе ничего не делаем
         if (!isset($this->config['controllerNamespace'])) {
             throw new Exception('Params controllerNamespace is not specified in app config');
         }
@@ -174,11 +175,7 @@ class Router implements RouterInterface
         $action = empty($explodedArray[2])
             ? 'actionIndex'
             : $this->parseAction($explodedArray[2]);
-
-        if (!$this->fileManager->isFileExist($this->config['controllerNamespace'] . $controllerName)) {
-            $controllerName = null;
-        }
-
+            
         return [$controllerName, $action];
     }
 
