@@ -6,30 +6,30 @@ namespace FF;
 
 use Closure;
 use Exception;
-use FF\container\PHPDIContainer;
-use FF\exceptions\MethodAlreadyRegistered;
-use FF\exceptions\UnavailableRequestException;
-use FF\http\Request;
-use FF\http\RequestInterface;
-use FF\http\Response;
-use FF\http\ResponseInterface;
-use FF\http\StatusCode;
-use FF\libraries\FileManager;
-use FF\logger\MonologLogger;
-use FF\router\RouteHandler;
-use FF\router\Router;
-use FF\router\RouterInterface;
-use FF\view\TemplateEngine;
+use Throwable;
 use FF\view\View;
 use Monolog\Logger;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
-use Psr\Log\LoggerInterface;
+use FF\http\Request;
 use ReflectionClass;
+use FF\http\Response;
+use FF\router\Router;
+use FF\http\StatusCode;
 use ReflectionFunction;
-use ReflectionMethod;
-use Throwable;
+use FF\router\RouteHandler;
+use FF\view\TemplateEngine;
+use FF\logger\MonologLogger;
+use Psr\Log\LoggerInterface;
+use FF\http\RequestInterface;
+use FF\libraries\FileManager;
+use FF\http\ResponseInterface;
+use FF\ReflectionArgsInjector;
+use FF\router\RouterInterface;
+use FF\container\PHPDIContainer;
+use Psr\Container\ContainerInterface;
+use FF\exceptions\MethodAlreadyRegistered;
+use Psr\Container\NotFoundExceptionInterface;
+use FF\exceptions\UnavailableRequestException;
+use Psr\Container\ContainerExceptionInterface;
 
 class Application extends BaseApplication
 {
@@ -183,77 +183,42 @@ class Application extends BaseApplication
     {
         [$routeHandler, $args, $controllerName, $action] = $this->router->parseRequest($this->request);
 
-        foreach ($this->middleWares as $middleware) {
-            if ($middleware($this->request, $response) === false) {
-                return;
-            }
+        if (!$this->runMiddlewares($response)) {
+            return;
         }
 
+        $argsInjector = new ReflectionArgsInjector($this->container, $this->config);
+
+        $args = array_merge(['request' => $this->request, 'response' => $response], $args);
+
         if (is_callable($routeHandler)) {
-            $args = array_merge(['request' => $this->request, 'response' => $response], $args);
-
-            $args = $this->injectHandlerArgs($routeHandler->getFunc(), $args);
-
-            $routeHandler($this->request, $response, $args);
+            $routeHandler(
+                $this->request,
+                $response,
+                $argsInjector->injectHandlerArgs($routeHandler->getFunc(), $args)
+            );
 
             return;
         }
 
-        if (!class_exists($this->config['controllerNamespace'] . $controllerName)) {
-            $controllerName = null;
-        } else {
-            $controllerName = $this->config['controllerNamespace'] . $controllerName;
-        }
+        $controllerName = $this->config['controllerNamespace'] . $controllerName;
 
-        $controllerRef = new ReflectionClass( $controllerName);
-        $controllersArgs = array_merge(['request' => $this->request, 'response' => $response], $args);
-        $controllersArgs = $this->injectActionArgs($controllerRef, $action, $controllersArgs);
+        $args = $argsInjector->injectActionArgs($controllerName, $action, $args);
 
         $controller = $this->container->get($controllerName);
         $controller->setRouter($this->router);
 
-        $controller->$action($this->request, $response, ...$controllersArgs);
+        $controller->$action($this->request, $response, ...$args);
     }
 
-    private function injectHandlerArgs(Closure $handler, array $args): array
+    private function runMiddlewares(ResponseInterface $response): bool
     {
-        $result = array_slice(array_values($args), 2);
-
-        $funcRef = new ReflectionFunction($handler);
-
-        $funcParams = $funcRef->getParameters();
-
-        foreach ($funcParams as $funcParam) {
-            if (isset($args[$funcParam->getName()])) {
-                continue;
+        foreach ($this->middleWares as $middleware) {
+            if ($middleware($this->request, $response) === false) {
+                return false;
             }
-            
-            $paramType = $funcParam->getType();
-
-            $result[] = $this->container->get($paramType->getName());
         }
 
-        return $result;
-    }
-
-    private function injectActionArgs(ReflectionClass $class, string $action, array $args): array
-    {
-        $result = array_slice(array_values($args), 2);
-
-        $funcRef = $class->getMethod($action);
-
-        $funcParams = $funcRef->getParameters();
-
-        foreach ($funcParams as $funcParam) {
-            if (isset($args[$funcParam->getName()])) {
-                continue;
-            }
-            
-            $paramType = $funcParam->getType();
-
-            $result[] = $this->container->get($paramType->getName());
-        }
-        
-        return $result;
+        return true;
     }
 }

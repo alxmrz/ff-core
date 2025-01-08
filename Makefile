@@ -1,3 +1,4 @@
+up: start
 build:
 	docker build -t fc-php .
 

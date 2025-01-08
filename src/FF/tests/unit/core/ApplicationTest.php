@@ -41,7 +41,6 @@ final class ApplicationTest extends CommonTestCase
         $app->run();
     }
 
-
     /**
      * @runInSeparateProcess
      * @return void
