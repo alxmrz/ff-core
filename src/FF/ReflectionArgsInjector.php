@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FF;
 
 use Closure;
+use FF\exceptions\UnavailableRequestException;
 use ReflectionClass;
 use ReflectionFunction;
 use Psr\Container\ContainerInterface;
@@ -43,13 +44,13 @@ class ReflectionArgsInjector
     public function injectActionArgs(string $controllerName, string $action, array $args): array
     {
         if (!class_exists($controllerName)) {
-            throw new \Exception("Controller $controllerName not found");
+            throw new UnavailableRequestException("Controller $controllerName not found");
         } 
 
         $controllerRef = new ReflectionClass( $controllerName);
 
         if (!$controllerRef->hasMethod($action)){  
-            throw new \Exception("Action $action not found in controller $controllerName");
+            throw new UnavailableRequestException("Action $action not found in controller $controllerName");
         }
         
         $result = array_slice(array_values($args), 2);

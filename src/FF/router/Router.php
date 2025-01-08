@@ -88,10 +88,6 @@ class Router implements RouterInterface
             [$controller, $action] = $this->findControllerForUri($requestUri);
         }
 
-        //if ($handler === null && ($controller === null || $action === null)) {
-        //    throw new UnavailableRequestException();
-        //}
-
         return [$handler, $args, $controller, $action];
     }
 

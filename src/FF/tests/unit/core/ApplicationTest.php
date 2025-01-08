@@ -5,17 +5,18 @@ declare(strict_types=1);
 namespace FF\tests\unit\core;
 
 use FF\Application;
-use FF\container\PHPDIContainer;
-use FF\exceptions\MethodAlreadyRegistered;
+use FF\router\Router;
+use Psr\Log\LoggerInterface;
 use FF\http\RequestInterface;
 use FF\http\ResponseInterface;
-use FF\router\Router;
-use FF\tests\stubs\FileManagerFake;
-use FF\tests\unit\CommonTestCase;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
-use Psr\Log\LoggerInterface;
 use FF\tests\data\TestService;
+use FF\container\PHPDIContainer;
+use FF\tests\unit\CommonTestCase;
+use FF\tests\stubs\FileManagerFake;
+use PHPUnit\Framework\MockObject\Stub;
+use FF\exceptions\MethodAlreadyRegistered;
+use Psr\Container\NotFoundExceptionInterface;
+use Psr\Container\ContainerExceptionInterface;
 
 final class ApplicationTest extends CommonTestCase
 {
@@ -53,7 +54,8 @@ final class ApplicationTest extends CommonTestCase
         $_SERVER['REQUEST_URI'] = '/order';
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
-        $app = new Application(new PHPDIContainer(), new Router(new FileManagerFake()), $this->createStub(LoggerInterface::class));
+        $app = $this->createApplication();
+        
         $app->post('/order', function (RequestInterface $request, ResponseInterface $response) {
             $response->withBody('Order route from post');
         });
@@ -82,7 +84,7 @@ final class ApplicationTest extends CommonTestCase
         $_SERVER['REQUEST_URI'] = '/order';
         $_SERVER['REQUEST_METHOD'] = 'GET';
 
-        $app = new Application(new PHPDIContainer(), new Router(new FileManagerFake()), $this->createStub(LoggerInterface::class));
+        $app = $this->createApplication();
 
         $app->get('/order', function (RequestInterface $request, ResponseInterface $response, TestService $service) {
             $response->withBody($service->doStuff());
@@ -105,7 +107,7 @@ final class ApplicationTest extends CommonTestCase
         $_SERVER['REQUEST_URI'] = '/order/5';
         $_SERVER['REQUEST_METHOD'] = 'GET';
 
-        $app = new Application(new PHPDIContainer(), new Router(new FileManagerFake()), $this->createStub(LoggerInterface::class));
+        $app = $this->createApplication();
 
         $app->get('/order/{id}', function (RequestInterface $request, ResponseInterface $response, string $id, TestService $service) {
             $response->withBody($service->doStuff() . ' ' . $id);
@@ -132,15 +134,63 @@ final class ApplicationTest extends CommonTestCase
             'controllerNamespace' => '\FF\tests\data\controllers\\',
         ];
 
-        $app = new Application(
-            new PHPDIContainer(),
-            new Router(new FileManagerFake(), $config),
-            $this->createStub(LoggerInterface::class),
-            $config
-        );
-
         $this->expectOutputString('some-test-value-test-service');
 
-        $app->run();
+        $this->createApplication($config)->run();
+    }
+
+    /**
+     * @runInSeparateProcess
+     * @return void
+     * @throws ContainerExceptionInterface
+     * @throws MethodAlreadyRegistered
+     * @throws NotFoundExceptionInterface
+     */
+    public function testException_WhenCotrollerDoesNotExist(): void
+    {
+        $_SERVER['REQUEST_URI'] = '/unknown/get-by-name';
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+
+        $config = [
+            'controllerNamespace' => '\FF\tests\data\controllers\\',
+        ];
+
+        $this->expectOutputString('Controller \FF\tests\data\controllers\UnknownController not found');
+
+        $this->createApplication($config)->run();
+    }
+
+        /**
+     * @runInSeparateProcess
+     * @return void
+     * @throws ContainerExceptionInterface
+     * @throws MethodAlreadyRegistered
+     * @throws NotFoundExceptionInterface
+     */
+    public function testException_WhenCotrollerActionDoesNotExist(): void
+    {
+        $_SERVER['REQUEST_URI'] = '/user/unknown';
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+
+        $config = [
+            'controllerNamespace' => '\FF\tests\data\controllers\\',
+        ];
+
+        $this->expectOutputString('Action actionUnknown not found in controller \FF\tests\data\controllers\UserController');
+
+        $this->createApplication($config)->run();
+    }
+
+    private function createApplication(array $config = []): Application
+    {
+        /** @var LoggerInterface|Stub $logger */
+        $logger = $this->createStub(LoggerInterface::class);
+
+        return new Application(
+            new PHPDIContainer(),
+            new Router(new FileManagerFake(), $config),
+            $logger,
+            $config
+        );
     }
 }

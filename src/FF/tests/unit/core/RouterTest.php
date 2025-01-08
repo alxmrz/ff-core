@@ -65,21 +65,6 @@ final class RouterTest extends CommonTestCase
         $router->parseRequest($this->createRequest());
     }
 
-    public function testThrowErrorWhenRequestIs404()
-    {
-        $this->markTestSkipped('Will be replaced to another module');
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_SERVER['REQUEST_URI'] = 'job/unavailablerequest/';
-
-        $router = new Router(
-            new FileManagerFileNotExistFake(),
-            ['controllerNamespace' => 'app\controller\\']
-        );
-
-        $this->expectException(FF\exceptions\UnavailableRequestException::class);
-        $router->parseRequest($this->createRequest());
-    }
-
     /**
      * @dataProvider dpTestParsingVariablesInUri
      *
