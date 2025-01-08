@@ -5,18 +5,17 @@ declare(strict_types=1);
 namespace FF\tests\unit\core;
 
 use FF\Application;
-use FF\router\Router;
-use Psr\Log\LoggerInterface;
+use FF\container\PHPDIContainer;
+use FF\exceptions\MethodAlreadyRegistered;
 use FF\http\RequestInterface;
 use FF\http\ResponseInterface;
+use FF\router\Router;
 use FF\tests\data\TestService;
-use FF\container\PHPDIContainer;
 use FF\tests\unit\CommonTestCase;
-use FF\tests\stubs\FileManagerFake;
 use PHPUnit\Framework\MockObject\Stub;
-use FF\exceptions\MethodAlreadyRegistered;
-use Psr\Container\NotFoundExceptionInterface;
 use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use Psr\Log\LoggerInterface;
 
 final class ApplicationTest extends CommonTestCase
 {
@@ -32,7 +31,8 @@ final class ApplicationTest extends CommonTestCase
         $_SERVER['REQUEST_URI'] = '/order';
         $_SERVER['REQUEST_METHOD'] = 'GET';
 
-        $app = new Application(new PHPDIContainer(), new Router(new FileManagerFake()), $this->createStub(LoggerInterface::class));
+        $app = $this->createApplication();
+        
         $app->get('/order', function (RequestInterface $request, ResponseInterface $response) {
             $response->withBody('<p>Order route</p>');
         });
@@ -188,7 +188,7 @@ final class ApplicationTest extends CommonTestCase
 
         return new Application(
             new PHPDIContainer(),
-            new Router(new FileManagerFake(), $config),
+            new Router($config),
             $logger,
             $config
         );

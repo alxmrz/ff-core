@@ -3,13 +3,12 @@
 namespace tests\unit\core;
 
 use FF\Application;
-use FF\tests\unit\CommonTestCase;
 use FF\container\PHPDIContainer;
-use FF\tests\stubs\FileManagerFake;
-use FF\router\Router;
-use Psr\Log\LoggerInterface;
 use FF\http\RequestInterface;
 use FF\http\ResponseInterface;
+use FF\router\Router;
+use FF\tests\unit\CommonTestCase;
+use Psr\Log\LoggerInterface;
 
 class MiddlewareTest extends CommonTestCase
 {
@@ -24,7 +23,7 @@ class MiddlewareTest extends CommonTestCase
 
         $this->app = new Application(
             new PHPDIContainer(),
-            new Router(new FileManagerFake()),
+            new Router(),
             $logger
         );
     }

@@ -13,33 +13,18 @@ use Psr\Container\ContainerInterface;
 class ReflectionArgsInjector
 {
     private ContainerInterface $container;
-    private array $config;
 
-    public function __construct(ContainerInterface $container, array $config)
+    public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->config = $config;
     }
 
     public function injectHandlerArgs(Closure $handler, array $args): array
     {
-        $result = array_slice(array_values($args), 2);
+        $funcParams = (new ReflectionFunction($handler))->getParameters();
 
-        $funcRef = new ReflectionFunction($handler);
-
-        $funcParams = $funcRef->getParameters();
-
-        foreach ($funcParams as $funcParam) {
-            if (isset($args[$funcParam->getName()])) {
-                continue;
-            }
-
-            $result[] = $this->container->get($funcParam->getType()->getName());
-        }
-
-        return $result;
+        return $this->injectParamsToArgs($args, $funcParams);
     }
-
 
     public function injectActionArgs(string $controllerName, string $action, array $args): array
     {
@@ -53,11 +38,15 @@ class ReflectionArgsInjector
             throw new UnavailableRequestException("Action $action not found in controller $controllerName");
         }
         
+        $funcParams = $controllerRef->getMethod($action)->getParameters();
+
+        return $this->injectParamsToArgs($args, $funcParams);
+    } 
+    
+    private function injectParamsToArgs(array $args, array $funcParams): array
+    {
+        // Need to delete Request and Response first two params from results
         $result = array_slice(array_values($args), 2);
-
-        $funcRef = $controllerRef->getMethod($action);
-
-        $funcParams = $funcRef->getParameters();
 
         foreach ($funcParams as $funcParam) {
             if (isset($args[$funcParam->getName()])) {

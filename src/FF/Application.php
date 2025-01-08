@@ -6,30 +6,27 @@ namespace FF;
 
 use Closure;
 use Exception;
-use Throwable;
+use FF\container\PHPDIContainer;
+use FF\exceptions\MethodAlreadyRegistered;
+use FF\exceptions\UnavailableRequestException;
+use FF\http\Request;
+use FF\http\RequestInterface;
+use FF\http\Response;
+use FF\http\ResponseInterface;
+use FF\http\StatusCode;
+use FF\logger\MonologLogger;
+use FF\ReflectionArgsInjector;
+use FF\router\RouteHandler;
+use FF\router\Router;
+use FF\router\RouterInterface;
+use FF\view\TemplateEngine;
 use FF\view\View;
 use Monolog\Logger;
-use FF\http\Request;
-use ReflectionClass;
-use FF\http\Response;
-use FF\router\Router;
-use FF\http\StatusCode;
-use ReflectionFunction;
-use FF\router\RouteHandler;
-use FF\view\TemplateEngine;
-use FF\logger\MonologLogger;
-use Psr\Log\LoggerInterface;
-use FF\http\RequestInterface;
-use FF\libraries\FileManager;
-use FF\http\ResponseInterface;
-use FF\ReflectionArgsInjector;
-use FF\router\RouterInterface;
-use FF\container\PHPDIContainer;
-use Psr\Container\ContainerInterface;
-use FF\exceptions\MethodAlreadyRegistered;
-use Psr\Container\NotFoundExceptionInterface;
-use FF\exceptions\UnavailableRequestException;
 use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use Psr\Log\LoggerInterface;
+use Throwable;
 
 class Application extends BaseApplication
 {
@@ -73,7 +70,7 @@ class Application extends BaseApplication
                 return new MonologLogger(new Logger($config['appName'] ?? 'ff-core-app'));
             },
             RouterInterface::class => function () use ($config): RouterInterface {
-                return new Router(new FileManager(), $config);
+                return new Router( $config);
             },
         ];
 
@@ -187,7 +184,7 @@ class Application extends BaseApplication
             return;
         }
 
-        $argsInjector = new ReflectionArgsInjector($this->container, $this->config);
+        $argsInjector = new ReflectionArgsInjector($this->container);
 
         $args = array_merge(['request' => $this->request, 'response' => $response], $args);
 

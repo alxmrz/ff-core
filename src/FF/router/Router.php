@@ -9,18 +9,15 @@ use Exception;
 use FF\exceptions\MethodAlreadyRegistered;
 use FF\exceptions\UnavailableRequestException;
 use FF\http\RequestInterface;
-use FF\libraries\FileManager;
 
 class Router implements RouterInterface
 {
     private array $config;
     private array $handlers = [];
-    private FileManager $fileManager;
 
-    public function __construct(FileManager $fileManager, array $config = [])
+    public function __construct(array $config = [])
     {
         $this->config = $config;
-        $this->fileManager = $fileManager;
     }
 
     /**
@@ -147,9 +144,8 @@ class Router implements RouterInterface
      */
     private function findControllerForUri(array|string $requestUri): array
     {
-        // TODO: ошибка не нужна, надо переделать, чтобы проверять, что если параметр указан, тогда работаем, иначе ничего не делаем
         if (!isset($this->config['controllerNamespace'])) {
-            throw new Exception('Params controllerNamespace is not specified in app config');
+            return ['', ''];
         }
 
         return $this->findControllerWithActionForUri($requestUri);
