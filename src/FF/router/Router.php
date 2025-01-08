@@ -9,18 +9,15 @@ use Exception;
 use FF\exceptions\MethodAlreadyRegistered;
 use FF\exceptions\UnavailableRequestException;
 use FF\http\RequestInterface;
-use FF\libraries\FileManager;
 
 class Router implements RouterInterface
 {
     private array $config;
     private array $handlers = [];
-    private FileManager $fileManager;
 
-    public function __construct(FileManager $fileManager, array $config = [])
+    public function __construct(array $config = [])
     {
         $this->config = $config;
-        $this->fileManager = $fileManager;
     }
 
     /**
@@ -88,10 +85,6 @@ class Router implements RouterInterface
             [$controller, $action] = $this->findControllerForUri($requestUri);
         }
 
-        if ($handler === null && ($controller === null || $action === null)) {
-            throw new UnavailableRequestException();
-        }
-
         return [$handler, $args, $controller, $action];
     }
 
@@ -152,7 +145,7 @@ class Router implements RouterInterface
     private function findControllerForUri(array|string $requestUri): array
     {
         if (!isset($this->config['controllerNamespace'])) {
-            throw new Exception('Params controllerNamespace is not specified in app config');
+            return ['', ''];
         }
 
         return $this->findControllerWithActionForUri($requestUri);
@@ -174,11 +167,7 @@ class Router implements RouterInterface
         $action = empty($explodedArray[2])
             ? 'actionIndex'
             : $this->parseAction($explodedArray[2]);
-
-        if (!$this->fileManager->isFileExist($this->config['controllerNamespace'] . $controllerName)) {
-            $controllerName = null;
-        }
-
+            
         return [$controllerName, $action];
     }
 

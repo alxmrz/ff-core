@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FF\router;
 
 class ArgsRoute
@@ -16,7 +18,7 @@ class ArgsRoute
         $this->routeParts = explode('/', $uri);
     }
 
-    public function getPartsCount(): string
+    public function getPartsCount(): int
     {
         return count($this->routeParts);
     }

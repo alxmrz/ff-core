@@ -7,6 +7,7 @@ namespace FF;
 use Closure;
 use Exception;
 use FF\container\PHPDIContainer;
+use FF\exceptions\ControllerNotFound;
 use FF\exceptions\MethodAlreadyRegistered;
 use FF\exceptions\UnavailableRequestException;
 use FF\http\Request;
@@ -14,8 +15,8 @@ use FF\http\RequestInterface;
 use FF\http\Response;
 use FF\http\ResponseInterface;
 use FF\http\StatusCode;
-use FF\libraries\FileManager;
 use FF\logger\MonologLogger;
+use FF\ReflectionArgsInjector;
 use FF\router\RouteHandler;
 use FF\router\Router;
 use FF\router\RouterInterface;
@@ -70,7 +71,7 @@ class Application extends BaseApplication
                 return new MonologLogger(new Logger($config['appName'] ?? 'ff-core-app'));
             },
             RouterInterface::class => function () use ($config): RouterInterface {
-                return new Router(new FileManager(), $config);
+                return new Router($config);
             },
         ];
 
@@ -178,23 +179,48 @@ class Application extends BaseApplication
      */
     private function runHandler(ResponseInterface $response): void
     {
-        [$handler, $args, $controllerName, $action] = $this->router->parseRequest($this->request);
+        [$routeHandler, $args, $controllerName, $action] = $this->router->parseRequest($this->request);
 
-        foreach ($this->middleWares as $middleware) {
-            if ($middleware($this->request, $response) === false) {
-                return;
-            }
+        if (!$this->runMiddlewares($response)) {
+            return;
         }
 
-        if (is_callable($handler)) {
-            $handler($this->request, $response, $args);
+        $argsInjector = new ReflectionArgsInjector($this->container);
+
+        $args = array_merge(['request' => $this->request, 'response' => $response], $args);
+
+        if (is_callable($routeHandler)) {
+            $routeHandler(
+                $this->request,
+                $response,
+                $argsInjector->injectHandlerArgs($routeHandler->getFunc(), $args)
+            );
 
             return;
+        }
+
+        $controllerName = $this->config['controllerNamespace'] . $controllerName;
+
+        try {
+            $args = $argsInjector->injectActionArgs($controllerName, $action, $args);
+        } catch (ControllerNotFound $e) {
+            throw new UnavailableRequestException($this->request,$e);
         }
 
         $controller = $this->container->get($controllerName);
         $controller->setRouter($this->router);
 
-        $controller->$action($this->request, $response);
+        $controller->$action($this->request, $response, ...$args);
+    }
+
+    private function runMiddlewares(ResponseInterface $response): bool
+    {
+        foreach ($this->middleWares as $middleware) {
+            if ($middleware($this->request, $response) === false) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

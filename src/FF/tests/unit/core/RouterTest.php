@@ -2,32 +2,42 @@
 
 declare(strict_types=1);
 
+namespace FF\tests\unit\core;
+
 use FF\http\Request;
 use FF\http\Response;
 use FF\router\Router;
 use FF\router\RouteHandler;
 use FF\tests\unit\CommonTestCase;
-use FF\tests\stubs\FileManagerFake;
 use FF\exceptions\MethodAlreadyRegistered;
 use FF\exceptions\UnavailableRequestException;
-use FF\tests\stubs\FileManagerFileNotExistFake;
 
 final class RouterTest extends CommonTestCase
 {
-    /**
-     * @var Router
-     */
     private Router $router;
-    private FileManagerFake $fileManager;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->fileManager = new FileManagerFake();
-        $this->router = new Router($this->fileManager, ['controllerNamespace' => 'app\controller\\']);
+        $this->router = new Router( ['controllerNamespace' => 'app\controller\\']);
     }
 
-    public function testGettingArrayWithRoute(): void
+    public function testParseRequest_NoHandlersSet(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['REQUEST_URI'] = '/mainpage/getList';
+
+        $router = new Router();
+
+        [$handler, $args, $controllerName, $action] = $router->parseRequest($this->createRequest());
+
+        $this->assertNull($handler);
+        $this->assertEmpty($args);
+        $this->assertEmpty($controllerName);
+        $this->assertEmpty($action);
+    }
+
+    public function testParseRequest_GettingArrayWithRoute(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_URI'] = '/mainpage/getList';
@@ -53,28 +63,6 @@ final class RouterTest extends CommonTestCase
         $this->router->get('/order', function () {
             return 'Order route';
         });
-    }
-
-    public function testControllerNamespaceMustBeSpecifiedWhenAppModeIsDefault(): void
-    {
-        $router = new Router(new FileManagerFake());
-
-        $this->expectExceptionMessage('Params controllerNamespace is not specified in app config');
-        $router->parseRequest($this->createRequest());
-    }
-
-    public function testThrowErrorWhenRequestIs404()
-    {
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_SERVER['REQUEST_URI'] = 'job/unavailablerequest/';
-
-        $router = new Router(
-            new FileManagerFileNotExistFake(),
-            ['controllerNamespace' => 'app\controller\\']
-        );
-
-        $this->expectException(FF\exceptions\UnavailableRequestException::class);
-        $router->parseRequest($this->createRequest());
     }
 
     /**

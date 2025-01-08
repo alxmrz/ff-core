@@ -18,6 +18,11 @@ class RouteHandler
         $this->handler = $handler;
     }
 
+    public function getFunc(): Closure
+    {
+        return $this->handler;
+    }
+
     public function __invoke(RequestInterface $request, ResponseInterface $response, array $args = []): void
     {
         foreach ($this->middleWares as $mw) {

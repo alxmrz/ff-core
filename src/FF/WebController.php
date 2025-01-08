@@ -10,21 +10,10 @@ use FF\view\View;
 abstract class WebController extends BaseController
 {
     protected View $view;
-    protected RouterInterface $router;
 
     public function __construct(View $view)
     {
         $this->view = $view;
-    }
-
-    public function getRouter(): RouterInterface
-    {
-        return $this->router;
-    }
-
-    public function setRouter(RouterInterface $router): void
-    {
-        $this->router = $router;
     }
 
     /**

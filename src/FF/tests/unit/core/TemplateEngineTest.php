@@ -10,7 +10,6 @@
 namespace tests\tests\core;
 
 use FF\view\TemplateEngine;
-use PHPUnit\Framework\TestCase;
 use FF\tests\unit\CommonTestCase;
 
 class TemplateEngineTest extends CommonTestCase
