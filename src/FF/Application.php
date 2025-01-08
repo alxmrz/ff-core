@@ -7,6 +7,7 @@ namespace FF;
 use Closure;
 use Exception;
 use FF\container\PHPDIContainer;
+use FF\exceptions\ControllerNotFound;
 use FF\exceptions\MethodAlreadyRegistered;
 use FF\exceptions\UnavailableRequestException;
 use FF\http\Request;
@@ -70,7 +71,7 @@ class Application extends BaseApplication
                 return new MonologLogger(new Logger($config['appName'] ?? 'ff-core-app'));
             },
             RouterInterface::class => function () use ($config): RouterInterface {
-                return new Router( $config);
+                return new Router($config);
             },
         ];
 
@@ -200,7 +201,11 @@ class Application extends BaseApplication
 
         $controllerName = $this->config['controllerNamespace'] . $controllerName;
 
-        $args = $argsInjector->injectActionArgs($controllerName, $action, $args);
+        try {
+            $args = $argsInjector->injectActionArgs($controllerName, $action, $args);
+        } catch (ControllerNotFound $e) {
+            throw new UnavailableRequestException($this->request,$e);
+        }
 
         $controller = $this->container->get($controllerName);
         $controller->setRouter($this->router);

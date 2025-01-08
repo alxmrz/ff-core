@@ -146,7 +146,7 @@ final class ApplicationTest extends CommonTestCase
      * @throws MethodAlreadyRegistered
      * @throws NotFoundExceptionInterface
      */
-    public function testException_WhenCotrollerDoesNotExist(): void
+    public function testException_WhenHandlerAndControllerDoesNotExist(): void
     {
         $_SERVER['REQUEST_URI'] = '/unknown/get-by-name';
         $_SERVER['REQUEST_METHOD'] = 'GET';
@@ -155,7 +155,7 @@ final class ApplicationTest extends CommonTestCase
             'controllerNamespace' => '\FF\tests\data\controllers\\',
         ];
 
-        $this->expectOutputString('Controller \FF\tests\data\controllers\UnknownController not found');
+        $this->expectOutputString('Not found a handler or a controller for request: GET /unknown/get-by-name');
 
         $this->createApplication($config)->run();
     }
