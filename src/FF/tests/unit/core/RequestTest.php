@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace tests\unit\core;
 
 use FF\http\Request;
 use FF\tests\unit\CommonTestCase;
 
-class RequestTest extends CommonTestCase
+final class RequestTest extends CommonTestCase
 {
     public function testServer(): void
     {

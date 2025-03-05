@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FF\tests\unit\core;
 
 use FF\http\Request;
@@ -15,9 +17,11 @@ final class RouteHandlerTest extends CommonTestCase
     {
         $value = '';
 
-        $routeHandler = new RouteHandler(static function (RequestInterface $request, ResponseInterface $response) use (&$value):void  {
-            $value = 'modified';
-        });
+        $routeHandler = new RouteHandler(
+            static function (RequestInterface $request, ResponseInterface $response) use (&$value): void {
+                $value = 'modified';
+            }
+        );
 
         $routeHandler(new Request(), new Response());
 
@@ -27,9 +31,11 @@ final class RouteHandlerTest extends CommonTestCase
     public function testInvoke_WithArgs(): void
     {
         $value = '';
-        $routeHandler = new RouteHandler(static function (RequestInterface $request, ResponseInterface $response, string $name) use (&$value):void  {
-            $value = $name;
-        });
+        $routeHandler = new RouteHandler(
+            static function (RequestInterface $request, ResponseInterface $response, string $name) use (&$value): void {
+                $value = $name;
+            }
+        );
 
         $routeHandler(new Request(), new Response(), ['John']);
 
@@ -38,9 +44,10 @@ final class RouteHandlerTest extends CommonTestCase
 
     public function testInvokeWithMiddleWare(): void
     {
-        $routeHandler = new RouteHandler(static function (RequestInterface $request, ResponseInterface $response): void {
-            
-        });
+        $routeHandler = new RouteHandler(
+            static function (RequestInterface $request, ResponseInterface $response): void {
+            }
+        );
 
         $modify = '';
         $mw = static function (RequestInterface $request, ResponseInterface $response) use (&$modify): void {
@@ -57,9 +64,11 @@ final class RouteHandlerTest extends CommonTestCase
     public function testInvokeWithMiddleWare_DoNotCallHandlerIfMiddlewareReturnFalse(): void
     {
         $result = '';
-        $routeHandler = new RouteHandler(static function (RequestInterface $request, ResponseInterface $response)  use (&$result): void {
-            $result = 'changed';
-        });
+        $routeHandler = new RouteHandler(
+            static function (RequestInterface $request, ResponseInterface $response) use (&$result): void {
+                $result = 'changed';
+            }
+        );
 
         $mw = (static fn(RequestInterface $request, ResponseInterface $response): bool => false);
 
@@ -67,18 +76,21 @@ final class RouteHandlerTest extends CommonTestCase
 
         $routeHandler(new Request(), new Response);
 
-        $this->assertEquals('',$result);
+        $this->assertEquals('', $result);
     }
 
     public function testInvokeWithMiddleWare_NeedPassRequestAndArgs(): void
     {
-        $routeHandler = new RouteHandler(static function (RequestInterface $request, ResponseInterface $response):void {
-        });
+        $routeHandler = new RouteHandler(
+            static function (RequestInterface $request, ResponseInterface $response): void {
+            }
+        );
 
         $result = '';
-        $mw = static function (RequestInterface $request, ResponseInterface $response, string $name) use (&$result) : bool {
+        $mw = static function (RequestInterface $request, ResponseInterface $response, string $name) use (&$result
+        ): bool {
             $result = $name;
-            
+
             return true;
         };
 
@@ -86,6 +98,6 @@ final class RouteHandlerTest extends CommonTestCase
 
         $routeHandler(new Request(), new Response, ['Eva']);
 
-        $this->assertEquals('Eva',$result);
+        $this->assertEquals('Eva', $result);
     }
 }

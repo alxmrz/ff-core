@@ -142,7 +142,7 @@ class Router implements RouterInterface
         $action = empty($explodedArray[2])
             ? 'actionIndex'
             : $this->parseAction($explodedArray[2]);
-            
+
         return [$controllerName, $action];
     }
 

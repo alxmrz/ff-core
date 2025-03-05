@@ -31,7 +31,7 @@ final class ApplicationTest extends CommonTestCase
         $_SERVER['REQUEST_METHOD'] = 'GET';
 
         $app = $this->createApplication();
-        
+
         $app->get('/order', function (RequestInterface $request, ResponseInterface $response): void {
             $response->withBody('<p>Order route</p>');
         });
@@ -53,7 +53,7 @@ final class ApplicationTest extends CommonTestCase
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
         $app = $this->createApplication();
-        
+
         $app->post('/order', function (RequestInterface $request, ResponseInterface $response): void {
             $response->withBody('Order route from post');
         });
@@ -83,9 +83,12 @@ final class ApplicationTest extends CommonTestCase
 
         $app = $this->createApplication();
 
-        $app->get('/order', function (RequestInterface $request, ResponseInterface $response, TestService $service): void {
-            $response->withBody($service->doStuff());
-        });
+        $app->get(
+            '/order',
+            function (RequestInterface $request, ResponseInterface $response, TestService $service): void {
+                $response->withBody($service->doStuff());
+            }
+        );
 
         $this->expectOutputString('some-test-value-test-service');
 
@@ -105,9 +108,12 @@ final class ApplicationTest extends CommonTestCase
 
         $app = $this->createApplication();
 
-        $app->get('/order/{id}', function (RequestInterface $request, ResponseInterface $response, string $id, TestService $service): void {
-            $response->withBody($service->doStuff() . ' ' . $id);
-        });
+        $app->get(
+            '/order/{id}',
+            function (RequestInterface $request, ResponseInterface $response, string $id, TestService $service): void {
+                $response->withBody($service->doStuff() . ' ' . $id);
+            }
+        );
 
         $this->expectOutputString('some-test-value-test-service 5');
 
@@ -154,7 +160,7 @@ final class ApplicationTest extends CommonTestCase
         $this->createApplication($config)->run();
     }
 
-        /**
+    /**
      * @runInSeparateProcess
      * @throws ContainerExceptionInterface
      * @throws MethodAlreadyRegistered
@@ -169,7 +175,9 @@ final class ApplicationTest extends CommonTestCase
             'controllerNamespace' => '\FF\tests\data\controllers\\',
         ];
 
-        $this->expectOutputString('Action actionUnknown not found in controller \FF\tests\data\controllers\UserController');
+        $this->expectOutputString(
+            'Action actionUnknown not found in controller \FF\tests\data\controllers\UserController'
+        );
 
         $this->createApplication($config)->run();
     }

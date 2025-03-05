@@ -1,10 +1,13 @@
 <?php
+declare(strict_types=1);
+
 // With FF\http we rewrite default header function to test it
 namespace FF\http;
 
 use FF\tests\unit\core\http\ResponseTest;
 
-function header (string $header): void {
+function header(string $header): void
+{
     ResponseTest::collectHeader($header);
 }
 
@@ -13,7 +16,7 @@ namespace FF\tests\unit\core\http;
 
 use FF\http\Response;
 
-class ResponseTest extends \FF\tests\unit\CommonTestCase
+final class ResponseTest extends \FF\tests\unit\CommonTestCase
 {
     public static array $headersSent = [];
 
@@ -92,7 +95,7 @@ class ResponseTest extends \FF\tests\unit\CommonTestCase
         $this->assertEquals(['MyHeader: value'], self::$headersSent);
     }
 
-        /**
+    /**
      * @runInSeparateProcess
      *
      * @throws \Exception

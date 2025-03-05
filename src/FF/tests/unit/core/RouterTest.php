@@ -19,7 +19,7 @@ final class RouterTest extends CommonTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->router = new Router( ['controllerNamespace' => 'app\controller\\']);
+        $this->router = new Router(['controllerNamespace' => 'app\controller\\']);
     }
 
     public function testParseRequest_NoHandlersSet(): void
@@ -86,7 +86,11 @@ final class RouterTest extends CommonTestCase
         return [
             ['uri' => '/', 'route' => '/', 'expectedArgs' => []],
             ["uri" => '/order/5', 'route' => '/order/{id}', 'expectedArgs' => ['id' => '5']],
-            ["uri" => '/user/5/order/2', 'route' => '/user/{id}/order/{number}', 'expectedArgs' => ['id' => '5', 'number' => '2']],
+            [
+                "uri" => '/user/5/order/2',
+                'route' => '/user/{id}/order/{number}',
+                'expectedArgs' => ['id' => '5', 'number' => '2']
+            ],
         ];
     }
 
@@ -100,7 +104,7 @@ final class RouterTest extends CommonTestCase
         $this->router->get('/order/{id}', function () use (&$value): void {
             $value = 'order';
         });
-        
+
         $this->router->get('/shop/{id}', function () use (&$value): void {
             $value = 'shop';
         });

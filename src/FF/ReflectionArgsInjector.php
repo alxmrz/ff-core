@@ -28,19 +28,19 @@ class ReflectionArgsInjector
     {
         if (!class_exists($controllerName)) {
             throw new ControllerNotFound("Controller $controllerName not found");
-        } 
+        }
 
-        $controllerRef = new ReflectionClass( $controllerName);
+        $controllerRef = new ReflectionClass($controllerName);
 
-        if (!$controllerRef->hasMethod($action)){  
+        if (!$controllerRef->hasMethod($action)) {
             throw new ActionNotFound("Action $action not found in controller $controllerName");
         }
-        
+
         $funcParams = $controllerRef->getMethod($action)->getParameters();
 
         return $this->injectParamsToArgs($args, $funcParams);
-    } 
-    
+    }
+
     private function injectParamsToArgs(array $args, array $funcParams): array
     {
         // Need to delete Request and Response first two params from results
@@ -50,10 +50,10 @@ class ReflectionArgsInjector
             if (isset($args[$funcParam->getName()])) {
                 continue;
             }
-            
+
             $result[] = $this->container->get($funcParam->getType()->getName());
         }
-        
+
         return $result;
     }
 }

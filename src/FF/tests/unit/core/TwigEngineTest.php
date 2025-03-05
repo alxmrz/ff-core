@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 use FF\exceptions\FileDoesNotExist;
 use FF\view\TwigEngine;
 use FF\tests\unit\CommonTestCase;
 
-class TwigEngineTest extends CommonTestCase
+final class TwigEngineTest extends CommonTestCase
 {
     private TwigEngine $twigEngine;
 
@@ -13,7 +15,10 @@ class TwigEngineTest extends CommonTestCase
     {
         parent::setUp();
         $templatePath = __DIR__ . '/../../templates/';
-        $this->twigEngine = new TwigEngine($templatePath, new Twig_Environment(new Twig_Loader_Filesystem($templatePath)));
+        $this->twigEngine = new TwigEngine(
+            $templatePath,
+            new Twig_Environment(new Twig_Loader_Filesystem($templatePath))
+        );
     }
 
     public function testRenderReturnsContent(): void

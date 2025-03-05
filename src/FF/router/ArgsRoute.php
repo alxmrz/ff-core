@@ -36,14 +36,14 @@ class ArgsRoute
         $routeArgs = [];
 
         foreach ($route->getParts() as $key => $part) {
-            preg_match("/{(\w+)}/", (string) $part, $matches);
+            preg_match("/{(\w+)}/", (string)$part, $matches);
 
             if ($this->hasAtPositionTheSamePart($key, $part)) {
                 continue;
             } elseif (count($matches) === 0) {
                 return [];
             }
-            
+
             if (count($matches) > 0) {
                 $routeArgs[$matches[1]] = $this->routeParts[$key];
             } else {

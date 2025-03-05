@@ -38,12 +38,11 @@ class Application extends BaseApplication
     private array $middleWares = [];
 
     public function __construct(
-        ContainerInterface      $container,
+        ContainerInterface $container,
         private readonly RouterInterface $router,
         private readonly LoggerInterface $logger,
-        array                   $config = []
-    )
-    {
+        array $config = []
+    ) {
         parent::__construct($container, $config);
     }
 
@@ -55,7 +54,9 @@ class Application extends BaseApplication
     public static function construct(array $config): Application
     {
         $definitions = [
-            LoggerInterface::class => fn(): LoggerInterface => new MonologLogger(new Logger($config['appName'] ?? 'ff-core-app')),
+            LoggerInterface::class => fn(): LoggerInterface => new MonologLogger(
+                new Logger($config['appName'] ?? 'ff-core-app')
+            ),
             RouterInterface::class => fn(): RouterInterface => new Router($config),
         ];
 

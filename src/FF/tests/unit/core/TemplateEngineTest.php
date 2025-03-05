@@ -1,18 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Created by PhpStorm.
  * User: alexandr
  * Date: 19.08.18
  * Time: 14:13
  */
-
 namespace tests\tests\core;
 
 use FF\view\TemplateEngine;
 use FF\tests\unit\CommonTestCase;
 
-class TemplateEngineTest extends CommonTestCase
+final class TemplateEngineTest extends CommonTestCase
 {
     private TemplateEngine $templateEngine;
 
@@ -20,6 +21,7 @@ class TemplateEngineTest extends CommonTestCase
     {
         $this->templateEngine = new TemplateEngine(__DIR__ . '/../../templates/');
     }
+
     public function testRenderReturnsContent(): void
     {
         $content = $this->templateEngine->render('contentPage');

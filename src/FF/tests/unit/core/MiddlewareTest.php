@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace tests\unit\core;
 
 use FF\Application;
@@ -10,7 +12,7 @@ use FF\router\Router;
 use FF\tests\unit\CommonTestCase;
 use Psr\Log\LoggerInterface;
 
-class MiddlewareTest extends CommonTestCase
+final class MiddlewareTest extends CommonTestCase
 {
     private Application $app;
 
@@ -34,17 +36,17 @@ class MiddlewareTest extends CommonTestCase
     public function testMiddleWareForOneRoute(): void
     {
         $actual = '';
-        $mw = static function() use (&$actual):void {
+        $mw = static function () use (&$actual): void {
             $actual = 'Hello World';
         };
 
-        $this->app->get('/order', static function (RequestInterface $request, ResponseInterface $response):void {
+        $this->app->get('/order', static function (RequestInterface $request, ResponseInterface $response): void {
             $response->withBody('<p>Order route</p>');
         })->add($mw);
 
         $this->expectOutputString('<p>Order route</p>');
 
-      $this->runRequest('/order', 'GET');
+        $this->runRequest('/order', 'GET');
 
         $this->assertEquals('Hello World', $actual);
     }
@@ -55,16 +57,16 @@ class MiddlewareTest extends CommonTestCase
     public function testMiddleWareForAllRoutes(): void
     {
         $actual = '';
-        $this->app->add(static function(RequestInterface $request, ResponseInterface $response) use (&$actual):void {
+        $this->app->add(static function (RequestInterface $request, ResponseInterface $response) use (&$actual): void {
             $actual .= 'Hello' . $request->context()['request'] ?? '';
-        })->add(static function(RequestInterface $request, ResponseInterface $response) use (&$actual):void {
+        })->add(static function (RequestInterface $request, ResponseInterface $response) use (&$actual): void {
             $actual .= 'World' . $request->context()['request'] ?? '';
         });
 
-        $this->app->get('/', static function (RequestInterface $request, ResponseInterface $response):void {
+        $this->app->get('/', static function (RequestInterface $request, ResponseInterface $response): void {
             $response->withBody('<p>Main route</p>');
         });
-        $this->app->get('/order', static function (RequestInterface $request, ResponseInterface $response):void {
+        $this->app->get('/order', static function (RequestInterface $request, ResponseInterface $response): void {
             $response->withBody('<p>Order route</p>');
         });
 
@@ -79,7 +81,7 @@ class MiddlewareTest extends CommonTestCase
         $this->assertEquals('Hello/orderWorld/order', $actual);
     }
 
-        /**
+    /**
      * @runInSeparateProcess
      */
     public function testMiddleWareOfAllRoutesCanStopRoutesProcessing(): void
@@ -87,11 +89,14 @@ class MiddlewareTest extends CommonTestCase
         $this->app->add(static fn(RequestInterface $request, ResponseInterface $response): bool => false);
 
         $actual = 'expected';
-        $this->app->get('/', static function (RequestInterface $request, ResponseInterface $response) use (&$actual):void {
-            $actual = 'actual';
-            $response->withBody('<p>Main route</p>');
-        });
-        
+        $this->app->get(
+            '/',
+            static function (RequestInterface $request, ResponseInterface $response) use (&$actual): void {
+                $actual = 'actual';
+                $response->withBody('<p>Main route</p>');
+            }
+        );
+
         $this->expectOutputString('');
 
         $this->runRequest('/', 'GET');

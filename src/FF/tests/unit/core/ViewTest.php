@@ -41,7 +41,10 @@ final class ViewTest extends CommonTestCase
 
     public function testAddingLocalCss(): void
     {
-        $this->assertStringContainsString("<link href='/assets/mainpage/css/", $this->view->addLocalCss('mainpage/css/'));
+        $this->assertStringContainsString(
+            "<link href='/assets/mainpage/css/",
+            $this->view->addLocalCss('mainpage/css/')
+        );
     }
 
     public function testAddingLocalJs(): void
