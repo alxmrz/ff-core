@@ -12,18 +12,13 @@ use FF\http\RequestInterface;
 
 class Router implements RouterInterface
 {
-    private array $config;
     private array $handlers = [];
 
-    public function __construct(array $config = [])
+    public function __construct(private array $config = [])
     {
-        $this->config = $config;
     }
 
     /**
-     * @param string $path
-     * @param Closure $handler
-     * @return RouteHandler
      * @throws MethodAlreadyRegistered
      */
     public function get(string $path, Closure $handler): RouteHandler
@@ -32,9 +27,6 @@ class Router implements RouterInterface
     }
 
     /**
-     * @param string $path
-     * @param Closure $handler
-     * @return RouteHandler
      * @throws MethodAlreadyRegistered
      */
     public function post(string $path, Closure $handler): RouteHandler
@@ -43,10 +35,6 @@ class Router implements RouterInterface
     }
 
     /**
-     * @param string $method
-     * @param string $path
-     * @param Closure $handler
-     * @return RouteHandler
      * @throws MethodAlreadyRegistered
      */
     private function registerHandler(string $method, string $path, Closure $handler): RouteHandler
@@ -67,8 +55,6 @@ class Router implements RouterInterface
     }
 
     /**
-     * @param RequestInterface $request
-     * @return array
      * @throws UnavailableRequestException
      * @throws Exception
      */
@@ -88,11 +74,6 @@ class Router implements RouterInterface
         return [$handler, $args, $controller, $action];
     }
 
-    /**
-     * @param string $requestMethod
-     * @param string $requestUri
-     * @return array
-     */
     private function findHandlerForUri(string $requestMethod, string $requestUri): array
     {
         $requestUri = parse_url($requestUri, PHP_URL_PATH);
@@ -138,8 +119,6 @@ class Router implements RouterInterface
     }
 
     /**
-     * @param array|string $requestUri
-     * @return array
      * @throws Exception
      */
     private function findControllerForUri(array|string $requestUri): array
@@ -151,38 +130,30 @@ class Router implements RouterInterface
         return $this->findControllerWithActionForUri($requestUri);
     }
 
-    /**
-     * @param string $uri
-     * @return array
-     */
     private function findControllerWithActionForUri(string $uri): array
     {
         $explodedArray = explode('/', ($uri));
         $controllerName = 'MainpageController';
 
-        if (!empty($explodedArray[1])) {
+        if (isset($explodedArray[1]) && ($explodedArray[1] !== '' && $explodedArray[1] !== '0')) {
             $controllerName = ucfirst($explodedArray[1]) . 'Controller';
         }
 
         $action = empty($explodedArray[2])
             ? 'actionIndex'
             : $this->parseAction($explodedArray[2]);
-            
+
         return [$controllerName, $action];
     }
 
-    /**
-     * @param $haystack
-     * @return string
-     */
-    private function parseAction($haystack): string
+    private function parseAction(string $haystack): string
     {
         if (str_contains($haystack, '-')) {
             $actionParts = explode('-', $haystack);
             foreach ($actionParts as &$actionPart) {
                 $actionPart = ucfirst($actionPart);
             }
-            $actionPartName = implode($actionParts);
+            $actionPartName = implode('', $actionParts);
         } else {
             $actionPartName = ucfirst($haystack);
         }

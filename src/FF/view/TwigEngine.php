@@ -16,27 +16,14 @@ use Twig_Environment;
  */
 class TwigEngine implements TemplateInterface
 {
-    private string $templatesPath;
-    private Twig_Environment $twigEnvironment;
-
-
     /**
      * TwigEngine constructor.
-     * @param string $templatesPath
-     * @param Twig_Environment $te
      */
-    public function __construct(
-        string $templatesPath,
-        Twig_Environment $te
-    ) {
-        $this->templatesPath = $templatesPath;
-        $this->twigEnvironment = $te;
+    public function __construct(private string $templatesPath, private readonly Twig_Environment $twigEnvironment)
+    {
     }
 
     /**
-     * @param string $templatePath
-     * @param array $data
-     * @return string
      * @throws FileDoesNotExist
      * @throws LoaderError
      * @throws RuntimeError
@@ -50,7 +37,6 @@ class TwigEngine implements TemplateInterface
     }
 
     /**
-     * @param string $pathToTemplate
      * @throws FileDoesNotExist
      */
     private function throwExceptionIfTemplateDoesNotExist(string $pathToTemplate): void

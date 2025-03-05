@@ -19,7 +19,7 @@ final class RouterTest extends CommonTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->router = new Router( ['controllerNamespace' => 'app\controller\\']);
+        $this->router = new Router(['controllerNamespace' => 'app\controller\\']);
     }
 
     public function testParseRequest_NoHandlersSet(): void
@@ -57,28 +57,21 @@ final class RouterTest extends CommonTestCase
     {
         $this->expectException(MethodAlreadyRegistered::class);
         $this->expectExceptionMessage('Method GET /order already registered!');
-        $this->router->get('/order', function () {
-            return 'Order route';
-        });
-        $this->router->get('/order', function () {
-            return 'Order route';
-        });
+        $this->router->get('/order', fn(): string => 'Order route');
+        $this->router->get('/order', fn(): string => 'Order route');
     }
 
     /**
      * @dataProvider dpTestParsingVariablesInUri
      *
-     * @return void
      * @throws MethodAlreadyRegistered
      * @throws UnavailableRequestException
      */
-    public function testParsingVariablesInUri(string $uri, string $route, array $expectedArgs)
+    public function testParsingVariablesInUri(string $uri, string $route, array $expectedArgs): void
     {
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_URI'] = $uri;
-        $func = function () {
-            return 'Order route get by id';
-        };
+        $func = (fn(): string => 'Order route get by id');
         $this->router->get($route, $func);
         [$handler, $args, $controllerName, $action] = $this->router->parseRequest($this->createRequest());
 
@@ -93,7 +86,11 @@ final class RouterTest extends CommonTestCase
         return [
             ['uri' => '/', 'route' => '/', 'expectedArgs' => []],
             ["uri" => '/order/5', 'route' => '/order/{id}', 'expectedArgs' => ['id' => '5']],
-            ["uri" => '/user/5/order/2', 'route' => '/user/{id}/order/{number}', 'expectedArgs' => ['id' => '5', 'number' => '2']],
+            [
+                "uri" => '/user/5/order/2',
+                'route' => '/user/{id}/order/{number}',
+                'expectedArgs' => ['id' => '5', 'number' => '2']
+            ],
         ];
     }
 
@@ -104,11 +101,11 @@ final class RouterTest extends CommonTestCase
 
         $value = '';
 
-        $this->router->get('/order/{id}', function () use (&$value) {
+        $this->router->get('/order/{id}', function () use (&$value): void {
             $value = 'order';
         });
-        
-        $this->router->get('/shop/{id}', function () use (&$value) {
+
+        $this->router->get('/shop/{id}', function () use (&$value): void {
             $value = 'shop';
         });
 
@@ -128,11 +125,11 @@ final class RouterTest extends CommonTestCase
 
         $value = '';
 
-        $this->router->get('/shop/{id}', function () use (&$value) {
+        $this->router->get('/shop/{id}', function () use (&$value): void {
             $value = 'shop';
         });
 
-        $this->router->get('/order/{id}', function () use (&$value) {
+        $this->router->get('/order/{id}', function () use (&$value): void {
             $value = 'order';
         });
 
@@ -153,7 +150,7 @@ final class RouterTest extends CommonTestCase
 
         $value = '';
 
-        $this->router->get('/order', function () use (&$value) {
+        $this->router->get('/order', function () use (&$value): void {
             $value = 'order';
         });
 

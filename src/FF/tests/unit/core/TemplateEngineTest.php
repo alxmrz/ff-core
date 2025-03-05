@@ -1,26 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Created by PhpStorm.
  * User: alexandr
  * Date: 19.08.18
  * Time: 14:13
  */
-
 namespace tests\tests\core;
 
 use FF\view\TemplateEngine;
 use FF\tests\unit\CommonTestCase;
 
-class TemplateEngineTest extends CommonTestCase
+final class TemplateEngineTest extends CommonTestCase
 {
-    private $templateEngine;
+    private TemplateEngine $templateEngine;
 
     public function setUp(): void
     {
         $this->templateEngine = new TemplateEngine(__DIR__ . '/../../templates/');
     }
-    public function testRenderReturnsContent()
+
+    public function testRenderReturnsContent(): void
     {
         $content = $this->templateEngine->render('contentPage');
         $this->assertEquals('content_page', $content);
@@ -30,7 +32,7 @@ class TemplateEngineTest extends CommonTestCase
         $this->assertEquals('third_page', $content);
     }
 
-    public function testAllArrayDataIsGot()
+    public function testAllArrayDataIsGot(): void
     {
         $content = $this->templateEngine->render('arrayPage', ['var' => 'var', 'newLine' => 'new line here']);
         $this->assertMatchesRegularExpression('/super var/', $content);
@@ -38,9 +40,9 @@ class TemplateEngineTest extends CommonTestCase
         $this->assertDoesNotMatchRegularExpression('/it does not exist/', $content);
     }
 
-    public function testExceptionIfTemplateDoesNotExist()
+    public function testExceptionIfTemplateDoesNotExist(): void
     {
         $this->expectException(\FF\exceptions\FileDoesNotExist::class);
-        $content = $this->templateEngine->render('no_template');
+        $this->templateEngine->render('no_template');
     }
 }

@@ -29,27 +29,30 @@ final class ViewTest extends CommonTestCase
         $this->view = new View($this->createMock(TemplateInterface::class), $config);
     }
 
-    public function testAddingGlobalCss()
+    public function testAddingGlobalCss(): void
     {
         $this->assertStringContainsString("<link href='/assets/global/css/", $this->view->getGlobalCss());
     }
 
-    public function testAddingGlobalJs()
+    public function testAddingGlobalJs(): void
     {
         $this->assertStringContainsString("<script src='/assets/global/js/", $this->view->getGlobalJs());
     }
 
-    public function testAddingLocalCss()
+    public function testAddingLocalCss(): void
     {
-        $this->assertStringContainsString("<link href='/assets/mainpage/css/", $this->view->addLocalCss('mainpage/css/'));
+        $this->assertStringContainsString(
+            "<link href='/assets/mainpage/css/",
+            $this->view->addLocalCss('mainpage/css/')
+        );
     }
 
-    public function testAddingLocalJs()
+    public function testAddingLocalJs(): void
     {
         $this->assertStringContainsString("<script src='/assets/mainpage/js/", $this->view->addLocalJs('mainpage/js/'));
     }
 
-    public function testAddingCssFromAPath()
+    public function testAddingCssFromAPath(): void
     {
         $this->assertStringContainsString("<link href='/path/to/css/", $this->view->addCssFrom('/path/to/css/'));
     }

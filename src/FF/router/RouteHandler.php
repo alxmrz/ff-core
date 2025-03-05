@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FF\router;
 
 use \Closure;
@@ -8,14 +10,13 @@ use FF\http\ResponseInterface;
 
 class RouteHandler
 {
-    private Closure $handler;
     /**
      * @var Closure[]
      */
     private array $middleWares = [];
 
-    public function __construct(Closure $handler) {
-        $this->handler = $handler;
+    public function __construct(private readonly Closure $handler)
+    {
     }
 
     public function getFunc(): Closure
@@ -34,7 +35,7 @@ class RouteHandler
         ($this->handler)($request, $response, ...$args);
     }
 
-    public function add(Closure $middleWare)
+    public function add(Closure $middleWare): void
     {
         $this->middleWares[] = $middleWare;
     }

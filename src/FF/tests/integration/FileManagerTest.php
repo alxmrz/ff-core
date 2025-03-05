@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FF\tests\integration;
 
 use FF\libraries\FileManager;
 use FF\tests\unit\CommonTestCase;
 
-class FileManagerTest extends CommonTestCase
+final class FileManagerTest extends CommonTestCase
 {
     public function testIsFileExist(): void
     {

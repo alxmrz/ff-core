@@ -12,21 +12,14 @@ use FF\exceptions\FileDoesNotExist;
  */
 class TemplateEngine implements TemplateInterface
 {
-    private string $templatesPath;
-
     /**
      * TemplateEngine constructor.
-     * @param string $templatesPath
      */
-    public function __construct(string $templatesPath)
+    public function __construct(private string $templatesPath)
     {
-        $this->templatesPath = $templatesPath;
     }
 
     /**
-     * @param string $templatePath
-     * @param array $data
-     * @return string
      * @throws FileDoesNotExist
      */
     public function render(string $templatePath, array $data = []): string
@@ -37,26 +30,20 @@ class TemplateEngine implements TemplateInterface
     }
 
     /**
-     * @param string $pathToTemplate
      * @throws FileDoesNotExist
      */
-    private function throwExceptionIfTemplateDoesNotExist(string $pathToTemplate)
+    private function throwExceptionIfTemplateDoesNotExist(string $pathToTemplate): void
     {
         if (!file_exists($pathToTemplate)) {
             throw new FileDoesNotExist("File {$pathToTemplate}.php does not exist");
         }
     }
 
-    /**
-     * @param string $pathToTemplate
-     * @param array $data
-     * @return string
-     */
     private function renderTemplate(string $pathToTemplate, array $data = []): string
     {
         ob_start();
         foreach ($data as $key => $value) {
-            $$key = $value;
+            ${$key} = $value;
         }
         require_once $pathToTemplate;
         return ob_get_clean();

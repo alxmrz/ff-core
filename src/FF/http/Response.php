@@ -27,10 +27,6 @@ class Response implements ResponseInterface
         echo $this->body;
     }
 
-    /**
-     * @param string $body
-     * @return Response
-     */
     public function withBody(string $body): static
     {
         $this->body = $body;
@@ -39,7 +35,6 @@ class Response implements ResponseInterface
     }
 
     /**
-     * @param mixed $body
      * @return $this
      * @throws Exception
      */
@@ -65,10 +60,6 @@ class Response implements ResponseInterface
         return $this;
     }
 
-    /**
-     * @param int $statusCode
-     * @return Response
-     */
     public function withStatusCode(int $statusCode): static
     {
         http_response_code($statusCode);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace tests\unit\core;
 
 use FF\Application;
@@ -10,7 +12,7 @@ use FF\router\Router;
 use FF\tests\unit\CommonTestCase;
 use Psr\Log\LoggerInterface;
 
-class MiddlewareTest extends CommonTestCase
+final class MiddlewareTest extends CommonTestCase
 {
     private Application $app;
 
@@ -30,43 +32,41 @@ class MiddlewareTest extends CommonTestCase
 
     /**
      * @runInSeparateProcess
-     * @return void
      */
     public function testMiddleWareForOneRoute(): void
     {
         $actual = '';
-        $mw = static function() use (&$actual):void {
+        $mw = static function () use (&$actual): void {
             $actual = 'Hello World';
         };
 
-        $this->app->get('/order', static function (RequestInterface $request, ResponseInterface $response):void {
+        $this->app->get('/order', static function (RequestInterface $request, ResponseInterface $response): void {
             $response->withBody('<p>Order route</p>');
         })->add($mw);
 
         $this->expectOutputString('<p>Order route</p>');
 
-      $this->runRequest('/order', 'GET');
+        $this->runRequest('/order', 'GET');
 
         $this->assertEquals('Hello World', $actual);
     }
 
     /**
      * @runInSeparateProcess
-     * @return void
      */
     public function testMiddleWareForAllRoutes(): void
     {
         $actual = '';
-        $this->app->add(static function(RequestInterface $request, ResponseInterface $response) use (&$actual):void {
+        $this->app->add(static function (RequestInterface $request, ResponseInterface $response) use (&$actual): void {
             $actual .= 'Hello' . $request->context()['request'] ?? '';
-        })->add(static function(RequestInterface $request, ResponseInterface $response) use (&$actual):void {
+        })->add(static function (RequestInterface $request, ResponseInterface $response) use (&$actual): void {
             $actual .= 'World' . $request->context()['request'] ?? '';
         });
 
-        $this->app->get('/', static function (RequestInterface $request, ResponseInterface $response):void {
+        $this->app->get('/', static function (RequestInterface $request, ResponseInterface $response): void {
             $response->withBody('<p>Main route</p>');
         });
-        $this->app->get('/order', static function (RequestInterface $request, ResponseInterface $response):void {
+        $this->app->get('/order', static function (RequestInterface $request, ResponseInterface $response): void {
             $response->withBody('<p>Order route</p>');
         });
 
@@ -81,22 +81,22 @@ class MiddlewareTest extends CommonTestCase
         $this->assertEquals('Hello/orderWorld/order', $actual);
     }
 
-        /**
+    /**
      * @runInSeparateProcess
-     * @return void
      */
     public function testMiddleWareOfAllRoutesCanStopRoutesProcessing(): void
     {
-        $this->app->add(static function(RequestInterface $request, ResponseInterface $response):bool {
-            return false;
-        });
+        $this->app->add(static fn(RequestInterface $request, ResponseInterface $response): bool => false);
 
         $actual = 'expected';
-        $this->app->get('/', static function (RequestInterface $request, ResponseInterface $response) use (&$actual):void {
-            $actual = 'actual';
-            $response->withBody('<p>Main route</p>');
-        });
-        
+        $this->app->get(
+            '/',
+            static function (RequestInterface $request, ResponseInterface $response) use (&$actual): void {
+                $actual = 'actual';
+                $response->withBody('<p>Main route</p>');
+            }
+        );
+
         $this->expectOutputString('');
 
         $this->runRequest('/', 'GET');
@@ -104,7 +104,7 @@ class MiddlewareTest extends CommonTestCase
         $this->assertEquals('expected', $actual);
     }
 
-    private function runRequest(string $path, string $method)
+    private function runRequest(string $path, string $method): void
     {
         $_SERVER['REQUEST_METHOD'] = $method;
         $_SERVER['REQUEST_URI'] = $path;

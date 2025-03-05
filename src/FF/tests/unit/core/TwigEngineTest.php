@@ -1,14 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 use FF\exceptions\FileDoesNotExist;
 use FF\view\TwigEngine;
 use FF\tests\unit\CommonTestCase;
 
-class TwigEngineTest extends CommonTestCase
+final class TwigEngineTest extends CommonTestCase
 {
-    /**
-     * @var TwigEngine
-     */
     private TwigEngine $twigEngine;
 
 
@@ -16,10 +15,13 @@ class TwigEngineTest extends CommonTestCase
     {
         parent::setUp();
         $templatePath = __DIR__ . '/../../templates/';
-        $this->twigEngine = new TwigEngine($templatePath, new Twig_Environment(new Twig_Loader_Filesystem($templatePath)));
+        $this->twigEngine = new TwigEngine(
+            $templatePath,
+            new Twig_Environment(new Twig_Loader_Filesystem($templatePath))
+        );
     }
 
-    public function testRenderReturnsContent()
+    public function testRenderReturnsContent(): void
     {
         $content = $this->twigEngine->render('contentPage');
         $this->assertEquals('content_page', $content);
@@ -32,7 +34,7 @@ class TwigEngineTest extends CommonTestCase
     /**
      * @throws FileDoesNotExist
      */
-    public function testAllArrayDataIsGot()
+    public function testAllArrayDataIsGot(): void
     {
         $content = $this->twigEngine->render('arrayPage', ['var' => 'var', 'newLine' => 'new line here']);
         $this->assertMatchesRegularExpression('/super var/', $content);
@@ -40,7 +42,7 @@ class TwigEngineTest extends CommonTestCase
         $this->assertDoesNotMatchRegularExpression('/it does not exist/', $content);
     }
 
-    public function testExceptionIfTemplateDoesNotExist()
+    public function testExceptionIfTemplateDoesNotExist(): void
     {
         $this->expectException(FileDoesNotExist::class);
         $this->twigEngine->render('no_template');
