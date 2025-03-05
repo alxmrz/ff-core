@@ -153,7 +153,7 @@ class Router implements RouterInterface
             foreach ($actionParts as &$actionPart) {
                 $actionPart = ucfirst($actionPart);
             }
-            $actionPartName = implode($actionParts);
+            $actionPartName = implode('', $actionParts);
         } else {
             $actionPartName = ucfirst($haystack);
         }

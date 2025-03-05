@@ -33,7 +33,7 @@ class RouteHandler
         ($this->handler)($request, $response, ...$args);
     }
 
-    public function add(Closure $middleWare)
+    public function add(Closure $middleWare): void
     {
         $this->middleWares[] = $middleWare;
     }

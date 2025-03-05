@@ -7,7 +7,7 @@ use FF\tests\unit\CommonTestCase;
 
 class RequestTest extends CommonTestCase
 {
-    public function testServer()
+    public function testServer(): void
     {
         $request = $this->createRequest();
 
@@ -21,13 +21,13 @@ class RequestTest extends CommonTestCase
         return new Request();
     }
 
-    public function testGet()
+    public function testGet(): void
     {
         $this->createRequest()->get();
         $this->assertTrue(true);
     }
 
-    public function testPost()
+    public function testPost(): void
     {
         $this->createRequest()->post();
         $this->assertTrue(true);

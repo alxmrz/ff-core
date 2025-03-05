@@ -39,8 +39,8 @@ class Application extends BaseApplication
 
     public function __construct(
         ContainerInterface      $container,
-        private RouterInterface $router,
-        private LoggerInterface $logger,
+        private readonly RouterInterface $router,
+        private readonly LoggerInterface $logger,
         array                   $config = []
     )
     {
@@ -60,7 +60,7 @@ class Application extends BaseApplication
         ];
 
         if (isset($config['viewPath'])) {
-            $definitions[View::class] = (fn() => new View(new TemplateEngine($config['viewPath'])));
+            $definitions[View::class] = (fn(): View => new View(new TemplateEngine($config['viewPath'])));
         }
 
         if (isset($config['definitions']) && is_array($config['definitions'])) {

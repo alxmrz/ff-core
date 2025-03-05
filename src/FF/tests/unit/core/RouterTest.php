@@ -57,22 +57,21 @@ final class RouterTest extends CommonTestCase
     {
         $this->expectException(MethodAlreadyRegistered::class);
         $this->expectExceptionMessage('Method GET /order already registered!');
-        $this->router->get('/order', fn() => 'Order route');
-        $this->router->get('/order', fn() => 'Order route');
+        $this->router->get('/order', fn(): string => 'Order route');
+        $this->router->get('/order', fn(): string => 'Order route');
     }
 
     /**
      * @dataProvider dpTestParsingVariablesInUri
      *
-     * @return void
      * @throws MethodAlreadyRegistered
      * @throws UnavailableRequestException
      */
-    public function testParsingVariablesInUri(string $uri, string $route, array $expectedArgs)
+    public function testParsingVariablesInUri(string $uri, string $route, array $expectedArgs): void
     {
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_URI'] = $uri;
-        $func = (fn() => 'Order route get by id');
+        $func = (fn(): string => 'Order route get by id');
         $this->router->get($route, $func);
         [$handler, $args, $controllerName, $action] = $this->router->parseRequest($this->createRequest());
 
@@ -98,11 +97,11 @@ final class RouterTest extends CommonTestCase
 
         $value = '';
 
-        $this->router->get('/order/{id}', function () use (&$value) {
+        $this->router->get('/order/{id}', function () use (&$value): void {
             $value = 'order';
         });
         
-        $this->router->get('/shop/{id}', function () use (&$value) {
+        $this->router->get('/shop/{id}', function () use (&$value): void {
             $value = 'shop';
         });
 
@@ -122,11 +121,11 @@ final class RouterTest extends CommonTestCase
 
         $value = '';
 
-        $this->router->get('/shop/{id}', function () use (&$value) {
+        $this->router->get('/shop/{id}', function () use (&$value): void {
             $value = 'shop';
         });
 
-        $this->router->get('/order/{id}', function () use (&$value) {
+        $this->router->get('/order/{id}', function () use (&$value): void {
             $value = 'order';
         });
 
@@ -147,7 +146,7 @@ final class RouterTest extends CommonTestCase
 
         $value = '';
 
-        $this->router->get('/order', function () use (&$value) {
+        $this->router->get('/order', function () use (&$value): void {
             $value = 'order';
         });
 

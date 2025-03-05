@@ -35,3 +35,8 @@ md:
 	docker exec -it ff-core ./vendor/bin/phpmd
 server:
 	cd ./example && php -S localhost:8000
+rdr:
+	./vendor/bin/rector process --dry-run
+
+rector:
+	./vendor/bin/rector process

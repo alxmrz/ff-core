@@ -10,16 +10,16 @@ class PHPDIContainerTest extends CommonTestCase
     /**
      * @throws \Exception
      */
-    public function testHas()
+    public function testHas(): void
     {
-        $container = new PHPDIContainer([PHPDIContainerTest::class => fn() => new PHPDIContainerTest()]);
+        $container = new PHPDIContainer([PHPDIContainerTest::class => fn(): \FF\tests\integration\PHPDIContainerTest => new PHPDIContainerTest()]);
 
         $this->assertTrue($container->has(PHPDIContainerTest::class));
     }
 
-    public function testGet()
+    public function testGet(): void
     {
-        $container = new PHPDIContainer([PHPDIContainerTest::class => fn() => new PHPDIContainerTest()]);
+        $container = new PHPDIContainer([PHPDIContainerTest::class => fn(): \FF\tests\integration\PHPDIContainerTest => new PHPDIContainerTest()]);
 
         $this->assertInstanceOf(PHPDIContainerTest::class, $container->get(PHPDIContainerTest::class));
     }

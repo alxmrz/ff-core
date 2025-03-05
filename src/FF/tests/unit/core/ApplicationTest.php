@@ -32,7 +32,7 @@ final class ApplicationTest extends CommonTestCase
 
         $app = $this->createApplication();
         
-        $app->get('/order', function (RequestInterface $request, ResponseInterface $response) {
+        $app->get('/order', function (RequestInterface $request, ResponseInterface $response): void {
             $response->withBody('<p>Order route</p>');
         });
 
@@ -54,7 +54,7 @@ final class ApplicationTest extends CommonTestCase
 
         $app = $this->createApplication();
         
-        $app->post('/order', function (RequestInterface $request, ResponseInterface $response) {
+        $app->post('/order', function (RequestInterface $request, ResponseInterface $response): void {
             $response->withBody('Order route from post');
         });
 
@@ -83,7 +83,7 @@ final class ApplicationTest extends CommonTestCase
 
         $app = $this->createApplication();
 
-        $app->get('/order', function (RequestInterface $request, ResponseInterface $response, TestService $service) {
+        $app->get('/order', function (RequestInterface $request, ResponseInterface $response, TestService $service): void {
             $response->withBody($service->doStuff());
         });
 
@@ -105,7 +105,7 @@ final class ApplicationTest extends CommonTestCase
 
         $app = $this->createApplication();
 
-        $app->get('/order/{id}', function (RequestInterface $request, ResponseInterface $response, string $id, TestService $service) {
+        $app->get('/order/{id}', function (RequestInterface $request, ResponseInterface $response, string $id, TestService $service): void {
             $response->withBody($service->doStuff() . ' ' . $id);
         });
 

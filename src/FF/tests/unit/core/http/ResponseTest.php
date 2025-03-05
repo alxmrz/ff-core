@@ -4,7 +4,7 @@ namespace FF\http;
 
 use FF\tests\unit\core\http\ResponseTest;
 
-function header (string $header) {
+function header (string $header): void {
     ResponseTest::collectHeader($header);
 }
 
@@ -25,10 +25,9 @@ class ResponseTest extends \FF\tests\unit\CommonTestCase
     /**
      * @runInSeparateProcess
      *
-     * @return void
      * @throws \Exception
      */
-    public function testSend()
+    public function testSend(): void
     {
         $response = new Response();
         $response->withBody('test-body');
@@ -50,10 +49,9 @@ class ResponseTest extends \FF\tests\unit\CommonTestCase
     /**
      * @runInSeparateProcess
      *
-     * @return void
      * @throws \Exception
      */
-    public function testSend_EmptyBody()
+    public function testSend_EmptyBody(): void
     {
         $response = new Response();
 
@@ -65,10 +63,9 @@ class ResponseTest extends \FF\tests\unit\CommonTestCase
     /**
      * @runInSeparateProcess
      *
-     * @return void
      * @throws \Exception
      */
-    public function testSendWithJsonBody()
+    public function testSendWithJsonBody(): void
     {
         $response = new Response();
         $response->withJsonBody(['key' => 'value']);
@@ -81,10 +78,9 @@ class ResponseTest extends \FF\tests\unit\CommonTestCase
     /**
      * @runInSeparateProcess
      *
-     * @return void
      * @throws \Exception
      */
-    public function testSendWithHeader()
+    public function testSendWithHeader(): void
     {
         $response = new Response();
         $response->withHeader("MyHeader", 'value');
@@ -99,10 +95,9 @@ class ResponseTest extends \FF\tests\unit\CommonTestCase
         /**
      * @runInSeparateProcess
      *
-     * @return void
      * @throws \Exception
      */
-    public function testSendWithHeader_WhenHeaderAlreadyDefinedThenException()
+    public function testSendWithHeader_WhenHeaderAlreadyDefinedThenException(): void
     {
         $response = new Response();
 

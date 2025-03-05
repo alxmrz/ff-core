@@ -99,7 +99,7 @@ class MiddlewareTest extends CommonTestCase
         $this->assertEquals('expected', $actual);
     }
 
-    private function runRequest(string $path, string $method)
+    private function runRequest(string $path, string $method): void
     {
         $_SERVER['REQUEST_METHOD'] = $method;
         $_SERVER['REQUEST_URI'] = $path;

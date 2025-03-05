@@ -11,7 +11,7 @@ use FF\tests\unit\CommonTestCase;
 
 final class RouteHandlerTest extends CommonTestCase
 {
-    public function testInvoke()
+    public function testInvoke(): void
     {
         $value = '';
 
@@ -24,7 +24,7 @@ final class RouteHandlerTest extends CommonTestCase
         $this->assertSame('modified', $value);
     }
 
-    public function testInvoke_WithArgs()
+    public function testInvoke_WithArgs(): void
     {
         $value = '';
         $routeHandler = new RouteHandler(static function (RequestInterface $request, ResponseInterface $response, string $name) use (&$value):void  {
@@ -38,12 +38,12 @@ final class RouteHandlerTest extends CommonTestCase
 
     public function testInvokeWithMiddleWare(): void
     {
-        $routeHandler = new RouteHandler(static function (RequestInterface $request, ResponseInterface $response) {
+        $routeHandler = new RouteHandler(static function (RequestInterface $request, ResponseInterface $response): void {
             
         });
 
         $modify = '';
-        $mw = static function (RequestInterface $request, ResponseInterface $response) use (&$modify) {
+        $mw = static function (RequestInterface $request, ResponseInterface $response) use (&$modify): void {
             $modify = "Hello, World";
         };
 
@@ -57,7 +57,7 @@ final class RouteHandlerTest extends CommonTestCase
     public function testInvokeWithMiddleWare_DoNotCallHandlerIfMiddlewareReturnFalse(): void
     {
         $result = '';
-        $routeHandler = new RouteHandler(static function (RequestInterface $request, ResponseInterface $response)  use (&$result) {
+        $routeHandler = new RouteHandler(static function (RequestInterface $request, ResponseInterface $response)  use (&$result): void {
             $result = 'changed';
         });
 

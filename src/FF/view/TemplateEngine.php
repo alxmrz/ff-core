@@ -32,7 +32,7 @@ class TemplateEngine implements TemplateInterface
     /**
      * @throws FileDoesNotExist
      */
-    private function throwExceptionIfTemplateDoesNotExist(string $pathToTemplate)
+    private function throwExceptionIfTemplateDoesNotExist(string $pathToTemplate): void
     {
         if (!file_exists($pathToTemplate)) {
             throw new FileDoesNotExist("File {$pathToTemplate}.php does not exist");
