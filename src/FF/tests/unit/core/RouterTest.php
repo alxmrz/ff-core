@@ -57,12 +57,8 @@ final class RouterTest extends CommonTestCase
     {
         $this->expectException(MethodAlreadyRegistered::class);
         $this->expectExceptionMessage('Method GET /order already registered!');
-        $this->router->get('/order', function () {
-            return 'Order route';
-        });
-        $this->router->get('/order', function () {
-            return 'Order route';
-        });
+        $this->router->get('/order', fn() => 'Order route');
+        $this->router->get('/order', fn() => 'Order route');
     }
 
     /**
@@ -76,9 +72,7 @@ final class RouterTest extends CommonTestCase
     {
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_URI'] = $uri;
-        $func = function () {
-            return 'Order route get by id';
-        };
+        $func = (fn() => 'Order route get by id');
         $this->router->get($route, $func);
         [$handler, $args, $controllerName, $action] = $this->router->parseRequest($this->createRequest());
 

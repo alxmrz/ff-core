@@ -30,7 +30,6 @@ class MiddlewareTest extends CommonTestCase
 
     /**
      * @runInSeparateProcess
-     * @return void
      */
     public function testMiddleWareForOneRoute(): void
     {
@@ -52,7 +51,6 @@ class MiddlewareTest extends CommonTestCase
 
     /**
      * @runInSeparateProcess
-     * @return void
      */
     public function testMiddleWareForAllRoutes(): void
     {
@@ -83,13 +81,10 @@ class MiddlewareTest extends CommonTestCase
 
         /**
      * @runInSeparateProcess
-     * @return void
      */
     public function testMiddleWareOfAllRoutesCanStopRoutesProcessing(): void
     {
-        $this->app->add(static function(RequestInterface $request, ResponseInterface $response):bool {
-            return false;
-        });
+        $this->app->add(static fn(RequestInterface $request, ResponseInterface $response): bool => false);
 
         $actual = 'expected';
         $this->app->get('/', static function (RequestInterface $request, ResponseInterface $response) use (&$actual):void {

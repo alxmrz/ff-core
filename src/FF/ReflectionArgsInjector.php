@@ -13,11 +13,8 @@ use ReflectionFunction;
 
 class ReflectionArgsInjector
 {
-    private ContainerInterface $container;
-
-    public function __construct(ContainerInterface $container)
+    public function __construct(private readonly ContainerInterface $container)
     {
-        $this->container = $container;
     }
 
     public function injectHandlerArgs(Closure $handler, array $args): array

@@ -31,54 +31,36 @@ use Throwable;
 
 class Application extends BaseApplication
 {
-    public RouterInterface $router;
-    public LoggerInterface $logger;
     private RequestInterface $request;
     /**
      * @var Closure[]
      */
     private array $middleWares = [];
-    /**
-     * @param ContainerInterface $container
-     * @param RouterInterface $router
-     * @param LoggerInterface $logger
-     * @param array $config
-     */
+
     public function __construct(
-        ContainerInterface $container,
-        RouterInterface $router,
-        LoggerInterface $logger,
-        array $config = []
-    ) {
+        ContainerInterface      $container,
+        private RouterInterface $router,
+        private LoggerInterface $logger,
+        array                   $config = []
+    )
+    {
         parent::__construct($container, $config);
-
-        $this->logger = $logger;
-
-        $this->router = $router;
     }
 
     /**
      * Hide construction from client code
      *
-     * @param array $config
-     * @return Application
      * @throws Exception
      */
     public static function construct(array $config): Application
     {
         $definitions = [
-            LoggerInterface::class => function () use ($config): LoggerInterface {
-                return new MonologLogger(new Logger($config['appName'] ?? 'ff-core-app'));
-            },
-            RouterInterface::class => function () use ($config): RouterInterface {
-                return new Router($config);
-            },
+            LoggerInterface::class => fn(): LoggerInterface => new MonologLogger(new Logger($config['appName'] ?? 'ff-core-app')),
+            RouterInterface::class => fn(): RouterInterface => new Router($config),
         ];
 
         if (isset($config['viewPath'])) {
-            $definitions[View::class] = function () use ($config) {
-                return new View(new TemplateEngine($config['viewPath']));
-            };
+            $definitions[View::class] = (fn() => new View(new TemplateEngine($config['viewPath'])));
         }
 
         if (isset($config['definitions']) && is_array($config['definitions'])) {
@@ -95,9 +77,6 @@ class Application extends BaseApplication
     }
 
     /**
-     * @param string $path
-     * @param Closure $handler
-     * @return RouteHandler
      * @throws MethodAlreadyRegistered
      */
     public function get(string $path, Closure $handler): RouteHandler
@@ -106,9 +85,6 @@ class Application extends BaseApplication
     }
 
     /**
-     * @param string $path
-     * @param Closure $handler
-     * @return RouteHandler
      * @throws MethodAlreadyRegistered
      */
     public function post(string $path, Closure $handler): RouteHandler
@@ -116,9 +92,6 @@ class Application extends BaseApplication
         return $this->router->post($path, $handler);
     }
 
-    /**
-     * @return int
-     */
     public function run(): int
     {
         $this->createRequest();
@@ -165,9 +138,6 @@ class Application extends BaseApplication
         return $response;
     }
 
-    /**
-     * @return ResponseInterface
-     */
     private function createResponse(): ResponseInterface
     {
         return new Response();
@@ -204,7 +174,7 @@ class Application extends BaseApplication
         try {
             $args = $argsInjector->injectActionArgs($controllerName, $action, $args);
         } catch (ControllerNotFound $e) {
-            throw new UnavailableRequestException($this->request,$e);
+            throw new UnavailableRequestException($this->request, $e);
         }
 
         $controller = $this->container->get($controllerName);

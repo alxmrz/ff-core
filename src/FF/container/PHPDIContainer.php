@@ -11,7 +11,7 @@ use Psr\Container\ContainerInterface;
 
 class PHPDIContainer implements ContainerInterface
 {
-    private Container $container;
+    private readonly Container $container;
 
     /**
      * @throws Exception
@@ -23,19 +23,11 @@ class PHPDIContainer implements ContainerInterface
         $this->container = $builder->build();
     }
 
-    /**
-     * @param string $id
-     * @return mixed
-     */
     public function get(string $id): mixed
     {
         return $this->container->get($id);
     }
 
-    /**
-     * @param string $id
-     * @return bool
-     */
     public function has(string $id): bool
     {
         return $this->container->has($id);

@@ -8,14 +8,13 @@ use FF\http\ResponseInterface;
 
 class RouteHandler
 {
-    private Closure $handler;
     /**
      * @var Closure[]
      */
     private array $middleWares = [];
 
-    public function __construct(Closure $handler) {
-        $this->handler = $handler;
+    public function __construct(private readonly Closure $handler)
+    {
     }
 
     public function getFunc(): Closure

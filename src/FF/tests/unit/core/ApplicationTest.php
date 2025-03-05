@@ -21,7 +21,6 @@ final class ApplicationTest extends CommonTestCase
 {
     /**
      * @runInSeparateProcess
-     * @return void
      * @throws MethodAlreadyRegistered
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -44,7 +43,6 @@ final class ApplicationTest extends CommonTestCase
 
     /**
      * @runInSeparateProcess
-     * @return void
      * @throws ContainerExceptionInterface
      * @throws MethodAlreadyRegistered
      * @throws NotFoundExceptionInterface
@@ -74,7 +72,6 @@ final class ApplicationTest extends CommonTestCase
 
     /**
      * @runInSeparateProcess
-     * @return void
      * @throws ContainerExceptionInterface
      * @throws MethodAlreadyRegistered
      * @throws NotFoundExceptionInterface
@@ -97,7 +94,6 @@ final class ApplicationTest extends CommonTestCase
 
     /**
      * @runInSeparateProcess
-     * @return void
      * @throws ContainerExceptionInterface
      * @throws MethodAlreadyRegistered
      * @throws NotFoundExceptionInterface
@@ -120,7 +116,6 @@ final class ApplicationTest extends CommonTestCase
 
     /**
      * @runInSeparateProcess
-     * @return void
      * @throws ContainerExceptionInterface
      * @throws MethodAlreadyRegistered
      * @throws NotFoundExceptionInterface
@@ -141,7 +136,6 @@ final class ApplicationTest extends CommonTestCase
 
     /**
      * @runInSeparateProcess
-     * @return void
      * @throws ContainerExceptionInterface
      * @throws MethodAlreadyRegistered
      * @throws NotFoundExceptionInterface
@@ -162,7 +156,6 @@ final class ApplicationTest extends CommonTestCase
 
         /**
      * @runInSeparateProcess
-     * @return void
      * @throws ContainerExceptionInterface
      * @throws MethodAlreadyRegistered
      * @throws NotFoundExceptionInterface

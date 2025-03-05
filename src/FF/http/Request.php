@@ -8,8 +8,8 @@ use FF\Security;
 
 class Request implements RequestInterface
 {
-    private array $get;
-    private array $post;
+    private readonly array $get;
+    private readonly array $post;
     private array $server;
 
     public function __construct()
@@ -21,16 +21,12 @@ class Request implements RequestInterface
 
     /**
      * Возвращает массив $_GET
-     * @return array
      */
     public function get(): array
     {
         return $this->get;
     }
 
-    /**
-     * @return array
-     */
     public function post(): array
     {
         return $this->post;
@@ -38,7 +34,6 @@ class Request implements RequestInterface
 
     /**
      * @param string|null $param
-     * @return array|string
      */
     public function server(string $param = null): array|string
     {

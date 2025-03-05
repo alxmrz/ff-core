@@ -10,11 +10,9 @@ class ArgsRoute
      * @var string[]
      */
     private array $routeParts;
-    private string $uri;
 
     public function __construct(string $uri)
     {
-        $this->uri = $uri;
         $this->routeParts = explode('/', $uri);
     }
 
@@ -38,7 +36,7 @@ class ArgsRoute
         $routeArgs = [];
 
         foreach ($route->getParts() as $key => $part) {
-            preg_match("/{(\w+)}/", $part, $matches);
+            preg_match("/{(\w+)}/", (string) $part, $matches);
 
             if ($this->hasAtPositionTheSamePart($key, $part)) {
                 continue;
@@ -56,11 +54,6 @@ class ArgsRoute
         return $routeArgs;
     }
 
-    /**
-     * @param int|string $key
-     * @param mixed $part
-     * @return bool
-     */
     public function hasAtPositionTheSamePart(int|string $key, mixed $part): bool
     {
         return $this->routeParts[$key] === $part;

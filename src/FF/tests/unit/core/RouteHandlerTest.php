@@ -61,9 +61,7 @@ final class RouteHandlerTest extends CommonTestCase
             $result = 'changed';
         });
 
-        $mw = static function (RequestInterface $request, ResponseInterface $response): bool {
-            return false;
-        };
+        $mw = (static fn(RequestInterface $request, ResponseInterface $response): bool => false);
 
         $routeHandler->add($mw);
 

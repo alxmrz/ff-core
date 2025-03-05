@@ -41,6 +41,6 @@ class TemplateEngineTest extends CommonTestCase
     public function testExceptionIfTemplateDoesNotExist()
     {
         $this->expectException(\FF\exceptions\FileDoesNotExist::class);
-        $content = $this->templateEngine->render('no_template');
+        $this->templateEngine->render('no_template');
     }
 }

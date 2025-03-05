@@ -115,7 +115,6 @@ class ResponseTest extends \FF\tests\unit\CommonTestCase
     /**
      * @runInSeparateProcess
      *
-     * @return void
      * @throws \Exception
      */
     public function testSendWithStatusCode(): void

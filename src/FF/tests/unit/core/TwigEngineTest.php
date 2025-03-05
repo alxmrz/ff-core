@@ -6,9 +6,6 @@ use FF\tests\unit\CommonTestCase;
 
 class TwigEngineTest extends CommonTestCase
 {
-    /**
-     * @var TwigEngine
-     */
     private TwigEngine $twigEngine;
 
 

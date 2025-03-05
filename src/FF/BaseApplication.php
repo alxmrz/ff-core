@@ -14,8 +14,5 @@ abstract class BaseApplication
     ) {
     }
 
-    /**
-     * @return int
-     */
     abstract public function run(): int;
 }

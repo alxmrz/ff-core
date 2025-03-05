@@ -12,18 +12,14 @@ class PHPDIContainerTest extends CommonTestCase
      */
     public function testHas()
     {
-        $container = new PHPDIContainer([PHPDIContainerTest::class => function () {
-            return new PHPDIContainerTest();
-        }]);
+        $container = new PHPDIContainer([PHPDIContainerTest::class => fn() => new PHPDIContainerTest()]);
 
         $this->assertTrue($container->has(PHPDIContainerTest::class));
     }
 
     public function testGet()
     {
-        $container = new PHPDIContainer([PHPDIContainerTest::class => function () {
-            return new PHPDIContainerTest();
-        }]);
+        $container = new PHPDIContainer([PHPDIContainerTest::class => fn() => new PHPDIContainerTest()]);
 
         $this->assertInstanceOf(PHPDIContainerTest::class, $container->get(PHPDIContainerTest::class));
     }
